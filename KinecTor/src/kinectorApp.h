@@ -12,11 +12,15 @@
 #include "ofxOpenCv.h"
 #include "ofxKinect.h"
 
-class kinectorApp : public ofBaseApp{
+class kinectorApp : public ofBaseApp
+{
 public:
     void setup();
     void update();
     void draw();
+    void exit();
+    
+    void drawPointCloud();
     
     void keyPressed(int key);
     void keyReleased(int key);
@@ -27,4 +31,39 @@ public:
     void windowResized(int w, int h);
     void dragEvent(ofDragInfo dragInfo);
     void gotMessage(ofMessage msg);
+    
+    
+    // VARS
+    ofxKinect 			kinect;
+    ofxKinectRecorder 	kinectRecorder;
+    ofxKinectPlayer 	kinectPlayer;
+    /// used to switch between the live kinect and the recording player
+    ofxBase3DVideo* 	kinectSource;
+    
+    // Images
+    ofxCvColorImage		colorImg;
+    ofxCvGrayscaleImage grayImage;			// grayscale depth image
+    ofxCvGrayscaleImage grayThreshNear;		// the near thresholded image
+    ofxCvGrayscaleImage grayThreshFar;		// the far thresholded image
+    
+    // ContourFinder openCV
+    ofxCvContourFinder 	contourFinder;
+    
+    /// start/stop recording and playback,
+    /// make sure you don't record and playback simultaneously 
+    /// using the same file!!!
+    void startRecording();
+    void stopRecording();
+    void startPlayback();
+    void stopPlayback();
+    
+    // Parameters
+    bool				bThreshWithOpenCV;
+    bool				bDrawPointCloud;    
+    int 				nearThreshold;
+    int					farThreshold;    
+    int					angle;    
+    int 				pointCloudRotationY;    
+    bool 				bRecord;
+    bool 				bPlayback;
 };
