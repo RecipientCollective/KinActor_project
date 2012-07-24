@@ -42,6 +42,7 @@
 		ED7B38D015BEF2F10041C640 /* ofxCvHaarFinder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED7B38C315BEF2F10041C640 /* ofxCvHaarFinder.cpp */; };
 		ED7B38D115BEF2F10041C640 /* ofxCvImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED7B38C515BEF2F10041C640 /* ofxCvImage.cpp */; };
 		ED7B38D215BEF2F10041C640 /* ofxCvShortImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED7B38C815BEF2F10041C640 /* ofxCvShortImage.cpp */; };
+		ED7B38DF15BEF6860041C640 /* kinectorApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED7B38DE15BEF6860041C640 /* kinectorApp.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -249,6 +250,8 @@
 		ED7B38C815BEF2F10041C640 /* ofxCvShortImage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxCvShortImage.cpp; sourceTree = "<group>"; };
 		ED7B38C915BEF2F10041C640 /* ofxCvShortImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxCvShortImage.h; sourceTree = "<group>"; };
 		ED7B38CA15BEF2F10041C640 /* ofxOpenCv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxOpenCv.h; sourceTree = "<group>"; };
+		ED7B38DE15BEF6860041C640 /* kinectorApp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = kinectorApp.cpp; sourceTree = "<group>"; };
+		ED7B38E015BEF6940041C640 /* kinectorApp.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = kinectorApp.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -349,6 +352,8 @@
 			isa = PBXGroup;
 			children = (
 				E4B69E1D0A3A1BDC003C02F2 /* main.cpp */,
+				ED7B38DE15BEF6860041C640 /* kinectorApp.cpp */,
+				ED7B38E015BEF6940041C640 /* kinectorApp.h */,
 				E4B69E1E0A3A1BDC003C02F2 /* testApp.cpp */,
 				E4B69E1F0A3A1BDC003C02F2 /* testApp.h */,
 			);
@@ -1047,6 +1052,7 @@
 				ED7B38D015BEF2F10041C640 /* ofxCvHaarFinder.cpp in Sources */,
 				ED7B38D115BEF2F10041C640 /* ofxCvImage.cpp in Sources */,
 				ED7B38D215BEF2F10041C640 /* ofxCvShortImage.cpp in Sources */,
+				ED7B38DF15BEF6860041C640 /* kinectorApp.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
