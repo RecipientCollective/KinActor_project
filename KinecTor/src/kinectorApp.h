@@ -3,7 +3,7 @@
 //  KinectTor
 //
 //  Created by drambald on 7/24/12.
-//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
+//  Copyright (c) 2012 recipient.cc. All rights reserved.
 //
 
 #pragma once
@@ -11,6 +11,9 @@
 #include "ofMain.h"
 #include "ofxOpenCv.h"
 #include "ofxKinect.h"
+
+#define OUTPUT_HEIGHT 768.0
+#define OUTPUT_WIDTH 1024.0
 
 class kinectorApp : public ofBaseApp
 {
@@ -21,6 +24,9 @@ public:
     void exit();
     
     void drawPointCloud();
+    void debugDraw();
+    void kinectorDraw();
+    void setFullScreen();
     
     void keyPressed(int key);
     void keyReleased(int key);
@@ -31,14 +37,21 @@ public:
     void windowResized(int w, int h);
     void dragEvent(ofDragInfo dragInfo);
     void gotMessage(ofMessage msg);
-    
-    
+
+    /// start/stop recording and playback,
+    /// make sure you don't record and playback simultaneously 
+    /// using the same file!!!
+    void startRecording();
+    void stopRecording();
+    void startPlayback();
+    void stopPlayback();
+
+private:
     // VARS
     ofxKinect 			kinect;
     ofxKinectRecorder 	kinectRecorder;
     ofxKinectPlayer 	kinectPlayer;
-    /// used to switch between the live kinect and the recording player
-    ofxBase3DVideo* 	kinectSource;
+    ofxBase3DVideo* 	kinectSource;       // used to switch between the live kinect and the recording player
     
     // Images
     ofxCvColorImage		colorImg;
@@ -49,21 +62,24 @@ public:
     // ContourFinder openCV
     ofxCvContourFinder 	contourFinder;
     
-    /// start/stop recording and playback,
-    /// make sure you don't record and playback simultaneously 
-    /// using the same file!!!
-    void startRecording();
-    void stopRecording();
-    void startPlayback();
-    void stopPlayback();
-    
+public:
     // Parameters
-    bool				bThreshWithOpenCV;
-    bool				bDrawPointCloud;    
+    bool				bDrawPointCloud;
+    bool                bDebugDraw;
+    bool                bToogleFullScreen;
+    bool                bFullscreen;
     int 				nearThreshold;
     int					farThreshold;    
     int					angle;    
     int 				pointCloudRotationY;    
     bool 				bRecord;
     bool 				bPlayback;
+    
+    enum DrawFormat 
+    {
+        debug,
+        cloud,
+        kinector
+    };
+    DrawFormat currentFormat;
 };

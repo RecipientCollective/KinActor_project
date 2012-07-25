@@ -3,7 +3,7 @@
 //  KinectTor
 //
 //  Created by drambald on 7/24/12.
-//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
+//  Copyright (c) 2012 recipient.cc. All rights reserved.
 //
 
 #include <kinectorApp.h>
@@ -11,6 +11,7 @@
 //--------------------------------------------------------------
 void kinectorApp::setup()
 {
+    // INIT KINECT
     kinect.init();
     //kinect.init(true);  // shows infrared instead of RGB video image
 	//kinect.init(false, false);  // disable infrared/rgb video iamge (faster fps)
@@ -26,23 +27,26 @@ void kinectorApp::setup()
 	grayThreshNear.allocate(kinect.width, kinect.height);
 	grayThreshFar.allocate(kinect.width, kinect.height);
     
-    nearThreshold = 230;
-	farThreshold  = 70;
-	bThreshWithOpenCV = true;
+    // Setup thresholds
+    nearThreshold = 250;
+	farThreshold  = 30;
     
-    ofSetFrameRate(60);
+    // Setup FrameRate
+    ofSetFrameRate(30);
     
     // VIDEO CONTROLS
 	bRecord = false;
 	bPlayback = false;
+    bToogleFullScreen = false;
+    bFullscreen = false;
     
 	// zero the tilt on startup
 	angle = 0;
 	kinect.setCameraTiltAngle(angle);
     
-	// start from the front
+	// DRAW CONTROL
+    currentFormat = debug;
 	pointCloudRotationY = 180;
-	bDrawPointCloud = false;
 }
 
 //--------------------------------------------------------------
@@ -65,33 +69,28 @@ void kinectorApp::update()
         
         // we do two thresholds - one for the far plane and one for the near plane
 		// we then do a cvAnd to get the pixels which are a union of the two thresholds
-		if(bThreshWithOpenCV) {
-			grayThreshNear = grayImage;
-			grayThreshFar = grayImage;
-			grayThreshNear.threshold(nearThreshold, true);
-			grayThreshFar.threshold(farThreshold);
-			cvAnd(grayThreshNear.getCvImage(), grayThreshFar.getCvImage(), grayImage.getCvImage(), NULL);
-		} else {
-            
-			// or we do it ourselves - show people how they can work with the pixels
-			unsigned char * pix = grayImage.getPixels();
-            
-			int numPixels = grayImage.getWidth() * grayImage.getHeight();
-			for(int i = 0; i < numPixels; i++) {
-				if(pix[i] < nearThreshold && pix[i] > farThreshold) {
-					pix[i] = 255;
-				} else {
-					pix[i] = 0;
-				}
-			}
-		}
+        grayThreshNear = grayImage;
+        grayThreshFar = grayImage;
+        grayThreshNear.threshold(nearThreshold, true);
+        grayThreshFar.threshold(farThreshold);
+        cvAnd(grayThreshNear.getCvImage(), grayThreshFar.getCvImage(), grayImage.getCvImage(), NULL);
         
 		// update the cv images
 		grayImage.flagImageChanged();
         
-		// find contours which are between the size of 20 pixels and 1/3 the w*h pixels.
-    	// also, find holes is set to true so we will get interior contours as well....
-    	contourFinder.findContours(grayImage, 10, (kinect.width*kinect.height)/2, 20, false);
+        /* COUNTOUR FINDER FUNCTION
+         
+         ofxCvContourFinder::findContours( 
+         ofxCvGrayscaleImage&  input,
+         int minArea,
+         int maxArea,
+         int nConsidered,
+         bool bFindHoles,
+         bool bUseApproximation)
+         
+         find contours which are between the size of 20 pixels and 1/3 the w*h pixels.
+         also, find holes is set to true so we will get interior contours as well...  */
+        contourFinder.findContours(grayImage, 10, (kinect.width*kinect.height)/2, 20, false, true);
     }
 
 }
@@ -99,28 +98,50 @@ void kinectorApp::update()
 //--------------------------------------------------------------
 void kinectorApp::draw()
 {
-    ofSetColor(255, 255, 255);
+    setFullScreen();
     
-	if(bDrawPointCloud) {
-		ofPushMatrix();
-		ofTranslate(420, 320);
-		// we need a proper camera class
-		drawPointCloud();
-		ofPopMatrix();
-	} else {
-		if(!bPlayback) {
-			// draw from the live kinect
-			kinect.drawDepth(10, 10, 400, 300);
-			kinect.draw(420, 10, 400, 300);
-		} else {
-			// draw from the player
-			kinectPlayer.drawDepth(10, 10, 400, 300);
-			kinectPlayer.draw(420, 10, 400, 300);
-		}
-        
-		grayImage.draw(10, 320, 400, 300);
-		contourFinder.draw(10, 320, 400, 300);
-	}
+    switch (currentFormat) 
+    {
+        case kinector:
+            kinectorDraw();
+            break;
+        case debug:
+            debugDraw();
+            break;
+        case cloud:
+            ofPushMatrix();
+            ofTranslate(420, 320);
+            // we need a proper camera class
+            drawPointCloud();
+            ofPopMatrix();
+        default:
+            kinectorDraw();
+            break;
+    }
+}
+
+void kinectorApp::kinectorDraw()
+{
+    
+}
+
+void kinectorApp::debugDraw()
+{
+    ofSetColor(255, 255, 255);
+
+    // DEBUG DRAW
+    if(!bPlayback) {
+        // draw from the live kinect
+        kinect.drawDepth(10, 10, 400, 300);
+        kinect.draw(420, 10, 400, 300);
+    } else {
+        // draw from the player
+        kinectPlayer.drawDepth(10, 10, 400, 300);
+        kinectPlayer.draw(420, 10, 400, 300);
+    }
+    
+    grayImage.draw(10, 320, 400, 300);
+    contourFinder.draw(10, 320, 400, 300);
     
 	// draw recording/playback indicators
 	ofPushMatrix();
@@ -135,10 +156,25 @@ void kinectorApp::draw()
 		ofTriangle(-10, -10, -10, 10, 10, 0);
 	}
 	ofPopMatrix();
+    
+    // draw instructions
+	ofSetColor(255, 255, 255);
+	stringstream reportStream;
+	reportStream << "accel is: " << ofToString(kinect.getMksAccel().x, 2) << " / "
+    << ofToString(kinect.getMksAccel().y, 2) << " / "
+    << ofToString(kinect.getMksAccel().z, 2) << endl
+    << "set near threshold " << nearThreshold << " (press: + -)" << endl
+    << "set far threshold " << farThreshold << " (press: < >) num blobs found " << contourFinder.nBlobs
+    << ", fps: " << ofGetFrameRate() << endl
+    << "press c to close the connection and o to open it again, connection is: " << kinect.isConnected() << endl
+    << "press UP and DOWN to change the tilt angle: " << angle << " degrees" << endl
+    << "press r to record and q to playback, record is: " << bRecord << ", playback is: " << bPlayback;
+	ofDrawBitmapString(reportStream.str(),20,652);
 }
 
 //--------------------------------------------------------------
-void kinectorApp::drawPointCloud() {
+void kinectorApp::drawPointCloud() 
+{
 	ofScale(400, 400, 400);
 	int w = 640;
 	int h = 480;
@@ -157,12 +193,89 @@ void kinectorApp::drawPointCloud() {
 }
 
 //--------------------------------------------------------------
-void kinectorApp::keyPressed(int key){
-    
+void kinectorApp::keyPressed(int key)
+{
+    switch (key) {
+        case 'f':
+			bToogleFullScreen = true;
+			break;
+		case OF_KEY_UP:
+			angle++;
+			if(angle>30) angle=30;
+			kinect.setCameraTiltAngle(angle);
+			break;
+        case OF_KEY_DOWN:
+			angle--;
+			if(angle<-30) angle=-30;
+			kinect.setCameraTiltAngle(angle);
+			break;            
+//		case'p':
+//			bDrawPointCloud = !bDrawPointCloud;
+//			break;
+//            
+//		case '>':
+//		case '.':
+//			farThreshold ++;
+//			if (farThreshold > 255) farThreshold = 255;
+//			break;
+//            
+//		case '<':
+//		case ',':
+//			farThreshold --;
+//			if (farThreshold < 0) farThreshold = 0;
+//			break;
+//            
+//		case '+':
+//		case '=':
+//			nearThreshold ++;
+//			if (nearThreshold > 255) nearThreshold = 255;
+//			break;
+//            
+//		case '-':
+//			nearThreshold --;
+//			if (nearThreshold < 0) nearThreshold = 0;
+//			break;
+//            
+//		case 'w':
+//			kinect.enableDepthNearValueWhite(!kinect.isDepthNearValueWhite());
+//			break;
+//            
+//		case 'o':
+//			kinect.setCameraTiltAngle(angle);	// go back to prev tilt
+//			kinect.open();
+//			break;
+//            
+//		case 'c':
+//			kinect.setCameraTiltAngle(0);		// zero the tilt
+//			kinect.close();
+//			break;
+//            
+//		case 'r':
+//			bRecord = !bRecord;
+//			if(bRecord) {
+//				startRecording();
+//			} else {
+//				stopRecording();
+//			}
+//			break;
+//            
+//		case 'q':
+//			bPlayback = !bPlayback;
+//			if(bPlayback) {
+//				startPlayback();
+//			} else {
+//				stopPlayback();
+//			}
+//			break;
+//            
+
+	}
+
 }
 
 //--------------------------------------------------------------
-void kinectorApp::keyReleased(int key){
+void kinectorApp::keyReleased(int key)
+{
     
 }
 
@@ -173,37 +286,44 @@ void kinectorApp::mouseMoved(int x, int y)
 }
 
 //--------------------------------------------------------------
-void kinectorApp::mouseDragged(int x, int y, int button){
+void kinectorApp::mouseDragged(int x, int y, int button)
+{
     
 }
 
 //--------------------------------------------------------------
-void kinectorApp::mousePressed(int x, int y, int button){
+void kinectorApp::mousePressed(int x, int y, int button)
+{
     
 }
 
 //--------------------------------------------------------------
-void kinectorApp::mouseReleased(int x, int y, int button){
+void kinectorApp::mouseReleased(int x, int y, int button)
+{
     
 }
 
 //--------------------------------------------------------------
-void kinectorApp::windowResized(int w, int h){
+void kinectorApp::windowResized(int w, int h)
+{
     
 }
 
 //--------------------------------------------------------------
-void kinectorApp::gotMessage(ofMessage msg){
+void kinectorApp::gotMessage(ofMessage msg)
+{
     
 }
 
 //--------------------------------------------------------------
-void kinectorApp::dragEvent(ofDragInfo dragInfo){ 
+void kinectorApp::dragEvent(ofDragInfo dragInfo)
+{ 
     
 }
 
 //--------------------------------------------------------------
-void kinectorApp::exit() {
+void kinectorApp::exit() 
+{
 	kinect.setCameraTiltAngle(0); // zero the tilt on exit
 	kinect.close();
 	kinectPlayer.close();
@@ -211,7 +331,8 @@ void kinectorApp::exit() {
 }
 
 //--------------------------------------------------------------
-void kinectorApp::startRecording() {
+void kinectorApp::startRecording()
+{
     
 	// stop playback if running
 	stopPlayback();
@@ -221,17 +342,17 @@ void kinectorApp::startRecording() {
 }
 
 //--------------------------------------------------------------
-void kinectorApp::stopRecording() {
+void kinectorApp::stopRecording()
+{
 	kinectRecorder.close();
 	bRecord = false;
 }
 
 //--------------------------------------------------------------
-void kinectorApp::startPlayback() {
-    
+void kinectorApp::startPlayback() 
+{    
 	stopRecording();
 	kinect.close();
-    
 	// set record file and source
 	kinectPlayer.setup(ofToDataPath("recording.dat"), true);
 	kinectPlayer.loop();
@@ -240,9 +361,24 @@ void kinectorApp::startPlayback() {
 }
 
 //--------------------------------------------------------------
-void kinectorApp::stopPlayback() {
+void kinectorApp::stopPlayback() 
+{
 	kinectPlayer.close();
 	kinect.open();
 	kinectSource = &kinect;
 	bPlayback = false;
+}
+
+void kinectorApp::setFullScreen()
+{
+    if (bToogleFullScreen && !bFullscreen) {
+		ofSetFullscreen(true);
+		bFullscreen = true;
+		bToogleFullScreen = false;
+	} else if (bToogleFullScreen && bFullscreen) {
+		bFullscreen = false;
+		bToogleFullScreen = false;
+		ofSetWindowShape(OUTPUT_WIDTH,OUTPUT_HEIGHT);
+		ofSetFullscreen(false);
+	}
 }
