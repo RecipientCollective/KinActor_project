@@ -11,9 +11,10 @@
 #include "ofMain.h"
 #include "ofxOpenCv.h"
 #include "ofxKinect.h"
+#include "ofxUI.h"
 
-#define OUTPUT_HEIGHT 768.0
-#define OUTPUT_WIDTH 1024.0
+#define OUTPUT_HEIGHT 800
+#define OUTPUT_WIDTH 1280
 
 class kinectorApp : public ofBaseApp
 {
@@ -21,7 +22,12 @@ public:
     void setup();
     void update();
     void draw();
+    
+    // ofxUI methods and gui objects
     void exit();
+    void guiEvent(ofxUIEventArgs &e);
+    void setupGUIleft();
+    ofxUICanvas *guileft;
     
     void drawPointCloud();
     void debugDraw();
@@ -46,8 +52,12 @@ public:
     void startPlayback();
     void stopPlayback();
 
+    /// KINECT FUNCTIONS
+    void downKinectAngle();
+    void upKinectAngle();
+    
 private:
-    // VARS
+    // KINECT VARS
     ofxKinect 			kinect;
     ofxKinectRecorder 	kinectRecorder;
     ofxKinectPlayer 	kinectPlayer;
@@ -62,16 +72,16 @@ private:
     // ContourFinder openCV
     ofxCvContourFinder 	contourFinder;
     
-public:
     // Parameters
-    bool				bDrawPointCloud;
-    bool                bDebugDraw;
+public:
     bool                bToogleFullScreen;
     bool                bFullscreen;
     int 				nearThreshold;
     int					farThreshold;    
-    int					angle;    
-    int 				pointCloudRotationY;    
+    int					kinectAngle;    
+    int 				pointCloudRotationY;
+    int                 contour_min;
+    int                 blobMax;
     bool 				bRecord;
     bool 				bPlayback;
     
