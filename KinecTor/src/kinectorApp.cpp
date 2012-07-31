@@ -11,6 +11,10 @@
 //--------------------------------------------------------------
 void kinectorApp::setup()
 {
+#ifdef DEBUG		
+    std::cerr << "DEBUG MODE" << std::endl;
+#endif
+    
     // INIT KINECT
     kinect.init();
     //kinect.init(true);  // shows infrared instead of RGB video image
@@ -20,6 +24,10 @@ void kinectorApp::setup()
     
     // start with the live kinect source
 	kinectSource = &kinect;
+
+#ifdef DEBUG		
+    std::cerr << "Input size: width =" << kinect.width << " height = " << kinect.height << endl;
+#endif
     
     // Allocate image
     colorImg.allocate(kinect.width, kinect.height);
@@ -35,6 +43,8 @@ void kinectorApp::setup()
 	bPlayback = false;
     bToogleFullScreen = false;
     bFullscreen = false;
+    bShowInterface = true;
+    bBox = false;
 	kinectAngle = 0;
 	kinect.setCameraTiltAngle(kinectAngle);
     blobMax=2;
@@ -43,8 +53,20 @@ void kinectorApp::setup()
 	// DRAW CONTROL
     currentFormat = kinector;
 	pointCloudRotationY = 180;
+	scaleFactor = 1.0;
     
+    // In the default draw I have an image on the left of the interface: 410 x, 10 y
+	mtrx = 410;
+	mtry = 10;
+    
+    // GUIS STUFFS
+    xInit = OFX_UI_GLOBAL_WIDGET_SPACING;
+    dim = 24;
+    length = 400-xInit;
+    ofEnableSmoothing(); 
+    ofBackground(0);
     setupGUIleft();
+    setupGUIbottom();
     
     // INITIAL BACKGROUND IS GREY
     ofBackground(100,100,100);
@@ -53,14 +75,6 @@ void kinectorApp::setup()
 //--------------------------------------------------------------
 void kinectorApp::setupGUIleft()
 {
-    // SMOOTHING GUI
-    ofEnableSmoothing(); 
-    ofBackground(0);
-    
-    float xInit = OFX_UI_GLOBAL_WIDGET_SPACING;
-    float dim = 32;
-    float length = 400-xInit; 
-    
     // INIT A GUI OBJECT: ofxUICanvas(float x, float y, float width, float height)		
     guileft = new ofxUICanvas(0,0,length+xInit,ofGetHeight());
     guileft->setDrawWidgetPadding(true);
@@ -73,18 +87,43 @@ void kinectorApp::setupGUIleft()
     guileft->addWidgetDown(new ofxUISlider(length-xInit,dim, 0.0, 255.0, farThreshold, "FAR THRESHOLD"));
     guileft->addWidgetDown(new ofxUILabel("Kinect convert the distance in grey pixels [0-255]", OFX_UI_FONT_SMALL));
     guileft->addWidgetDown(new ofxUISpacer(length-xInit, 2));
-    guileft->addWidgetDown(new ofxUILabel("KINECT ANGLE [arrows keys]:", OFX_UI_FONT_MEDIUM));
+    guileft->addWidgetDown(new ofxUILabel("KINECT ANGLE [< >]:", OFX_UI_FONT_MEDIUM));
     guileft->addWidgetDown(new ofxUILabelButton(false, "UP", OFX_UI_FONT_MEDIUM)); 
     guileft->addWidgetDown(new ofxUILabelButton(false, "DOWN", OFX_UI_FONT_MEDIUM)); 
     guileft->addWidgetDown(new ofxUISpacer(length-xInit, 2));
-    guileft->addWidgetDown(new ofxUILabel("KINECT OPTIONS:", OFX_UI_FONT_MEDIUM));
+    guileft->addWidgetDown(new ofxUILabel("KINECT CONNECTION:", OFX_UI_FONT_MEDIUM));
+    guileft->addWidgetDown(new ofxUILabelButton(false, "CONNECT [o]", OFX_UI_FONT_MEDIUM));
+    guileft->addWidgetDown(new ofxUILabelButton(false, "DISCONNECT [c]", OFX_UI_FONT_MEDIUM));
     guileft->addWidgetDown(new ofxUIToggle( dim, dim, false, "DEPTH NEAR VALUE WHITE"));
+    guileft->addWidgetDown(new ofxUISpacer(length-xInit, 2));
+    guileft->addWidgetDown(new ofxUILabel("PLAYBACK/RECORD", OFX_UI_FONT_MEDIUM));
+    playbackToggle = new ofxUIToggle( dim, dim, false, "PLAYBACK [p]");
+    guileft->addWidgetDown(playbackToggle);
+    recordToggle = new ofxUIToggle( dim, dim, false, "RECORD [r]");
+    guileft->addWidgetDown(recordToggle);
+    guileft->addWidgetDown(new ofxUISpacer(length-xInit, 2));
+    guileft->addWidgetDown(new ofxUILabel("WINDOW OPTIONS:", OFX_UI_FONT_MEDIUM));
+    
+    // trPad for the interface, convert mtrx as RATIO and then to the PAD sizes
+    int padHeight = (length - xInit) / 2;
+    trPad = ofPoint((mtrx/ofGetScreenWidth())*(length-xInit),(mtry/ofGetScreenHeight())*padHeight);
+    guileft->addWidgetDown(new ofxUI2DPad(length-xInit,padHeight, trPad, "TRANSLATE"));
+    guileft->addWidgetDown(new ofxUISlider(length-xInit,dim, 0.0, 10.0, scaleFactor, "SCALE")); 
     guileft->addWidgetDown(new ofxUISpacer(length-xInit, 2));
     ofAddListener(guileft->newGUIEvent, this, &kinectorApp::guiEvent);
     guileft->loadSettings("GUI/guileftSettings.xml");
-    
-    // SHOW GUI ON START
-    guileft->setVisible(true);
+}
+
+//--------------------------------------------------------------
+void kinectorApp::setupGUIbottom()
+{
+    // INIT A GUI OBJECT: ofxUICanvas(float x, float y, float width, float height)
+    loggerH = (ofGetWindowHeight() / 3);
+    loggerW = (ofGetWindowWidth() -(length+(xInit*2)));
+    loggerP = ofPoint(length+(xInit*2),(ofGetWindowHeight() - loggerH));
+    guibottom = new ofxUICanvas(loggerP.x,loggerP.y,loggerW,loggerH);
+    guibottom->setDrawWidgetPadding(true);
+    guibottom->addWidgetDown(new ofxUILabel("LOGGER", OFX_UI_FONT_LARGE));
 }
 
 //--------------------------------------------------------------
@@ -95,6 +134,7 @@ void kinectorApp::update()
     
     // there is a new frame and we are connected
 	if(kinectSource->isFrameNew()) {
+
         // record ?
 		if(bRecord && kinectRecorder.isOpened()) {
 			kinectRecorder.newFrame(kinect.getRawDepthPixels(), kinect.getPixels());
@@ -153,16 +193,68 @@ void kinectorApp::draw()
         default:
             break;
     }
+    
+    // show interface?
+    bShowInterface == true ? showInterface() : hideInterface();
 }
 
+//--------------------------------------------------------------
+void kinectorApp::loggerDraw()
+{
+    ofSetColor(255, 255, 255);
+    stringstream reportStream;
+    reportStream << "Accel is: " << ofToString(kinect.getMksAccel().x, 2) << " / "
+    << ofToString(kinect.getMksAccel().y, 2) << " / "
+    << ofToString(kinect.getMksAccel().z, 2) << endl
+    << "Near threshold " << nearThreshold  << endl
+    << "Far threshold " << farThreshold << endl
+    << "Num blobs found " << contourFinder.nBlobs
+    << ", fps: " << ofGetFrameRate() << endl
+    << "Kinect connection is: " << kinect.isConnected() << endl
+    << "Tilt angle: " << kinectAngle << " degrees" << endl
+    << "Record is: " << bRecord << ", playback is: " << bPlayback;
+    ofDrawBitmapString(reportStream.str(),(loggerP.x + xInit),(loggerP.y + (xInit * 6)));
+}
+
+//--------------------------------------------------------------
 void kinectorApp::kinectorDraw()
 {
-    // JUST CONTOUR
-    grayImage.draw(400,10);
+    // JUST CONTOUR FOR NOW
+    // ORIGINAL IMAGE SIZE IS 640x480
+    
+    ofPushMatrix();
+	ofScale(scaleFactor, scaleFactor, 1.0);
+	ofTranslate(mtrx, mtry, 1.0);
+    
+    if (bBox) {
+		ofPushStyle();
+		ofSetColor(255, 255, 255);
+		ofNoFill();
+		ofRect(0, 0, kinect.width, kinect.height);
+		ofPopStyle();
+	}
+    
+    grayImage.draw(0,0);
     for(int i = 0; i < contourFinder.blobs.size(); i++) 
     {
-        contourFinder.blobs[i].draw(400,10);
+        contourFinder.blobs[i].draw(0,0);
     }
+    
+    // draw recording/playback indicators
+	ofPushMatrix();
+	ofTranslate(25, 25);
+	ofFill();
+	if(bRecord) {
+		ofSetColor(255, 0, 0);
+		ofCircle(0, 0, 10);
+	}
+	if(bPlayback) {
+		ofSetColor(0, 255, 0);
+		ofTriangle(-10, -10, -10, 10, 10, 0);
+	}
+	ofPopMatrix();
+    
+    ofPopMatrix();
 }
 
 void kinectorApp::debugDraw()
@@ -182,20 +274,6 @@ void kinectorApp::debugDraw()
     
     grayImage.draw(10, 320, 400, 300);
     contourFinder.draw(10, 320, 400, 300);
-    
-	// draw recording/playback indicators
-	ofPushMatrix();
-	ofTranslate(25, 25);
-	ofFill();
-	if(bRecord) {
-		ofSetColor(255, 0, 0);
-		ofCircle(0, 0, 10);
-	}
-	if(bPlayback) {
-		ofSetColor(0, 255, 0);
-		ofTriangle(-10, -10, -10, 10, 10, 0);
-	}
-	ofPopMatrix();
     
     // draw instructions
 	ofSetColor(255, 255, 255);
@@ -233,60 +311,95 @@ void kinectorApp::drawPointCloud()
 }
 
 //--------------------------------------------------------------
+void kinectorApp::showInterface()
+{
+    guileft->setVisible(true);
+    guibottom->setVisible(true);
+    loggerDraw();
+    bBox = true;
+}
+
+//--------------------------------------------------------------
+void kinectorApp::hideInterface()
+{
+    guileft->setVisible(false);
+    guibottom->setVisible(false);
+    bBox = false;
+}
+
+//--------------------------------------------------------------
 void kinectorApp::keyPressed(int key)
 {
     switch (key) {
         case '1':
             currentFormat = kinector;
-            if (!guileft->isVisible())
-                guileft->setVisible(true);
+            bShowInterface = true;
             break;
         case '2':
             currentFormat = debug;
-            if (guileft->isVisible())
-                guileft->setVisible(false);
+            bShowInterface = false;
             break;
         case '3':
             currentFormat = cloud;
-            if (guileft->isVisible())
-                guileft->setVisible(false);
+            bShowInterface = false;
             break;            
         case 'f':
 			bToogleFullScreen = true;
 			break;
         case 'h':
-            guileft->toggleVisible();
+            bShowInterface = !bShowInterface;
             break;
-		case OF_KEY_UP:
+		case '>':
+        case '.':
             upKinectAngle();
 			break;
-        case OF_KEY_DOWN:
+        case '<':
+        case ',':
             downKinectAngle();
 			break;
 		case 'o':
-			kinect.setCameraTiltAngle(kinectAngle);	// go back to prev tilt
-			kinect.open();
+            kinectConnect();
 			break;           
 		case 'c':
-			kinect.setCameraTiltAngle(0);		// zero the tilt
-			kinect.close();
+            kinectDisconnect();
 			break;
 		case 'r':
-			bRecord = !bRecord;
-			if(bRecord) {
-				startRecording();
-			} else {
-				stopRecording();
-			}
+            toggleRecord();
 			break;           
-		case 'q':
-			bPlayback = !bPlayback;
-			if(bPlayback) {
-				startPlayback();
-			} else {
-				stopPlayback();
-			}
+		case 'p':
+            togglePlayback();
 			break;
+		case OF_KEY_UP:
+            mtry--;
+#ifdef DEBUG
+            std::cerr << "Translate y: " << mtry << std::endl;
+#endif
+			break;
+		case OF_KEY_DOWN:
+			mtry++;
+#ifdef DEBUG
+            std::cerr << "Translate y: " << mtry << std::endl;
+#endif            
+			break;
+		case OF_KEY_LEFT:
+			mtrx--;
+#ifdef DEBUG
+            std::cerr << "Translate x: " << mtrx << std::endl;
+#endif            
+			break;
+		case OF_KEY_RIGHT:
+			mtrx++;
+#ifdef DEBUG
+            std::cerr << "Translate x: " << mtrx << std::endl;
+#endif
+			break;
+        case '-':
+            scaleFactor-=0.01;
+            break;
+        case '+':
+        case '=':
+            scaleFactor+=0.01;
+            break;
 	}
 
 }
@@ -350,6 +463,12 @@ void kinectorApp::exit()
     // ON EXIT SAVE GUI and DELETE
     guileft->saveSettings("GUI/guiSettings.xml"); 
     delete guileft;
+
+#ifdef DEBUG
+    std::cerr << "END OF EXIT ROUTINE ...." << std::endl;
+#endif
+    
+    OF_EXIT_APP(0);
 }
 
 //--------------------------------------------------------------
@@ -359,7 +478,10 @@ void kinectorApp::guiEvent(ofxUIEventArgs &e)
     {
         ofxUISlider *slider = (ofxUISlider *) e.widget;
         nearThreshold = (int) slider->getScaledValue();
-       // std::cout << "slider event: " << slider -> getScaledValue() << " , threshold: " << nearThreshold << std::endl;
+#ifdef DEBUG
+        std::cerr << "slider event: " << slider -> getScaledValue() << " , threshold: " << nearThreshold << std::endl;
+#endif
+        
     } 
     else if(e.widget->getName() == "FAR THRESHOLD") 
     {
@@ -369,21 +491,65 @@ void kinectorApp::guiEvent(ofxUIEventArgs &e)
     else if(e.widget->getName() == "UP")
     {
         ofxUIButton *button = (ofxUIButton *) e.widget;
-        std::cout << "UP" << std::endl;
         upKinectAngle();
     }
     else if(e.widget->getName() == "DOWN")
     {
         ofxUIButton *button = (ofxUIButton *) e.widget;
-        std::cout << "DOWN" << std::endl;        
         downKinectAngle();
     }
     else if(e.widget->getName() == "DEPTH NEAR VALUE WHITE")
     {
         ofxUIToggle *toggle = (ofxUIToggle *) e.widget; 
         kinect.enableDepthNearValueWhite(toggle->getValue());
-        std::cout << "Depth Near Value is now: " << kinect.isDepthNearValueWhite() << std::endl;
+#ifdef DEBUG
+        std::cerr << "Depth Near Value is now: " << kinect.isDepthNearValueWhite() << std::endl;
+#endif
     }
+    else if(e.widget->getName() == "CONNECT")
+    {
+        ofxUIButton *button = (ofxUIButton *) e.widget;
+        kinectConnect();
+    }
+    else if(e.widget->getName() == "DISCONNECT")
+    {
+        ofxUIButton *button = (ofxUIButton *) e.widget;
+        kinectDisconnect();
+    }
+    else if(e.widget->getName() == "RECORD")
+    {
+        ofxUIToggle *toggle = (ofxUIToggle *) e.widget;
+        if (toggle->getValue()) {
+            startRecording();
+        } else {
+            stopRecording();
+        }
+    }
+    else if(e.widget->getName() == "PLAYBACK")
+    {
+        ofxUIToggle *toggle = (ofxUIToggle *) e.widget;
+        if (toggle->getValue()) {
+            startPlayback();
+        } else {
+            stopPlayback();
+        }
+    }
+    else if(e.widget->getName() == "TRANSLATE")
+    {
+        ofxUI2DPad *pad = (ofxUI2DPad *) e.widget;
+#ifdef DEBUG
+        std::cerr << "PAD % VALUES x:" << pad->getPercentValue().x << " y:" << pad->getPercentValue().y << std::endl;
+        std::cerr << "Conversion x:" << pad->getPercentValue().x * ofGetWindowWidth() << " y:" << pad->getPercentValue().y * ofGetWindowHeight() << std::endl;
+#endif
+        mtrx = pad->getPercentValue().x * ofGetWindowWidth();
+        mtry = pad->getPercentValue().y * ofGetWindowWidth();
+    }
+    else if(e.widget->getName() == "SCALE")
+    {
+        ofxUISlider *slider = (ofxUISlider *) e.widget;
+        scaleFactor = slider->getScaledValue();
+    }
+    
 }
 
 //--------------------------------------------------------------
@@ -392,7 +558,8 @@ void kinectorApp::startRecording()
     
 	// stop playback if running
 	stopPlayback();
-    
+    recordToggle->setValue(true);
+    playbackToggle->setValue(false);
 	kinectRecorder.init(ofToDataPath("recording.dat"));
 	bRecord = true;
 }
@@ -402,6 +569,7 @@ void kinectorApp::stopRecording()
 {
 	kinectRecorder.close();
 	bRecord = false;
+    recordToggle->setValue(false);
 }
 
 //--------------------------------------------------------------
@@ -409,6 +577,8 @@ void kinectorApp::startPlayback()
 {    
 	stopRecording();
 	kinect.close();
+    recordToggle->setValue(false);
+    playbackToggle->setValue(true);
 	// set record file and source
 	kinectPlayer.setup(ofToDataPath("recording.dat"), true);
 	kinectPlayer.loop();
@@ -419,10 +589,33 @@ void kinectorApp::startPlayback()
 //--------------------------------------------------------------
 void kinectorApp::stopPlayback() 
 {
+    playbackToggle->setValue(false);
 	kinectPlayer.close();
 	kinect.open();
 	kinectSource = &kinect;
 	bPlayback = false;
+}
+
+//--------------------------------------------------------------
+void kinectorApp::toggleRecord()
+{
+    bRecord = !bRecord;
+    if(bRecord) {
+        startRecording();
+    } else {
+        stopRecording();
+    }
+}
+
+//--------------------------------------------------------------
+void kinectorApp::togglePlayback()
+{
+    bPlayback = !bPlayback;
+    if(bPlayback) {
+        startPlayback();
+    } else {
+        stopPlayback();
+    }    
 }
 
 //--------------------------------------------------------------
@@ -446,6 +639,9 @@ void kinectorApp::downKinectAngle()
     kinectAngle--;
     if(kinectAngle<-30) kinectAngle=-30;
     kinect.setCameraTiltAngle(kinectAngle);
+#ifdef DEBUG
+    std::cerr << "DOWN" << std::endl;
+#endif
 }
 
 //--------------------------------------------------------------
@@ -454,4 +650,27 @@ void kinectorApp::upKinectAngle()
     kinectAngle++;
     if(kinectAngle>30) kinectAngle=30;
     kinect.setCameraTiltAngle(kinectAngle);
+#ifdef DEBUG
+    std::cerr << "UP" << std::endl;
+#endif
+}
+
+//--------------------------------------------------------------
+void kinectorApp::kinectConnect()
+{
+    kinect.setCameraTiltAngle(kinectAngle);	// go back to prev tilt
+    kinect.open();    
+#ifdef DEBUG
+    std::cerr << "KINECT: CONNECTED" << std::endl;
+#endif
+}
+
+//--------------------------------------------------------------
+void kinectorApp::kinectDisconnect()
+{
+    kinect.setCameraTiltAngle(0);		// zero the tilt
+    kinect.close();    
+#ifdef DEBUG
+    std::cerr << "KINECT: DISCONNECTED" << std::endl;
+#endif
 }

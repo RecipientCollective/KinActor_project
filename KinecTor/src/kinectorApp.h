@@ -6,6 +6,12 @@
 //  Copyright (c) 2012 recipient.cc. All rights reserved.
 //
 
+
+/*************************************************************** 
+ * TODO LIST:
+ *  - SONOSBLOBS
+ ***************************************************************/
+
 #pragma once
 
 #include "ofMain.h"
@@ -13,7 +19,7 @@
 #include "ofxKinect.h"
 #include "ofxUI.h"
 
-#define OUTPUT_HEIGHT 800
+#define OUTPUT_HEIGHT 1040
 #define OUTPUT_WIDTH 1280
 
 class kinectorApp : public ofBaseApp
@@ -27,12 +33,29 @@ public:
     void exit();
     void guiEvent(ofxUIEventArgs &e);
     void setupGUIleft();
+    void setupGUIbottom();
+    
+    // GUI STUFFS    
     ofxUICanvas *guileft;
+    ofxUICanvas *guibottom;
+    ofxUIToggle *recordToggle;
+    ofxUIToggle *playbackToggle;
+    ofPoint      trPad;
+    float xInit;
+    float dim;
+    float length;
+    ofPoint loggerP;
+    float loggerW;
+    float loggerH;
+    
+    void showInterface();
+    void hideInterface();
     
     void drawPointCloud();
     void debugDraw();
     void kinectorDraw();
     void setFullScreen();
+    void loggerDraw();
     
     void keyPressed(int key);
     void keyReleased(int key);
@@ -51,10 +74,14 @@ public:
     void stopRecording();
     void startPlayback();
     void stopPlayback();
-
+    void toggleRecord();
+    void togglePlayback();
+    
     /// KINECT FUNCTIONS
     void downKinectAngle();
     void upKinectAngle();
+    void kinectConnect();
+    void kinectDisconnect();
     
 private:
     // KINECT VARS
@@ -76,6 +103,8 @@ private:
 public:
     bool                bToogleFullScreen;
     bool                bFullscreen;
+    bool                bShowInterface;
+    bool                bBox;
     int 				nearThreshold;
     int					farThreshold;    
     int					kinectAngle;    
@@ -84,6 +113,9 @@ public:
     int                 blobMax;
     bool 				bRecord;
     bool 				bPlayback;
+    float               scaleFactor;
+    float               mtrx;
+    float               mtry;
     
     enum DrawFormat 
     {
