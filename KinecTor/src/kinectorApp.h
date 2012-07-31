@@ -8,8 +8,7 @@
 
 
 /*************************************************************** 
- * TODO LIST:
- *  - SONOSBLOBS
+ *
  ***************************************************************/
 
 #pragma once
@@ -18,9 +17,17 @@
 #include "ofxOpenCv.h"
 #include "ofxKinect.h"
 #include "ofxUI.h"
+#include "actor.h"
 
 #define OUTPUT_HEIGHT 1040
 #define OUTPUT_WIDTH 1280
+
+// BITMASK blobUpdate
+#define ACTORSEMPTY        1  // 2^0, bit 0
+#define BLOBSEMPTY        2  // 2^1, bit 1
+#define MOREACTORS         4  // 2^2, bit 2
+#define MOREBLOBS         8  // 2^3, bit 3
+#define EQUALSIZE        16  // 2^4, bit 4
 
 class kinectorApp : public ofBaseApp
 {
@@ -99,6 +106,14 @@ private:
     // ContourFinder openCV
     ofxCvContourFinder 	contourFinder;
     
+    // BLOBS FUNCTIONS
+    void blobsInsert();
+    void blobsUpdate();
+    void checkStatus();
+    
+    // containers for actors identified by code
+	map<string ,actor>  actors;
+    
     // Parameters
 public:
     bool                bToogleFullScreen;
@@ -116,7 +131,15 @@ public:
     float               scaleFactor;
     float               mtrx;
     float               mtry;
+
+    // vars to store info on multiple inputs
+    float inputWidth;
+    float inputHeight;
     
+    // STATUS UPDATE FLAGS
+	unsigned char flags;    // 8-bit MAX flag
+	unsigned char pflags;   // 8-bit flags for previuous state
+
     enum DrawFormat 
     {
         debug,

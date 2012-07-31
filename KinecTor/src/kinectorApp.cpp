@@ -29,6 +29,10 @@ void kinectorApp::setup()
     std::cerr << "Input size: width =" << kinect.width << " height = " << kinect.height << endl;
 #endif
     
+    // STORE INPUT SIZE
+    inputWidth = kinect.width;
+    inputHeight = kinect.height;
+    
     // Allocate image
     colorImg.allocate(kinect.width, kinect.height);
 	grayImage.allocate(kinect.width, kinect.height);
@@ -167,8 +171,174 @@ void kinectorApp::update()
          find contours which are between the size of 20 pixels and 1/3 the w*h pixels.
          also, find holes is set to true so we will get interior contours as well...  */
         contourFinder.findContours(grayImage, contour_min, (kinect.width*kinect.height)/2, blobMax, false, true);
+        
+        // sort by centroid
+        std::sort(contourFinder.blobs.begin(),contourFinder.blobs.end(), sortByCentroid);
+        
+        // CORE BLOBS FUNCTION
+        checkStatus();
     }
 
+}
+
+//--------------------------------------------------------------
+void kinectorApp::checkStatus()
+{
+    /* 
+     * UPDATE with OBJECT PERSISTENCY
+     * 
+     * BITMASK (defined in kinectorApp.h): (http://www.dylanleigh.net/notes/c-cpp-tricks.html#Using_"Bitflags")
+     *  1 SONOSEMPTY
+     *  2 BLOBSEMPTY
+     *  4 MORESONOS
+     *  8 MOREBLOBS
+     * 16 EQUALSIZE
+     *  
+     * BOTH EMPTY = 3, 
+     * SONOS EMPTY but BLOBS on SCREEN = 9
+     * SONOS NOT EMPTY BUT no blobs on SCREEN = 4
+     */
+    
+    // reset all current flags
+    flags = 0;
+    
+    // FIRST CHECKS
+    if (actors.size() == 0) flags |= ACTORSEMPTY;
+    if (contourFinder.blobs.size() == 0) flags |= BLOBSEMPTY;
+    if (contourFinder.blobs.size() > actors.size()) flags |= MOREBLOBS;
+    if (contourFinder.blobs.size() < actors.size()) flags |= MOREACTORS;
+    if (contourFinder.blobs.size() == actors.size()) flags |= EQUALSIZE;
+    
+    
+    // CASO 1: niente sullo schermo
+    if ((flags & (ACTORSEMPTY | BLOBSEMPTY)) == (ACTORSEMPTY | BLOBSEMPTY)) 
+    {
+        // niente da fare ...
+    }
+    // CASO 2: actors vuoto ma blobs on screen
+    else if ((flags & (ACTORSEMPTY | MOREBLOBS)) == (ACTORSEMPTY | MOREBLOBS))
+    {
+#ifdef DEBUG
+        std::cerr << "Event: BLOBS ON SCREEN, ACTORS EMPTY" << " FLAGS: ";
+        printf("%d", flags);
+        std::cerr << std::endl;
+#endif
+        blobsInsert();
+    }
+    // CASO 3: actors pieno e blobs on screen equal size: remapping
+    else if ((flags & EQUALSIZE) == EQUALSIZE)
+    {
+        blobsUpdate();
+    }
+    // CASO 4: actors piu' piccolo di blobs on screen. Qualcosa e' apparito
+    else if ((flags & MOREBLOBS) == MOREBLOBS)
+    {
+#ifdef DEBUG		
+        std::cerr << "Event: MORE BLOBS ON SCREEN than blobs in sonos." << " FLAGS: ";
+        printf("%d", flags);
+        std::cerr << std::endl;
+#endif
+        blobsUpdate();
+        blobsInsert();
+    }
+    // CASO 5: actors piu' grande di blob on screen. Qualcosa e' sparito
+    else if ((flags & MOREACTORS) == MOREACTORS)
+    {
+#ifdef DEBUG		
+        std::cerr << "Event: LESS BLOBS ON SCREEN than blobs in actors."  << " FLAGS: ";
+        printf("%d", flags);
+        std::cerr << std::endl;
+#endif
+        // FIXME OPTIMIZE?
+        // per ora: un giro per settare tutti NOT updated
+        for(map<string, actor>::iterator it = actors.begin(); it != actors.end(); ++it)
+        {
+            it->second.updated = false;
+        }
+        
+        // UPDATE
+        blobsUpdate();
+        
+        // cancella i NOT updated
+        for(map<string, actor>::iterator it = actors.begin(); it != actors.end(); ++it)
+        {
+            if (!it->second.updated) {
+#ifdef DEBUG
+                std::cerr << "Erasing actor: " << it->second.code << std::endl;
+#endif
+                it->second.clean(); // CLEANUP ROUTINE
+                actors.erase(it);
+                it++;
+            } else {
+                it++;
+            }
+        }
+    }
+    
+    // STATUS is changed
+    if (flags != pflags) 
+    {
+#ifdef DEBUG
+        std::cerr << "sonosblobs UPDATE STATUS changed:" << std::endl;
+        std::cerr << "\tPreviuos status was: "; printf("%d", pflags); std::cerr << std::endl;
+        std::cerr << "\tCurrent status is: "; printf("%d", flags); std::cerr << std::endl;
+        std::cerr << "\tFLAG STATUS" << std::endl;
+        
+        // check single flags
+        if ((flags & ACTORSEMPTY) == ACTORSEMPTY) std::cerr << "\t\tACTORS EMPTY" << std::endl;
+        if ((flags & BLOBSEMPTY) == BLOBSEMPTY) std::cerr << "\t\tBLOBS EMPTY" << std::endl;
+        if ((flags & MOREACTORS) == MOREACTORS) std::cerr << "\t\tMORE ACTORS" << std::endl;
+        if ((flags & MOREBLOBS) == MOREBLOBS) std::cerr << "\t\tMORE BLOBS" << std::endl;
+        if ((flags & EQUALSIZE) == EQUALSIZE) std::cerr << "\t\tEQUALSIZE" << std::endl;
+#endif            
+    }
+    
+    // save pStatus (previuos frame memory)
+    pflags = flags;
+    
+    // a questo livello ho i miei sonosBlobs per ulteriori loops    
+}
+
+//--------------------------------------------------------------
+void kinectorApp::blobsInsert()
+{
+    // costruisco actors with a blob
+    for(int i = 0; i < contourFinder.blobs.size(); i++) 
+    {
+        actor a = actor(contourFinder.blobs[i]);
+        actors.insert(std::pair<string, actor>(a.code, a));
+    }
+}
+                 
+
+//--------------------------------------------------------------
+void kinectorApp::blobsUpdate()
+{
+    // Itero sugli actors
+    for(map<string, actor>::iterator it = actors.begin(); it != actors.end(); ++it)
+    {
+        // se non ci sono blobs in contourFinder picche
+		if (contourFinder.blobs.size() == 0) return;
+        
+        // set initial MAX distance as inputWidth
+		float distance = inputWidth;
+		int blobposition;
+        
+        // Itero sui CVblobs
+		for ( int m=0; m < contourFinder.blobs.size(); m++ ) 
+		{
+            unsigned mdist = abs(contourFinder.blobs[m].centroid.x - it->second.blob.centroid.x);
+            // cerca minimal distance
+			if (mdist < distance) {
+				distance = mdist;
+				blobposition = m;
+			}
+            // update del sonosBlob con il CVblob piu' vicino (byCentroid)
+            actors[it->first].blob.update(contourFinder.blobs[blobposition]);            
+            //erase this CVblob
+            contourFinder.blobs.erase(contourFinder.blobs.begin() + blobposition);
+        }
+    }
 }
 
 //--------------------------------------------------------------

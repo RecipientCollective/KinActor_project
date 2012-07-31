@@ -27,6 +27,9 @@
 		ED203A6E15C1487200B2C7E9 /* tinyxmlerror.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED203A6815C1487200B2C7E9 /* tinyxmlerror.cpp */; };
 		ED203A6F15C1487200B2C7E9 /* tinyxmlparser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED203A6915C1487200B2C7E9 /* tinyxmlparser.cpp */; };
 		ED203A7015C1487200B2C7E9 /* ofxXmlSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED203A6B15C1487200B2C7E9 /* ofxXmlSettings.cpp */; };
+		ED4F6B7715C7FCD900A2AA95 /* actor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED4F6B7615C7FCD900A2AA95 /* actor.cpp */; };
+		ED4F6B8415C8005500A2AA95 /* actorBlob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED4F6B8315C8005500A2AA95 /* actorBlob.cpp */; };
+		ED4F6B8715C8021500A2AA95 /* functions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED4F6B8615C8021500A2AA95 /* functions.cpp */; };
 		ED7B383215BEEFC90041C640 /* cameras.c in Sources */ = {isa = PBXBuildFile; fileRef = ED7B37E215BEEFC90041C640 /* cameras.c */; };
 		ED7B383315BEEFC90041C640 /* core.c in Sources */ = {isa = PBXBuildFile; fileRef = ED7B37E315BEEFC90041C640 /* core.c */; };
 		ED7B383415BEEFC90041C640 /* freenect.lib in Frameworks */ = {isa = PBXBuildFile; fileRef = ED7B37E815BEEFC90041C640 /* freenect.lib */; };
@@ -143,6 +146,12 @@
 		ED203A6915C1487200B2C7E9 /* tinyxmlparser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tinyxmlparser.cpp; sourceTree = "<group>"; };
 		ED203A6B15C1487200B2C7E9 /* ofxXmlSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxXmlSettings.cpp; sourceTree = "<group>"; };
 		ED203A6C15C1487200B2C7E9 /* ofxXmlSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxXmlSettings.h; sourceTree = "<group>"; };
+		ED4F6B7515C7FCCB00A2AA95 /* actor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = actor.h; sourceTree = "<group>"; };
+		ED4F6B7615C7FCD900A2AA95 /* actor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = actor.cpp; sourceTree = "<group>"; };
+		ED4F6B8315C8005500A2AA95 /* actorBlob.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = actorBlob.cpp; sourceTree = "<group>"; };
+		ED4F6B8515C8006300A2AA95 /* actorBlob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = actorBlob.h; sourceTree = "<group>"; };
+		ED4F6B8615C8021500A2AA95 /* functions.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = functions.cpp; sourceTree = "<group>"; };
+		ED4F6B8815C8022300A2AA95 /* functions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = functions.h; sourceTree = "<group>"; };
 		ED7B37E215BEEFC90041C640 /* cameras.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cameras.c; sourceTree = "<group>"; };
 		ED7B37E315BEEFC90041C640 /* core.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = core.c; sourceTree = "<group>"; };
 		ED7B37E415BEEFC90041C640 /* freenect_internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = freenect_internal.h; sourceTree = "<group>"; };
@@ -402,6 +411,12 @@
 				E4B69E1D0A3A1BDC003C02F2 /* main.cpp */,
 				ED7B38DE15BEF6860041C640 /* kinectorApp.cpp */,
 				ED7B38E015BEF6940041C640 /* kinectorApp.h */,
+				ED4F6B7515C7FCCB00A2AA95 /* actor.h */,
+				ED4F6B7615C7FCD900A2AA95 /* actor.cpp */,
+				ED4F6B8315C8005500A2AA95 /* actorBlob.cpp */,
+				ED4F6B8515C8006300A2AA95 /* actorBlob.h */,
+				ED4F6B8615C8021500A2AA95 /* functions.cpp */,
+				ED4F6B8815C8022300A2AA95 /* functions.h */,
 			);
 			path = src;
 			sourceTree = SOURCE_ROOT;
@@ -1179,6 +1194,9 @@
 				ED203A6E15C1487200B2C7E9 /* tinyxmlerror.cpp in Sources */,
 				ED203A6F15C1487200B2C7E9 /* tinyxmlparser.cpp in Sources */,
 				ED203A7015C1487200B2C7E9 /* ofxXmlSettings.cpp in Sources */,
+				ED4F6B7715C7FCD900A2AA95 /* actor.cpp in Sources */,
+				ED4F6B8415C8005500A2AA95 /* actorBlob.cpp in Sources */,
+				ED4F6B8715C8021500A2AA95 /* functions.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
