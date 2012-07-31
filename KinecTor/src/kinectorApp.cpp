@@ -274,20 +274,6 @@ void kinectorApp::debugDraw()
     
     grayImage.draw(10, 320, 400, 300);
     contourFinder.draw(10, 320, 400, 300);
-    
-    // draw instructions
-	ofSetColor(255, 255, 255);
-	stringstream reportStream;
-	reportStream << "accel is: " << ofToString(kinect.getMksAccel().x, 2) << " / "
-    << ofToString(kinect.getMksAccel().y, 2) << " / "
-    << ofToString(kinect.getMksAccel().z, 2) << endl
-    << "set near threshold " << nearThreshold  << endl
-    << "set far threshold " << farThreshold << " num blobs found " << contourFinder.nBlobs
-    << ", fps: " << ofGetFrameRate() << endl
-    << "press c to close the connection and o to open it again, connection is: " << kinect.isConnected() << endl
-    << "press UP and DOWN to change the tilt angle: " << kinectAngle << " degrees" << endl
-    << "press r to record and q to playback, record is: " << bRecord << ", playback is: " << bPlayback;
-	ofDrawBitmapString(reportStream.str(),20,652);
 }
 
 //--------------------------------------------------------------
