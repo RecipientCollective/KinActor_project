@@ -173,7 +173,7 @@ void kinectorApp::update()
         std::sort(contourFinder.blobs.begin(),contourFinder.blobs.end(), sortByCentroid);
         
         // CORE BLOBS FUNCTION
-        checkStatus();
+        //checkStatus();
     }
 
 }
