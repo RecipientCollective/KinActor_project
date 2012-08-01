@@ -1,15 +1,15 @@
 //
-//  kinectorApp.cpp
+//  kinactorApp.cpp
 //  KinectTor
 //
 //  Created by drambald on 7/24/12.
 //  Copyright (c) 2012 recipient.cc. All rights reserved.
 //
 
-#include <kinectorApp.h>
+#include <kinactorApp.h>
 
 //--------------------------------------------------------------
-void kinectorApp::setup()
+void kinactorApp::setup()
 {
 #ifdef DEBUG		
     std::cerr << "DEBUG MODE" << std::endl;
@@ -55,7 +55,7 @@ void kinectorApp::setup()
 	contour_min = inputWidth * inputHeight / 20;  // 1/20 della CAM
     
 	// DRAW CONTROL
-    currentFormat = kinector;
+    currentFormat = kinactor;
 	pointCloudRotationY = 180;
 	scaleFactor = 1.0;
     
@@ -77,14 +77,14 @@ void kinectorApp::setup()
 }
 
 //--------------------------------------------------------------
-void kinectorApp::setupGUIleft()
+void kinactorApp::setupGUIleft()
 {
     // INIT A GUI OBJECT: ofxUICanvas(float x, float y, float width, float height)		
     guileft = new ofxUICanvas(0,0,length+xInit,ofGetHeight());
     guileft->setDrawWidgetPadding(true);
     guileft->addWidgetDown(new ofxUILabel("CONTROLS", OFX_UI_FONT_LARGE));
     guileft->addWidgetDown(new ofxUILabel("Press [h] to hide. [f] for fullscreen", OFX_UI_FONT_LARGE));
-    guileft->addWidgetDown(new ofxUILabel("KINECTOR VIEWS: [1] - kinector, [2] - debug, [3] - pointCloud", OFX_UI_FONT_SMALL));
+    guileft->addWidgetDown(new ofxUILabel("kinactor VIEWS: [1] - kinactor, [2] - debug, [3] - pointCloud", OFX_UI_FONT_SMALL));
     guileft->addWidgetDown(new ofxUISpacer(length-xInit, 2));
     guileft->addWidgetDown(new ofxUILabel("KINECT:", OFX_UI_FONT_MEDIUM)); 
     guileft->addWidgetDown(new ofxUISlider(length-xInit,dim, 0.0, 255.0, nearThreshold, "NEAR THRESHOLD")); 
@@ -111,12 +111,12 @@ void kinectorApp::setupGUIleft()
     trPad = ofPoint((mtrx/ofGetScreenWidth())*(length-xInit),(mtry/ofGetScreenHeight())*padHeight);
     guileft->addWidgetDown(new ofxUI2DPad(length-xInit,padHeight, trPad, "TRANSLATE"));
     guileft->addWidgetDown(new ofxUISlider(length-xInit,dim, 0.0, 10.0, scaleFactor, "SCALE")); 
-    ofAddListener(guileft->newGUIEvent, this, &kinectorApp::guiEvent);
+    ofAddListener(guileft->newGUIEvent, this, &kinactorApp::guiEvent);
     guileft->loadSettings("GUI/guileftSettings.xml");
 }
 
 //--------------------------------------------------------------
-void kinectorApp::setupGUIbottom()
+void kinactorApp::setupGUIbottom()
 {
     // INIT A GUI OBJECT: ofxUICanvas(float x, float y, float width, float height)
     loggerH = (ofGetWindowHeight() / 3);
@@ -128,7 +128,7 @@ void kinectorApp::setupGUIbottom()
 }
 
 //--------------------------------------------------------------
-void kinectorApp::update()
+void kinactorApp::update()
 {
     // update kinect source
 	kinectSource->update();
@@ -179,12 +179,12 @@ void kinectorApp::update()
 }
 
 //--------------------------------------------------------------
-void kinectorApp::checkStatus()
+void kinactorApp::checkStatus()
 {
     /* 
      * UPDATE with OBJECT PERSISTENCY
      * 
-     * BITMASK (defined in kinectorApp.h): (http://www.dylanleigh.net/notes/c-cpp-tricks.html#Using_"Bitflags")
+     * BITMASK (defined in kinactorApp.h): (http://www.dylanleigh.net/notes/c-cpp-tricks.html#Using_"Bitflags")
      *  1 SONOSEMPTY
      *  2 BLOBSEMPTY
      *  4 MORESONOS
@@ -297,7 +297,7 @@ void kinectorApp::checkStatus()
 }
 
 //--------------------------------------------------------------
-void kinectorApp::blobsInsert()
+void kinactorApp::blobsInsert()
 {
     // costruisco actors with a blob
     for(int i = 0; i < contourFinder.blobs.size(); i++) 
@@ -309,7 +309,7 @@ void kinectorApp::blobsInsert()
                  
 
 //--------------------------------------------------------------
-void kinectorApp::blobsUpdate()
+void kinactorApp::blobsUpdate()
 {
     // Itero sugli actors
     for(map<string, actor>::iterator it = actors.begin(); it != actors.end(); ++it)
@@ -339,14 +339,14 @@ void kinectorApp::blobsUpdate()
 }
 
 //--------------------------------------------------------------
-void kinectorApp::draw()
+void kinactorApp::draw()
 {
     setFullScreen();
     
     switch (currentFormat) 
     {
-        case kinector:
-            kinectorDraw();
+        case kinactor:
+            kinactorDraw();
             break;
         case debug:
             debugDraw();
@@ -366,7 +366,7 @@ void kinectorApp::draw()
 }
 
 //--------------------------------------------------------------
-void kinectorApp::loggerDraw()
+void kinactorApp::loggerDraw()
 {
     ofSetColor(255, 255, 255);
     stringstream reportStream;
@@ -384,7 +384,7 @@ void kinectorApp::loggerDraw()
 }
 
 //--------------------------------------------------------------
-void kinectorApp::kinectorDraw()
+void kinactorApp::kinactorDraw()
 {
     // JUST CONTOUR FOR NOW
     // ORIGINAL IMAGE SIZE IS 640x480
@@ -402,7 +402,7 @@ void kinectorApp::kinectorDraw()
 }
 
 //--------------------------------------------------------------
-void kinectorApp::drawBlobs()
+void kinactorApp::drawBlobs()
 {
     // in draw we iterate in the map
     for(map<string, actor>::iterator i = actors.begin(); i != actors.end(); ++i)
@@ -413,7 +413,7 @@ void kinectorApp::drawBlobs()
 }
 
 //--------------------------------------------------------------
-void kinectorApp::drawBox()
+void kinactorApp::drawBox()
 {
     ofPushStyle();
     ofSetColor(255, 255, 255);
@@ -423,7 +423,7 @@ void kinectorApp::drawBox()
 }
 
 //--------------------------------------------------------------
-void kinectorApp::drawPlayIcons()
+void kinactorApp::drawPlayIcons()
 {
     // draw recording/playback indicators
 	ofPushMatrix();
@@ -440,7 +440,7 @@ void kinectorApp::drawPlayIcons()
 	ofPopMatrix();
 }
 
-void kinectorApp::debugDraw()
+void kinactorApp::debugDraw()
 {
     ofSetColor(255, 255, 255);
 
@@ -460,7 +460,7 @@ void kinectorApp::debugDraw()
 }
 
 //--------------------------------------------------------------
-void kinectorApp::drawPointCloud() 
+void kinactorApp::drawPointCloud() 
 {
 	ofScale(400, 400, 400);
 	int w = 640;
@@ -480,7 +480,7 @@ void kinectorApp::drawPointCloud()
 }
 
 //--------------------------------------------------------------
-void kinectorApp::showInterface()
+void kinactorApp::showInterface()
 {
     guileft->setVisible(true);
     guibottom->setVisible(true);
@@ -489,7 +489,7 @@ void kinectorApp::showInterface()
 }
 
 //--------------------------------------------------------------
-void kinectorApp::hideInterface()
+void kinactorApp::hideInterface()
 {
     guileft->setVisible(false);
     guibottom->setVisible(false);
@@ -497,11 +497,11 @@ void kinectorApp::hideInterface()
 }
 
 //--------------------------------------------------------------
-void kinectorApp::keyPressed(int key)
+void kinactorApp::keyPressed(int key)
 {
     switch (key) {
         case '1':
-            currentFormat = kinector;
+            currentFormat = kinactor;
             bShowInterface = true;
             break;
         case '2':
@@ -574,55 +574,55 @@ void kinectorApp::keyPressed(int key)
 }
 
 //--------------------------------------------------------------
-void kinectorApp::keyReleased(int key)
+void kinactorApp::keyReleased(int key)
 {
     
 }
 
 //--------------------------------------------------------------
-void kinectorApp::mouseMoved(int x, int y)
+void kinactorApp::mouseMoved(int x, int y)
 {
     pointCloudRotationY = x;
 }
 
 //--------------------------------------------------------------
-void kinectorApp::mouseDragged(int x, int y, int button)
+void kinactorApp::mouseDragged(int x, int y, int button)
 {
     
 }
 
 //--------------------------------------------------------------
-void kinectorApp::mousePressed(int x, int y, int button)
+void kinactorApp::mousePressed(int x, int y, int button)
 {
     
 }
 
 //--------------------------------------------------------------
-void kinectorApp::mouseReleased(int x, int y, int button)
+void kinactorApp::mouseReleased(int x, int y, int button)
 {
     
 }
 
 //--------------------------------------------------------------
-void kinectorApp::windowResized(int w, int h)
+void kinactorApp::windowResized(int w, int h)
 {
     
 }
 
 //--------------------------------------------------------------
-void kinectorApp::gotMessage(ofMessage msg)
+void kinactorApp::gotMessage(ofMessage msg)
 {
     
 }
 
 //--------------------------------------------------------------
-void kinectorApp::dragEvent(ofDragInfo dragInfo)
+void kinactorApp::dragEvent(ofDragInfo dragInfo)
 { 
     
 }
 
 //--------------------------------------------------------------
-void kinectorApp::exit() 
+void kinactorApp::exit() 
 {
 	kinect.setCameraTiltAngle(0); // zero the tilt on exit
 	kinect.close();
@@ -641,7 +641,7 @@ void kinectorApp::exit()
 }
 
 //--------------------------------------------------------------
-void kinectorApp::guiEvent(ofxUIEventArgs &e)
+void kinactorApp::guiEvent(ofxUIEventArgs &e)
 {
     if(e.widget->getName() == "NEAR THRESHOLD")
     {
@@ -732,7 +732,7 @@ void kinectorApp::guiEvent(ofxUIEventArgs &e)
 }
 
 //--------------------------------------------------------------
-void kinectorApp::startRecording()
+void kinactorApp::startRecording()
 {
     
 	// stop playback if running
@@ -744,7 +744,7 @@ void kinectorApp::startRecording()
 }
 
 //--------------------------------------------------------------
-void kinectorApp::stopRecording()
+void kinactorApp::stopRecording()
 {
 	kinectRecorder.close();
 	bRecord = false;
@@ -752,7 +752,7 @@ void kinectorApp::stopRecording()
 }
 
 //--------------------------------------------------------------
-void kinectorApp::startPlayback() 
+void kinactorApp::startPlayback() 
 {    
 	stopRecording();
 	kinect.close();
@@ -766,7 +766,7 @@ void kinectorApp::startPlayback()
 }
 
 //--------------------------------------------------------------
-void kinectorApp::stopPlayback() 
+void kinactorApp::stopPlayback() 
 {
     playbackToggle->setValue(false);
 	kinectPlayer.close();
@@ -776,7 +776,7 @@ void kinectorApp::stopPlayback()
 }
 
 //--------------------------------------------------------------
-void kinectorApp::toggleRecord()
+void kinactorApp::toggleRecord()
 {
     bRecord = !bRecord;
     if(bRecord) {
@@ -787,7 +787,7 @@ void kinectorApp::toggleRecord()
 }
 
 //--------------------------------------------------------------
-void kinectorApp::togglePlayback()
+void kinactorApp::togglePlayback()
 {
     bPlayback = !bPlayback;
     if(bPlayback) {
@@ -798,7 +798,7 @@ void kinectorApp::togglePlayback()
 }
 
 //--------------------------------------------------------------
-void kinectorApp::setFullScreen()
+void kinactorApp::setFullScreen()
 {
     if (bToogleFullScreen && !bFullscreen) {
 		ofSetFullscreen(true);
@@ -813,7 +813,7 @@ void kinectorApp::setFullScreen()
 }
 
 //--------------------------------------------------------------
-void kinectorApp::downKinectAngle()
+void kinactorApp::downKinectAngle()
 {
     kinectAngle--;
     if(kinectAngle<-30) kinectAngle=-30;
@@ -824,7 +824,7 @@ void kinectorApp::downKinectAngle()
 }
 
 //--------------------------------------------------------------
-void kinectorApp::upKinectAngle()
+void kinactorApp::upKinectAngle()
 {
     kinectAngle++;
     if(kinectAngle>30) kinectAngle=30;
@@ -835,7 +835,7 @@ void kinectorApp::upKinectAngle()
 }
 
 //--------------------------------------------------------------
-void kinectorApp::kinectConnect()
+void kinactorApp::kinectConnect()
 {
     kinect.setCameraTiltAngle(kinectAngle);	// go back to prev tilt
     kinect.open();    
@@ -845,7 +845,7 @@ void kinectorApp::kinectConnect()
 }
 
 //--------------------------------------------------------------
-void kinectorApp::kinectDisconnect()
+void kinactorApp::kinectDisconnect()
 {
     kinect.setCameraTiltAngle(0);		// zero the tilt
     kinect.close();    

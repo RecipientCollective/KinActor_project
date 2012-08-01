@@ -1,5 +1,5 @@
 //
-//  kinectorApp.h
+//  kinactorApp.h
 //  KinectTor
 //
 //  Created by drambald on 7/24/12.
@@ -29,7 +29,7 @@
 #define MOREBLOBS         8  // 2^3, bit 3
 #define EQUALSIZE        16  // 2^4, bit 4
 
-class kinectorApp : public ofBaseApp
+class kinactorApp : public ofBaseApp
 {
 public:
     void setup();
@@ -60,7 +60,7 @@ public:
     
     void drawPointCloud();
     void debugDraw();
-    void kinectorDraw();
+    void kinactorDraw();
     void setFullScreen();
     void loggerDraw();
     void drawPlayIcons();
@@ -147,7 +147,7 @@ public:
     {
         debug,
         cloud,
-        kinector
+        kinactor
     };
     DrawFormat currentFormat;
 };

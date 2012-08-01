@@ -48,7 +48,7 @@
 		ED7B38D015BEF2F10041C640 /* ofxCvHaarFinder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED7B38C315BEF2F10041C640 /* ofxCvHaarFinder.cpp */; };
 		ED7B38D115BEF2F10041C640 /* ofxCvImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED7B38C515BEF2F10041C640 /* ofxCvImage.cpp */; };
 		ED7B38D215BEF2F10041C640 /* ofxCvShortImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED7B38C815BEF2F10041C640 /* ofxCvShortImage.cpp */; };
-		ED7B38DF15BEF6860041C640 /* kinectorApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED7B38DE15BEF6860041C640 /* kinectorApp.cpp */; };
+		ED7B38DF15BEF6860041C640 /* kinactorApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED7B38DE15BEF6860041C640 /* kinactorApp.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -305,8 +305,8 @@
 		ED7B38C815BEF2F10041C640 /* ofxCvShortImage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxCvShortImage.cpp; sourceTree = "<group>"; };
 		ED7B38C915BEF2F10041C640 /* ofxCvShortImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxCvShortImage.h; sourceTree = "<group>"; };
 		ED7B38CA15BEF2F10041C640 /* ofxOpenCv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxOpenCv.h; sourceTree = "<group>"; };
-		ED7B38DE15BEF6860041C640 /* kinectorApp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = kinectorApp.cpp; sourceTree = "<group>"; };
-		ED7B38E015BEF6940041C640 /* kinectorApp.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = kinectorApp.h; sourceTree = "<group>"; };
+		ED7B38DE15BEF6860041C640 /* kinactorApp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = kinactorApp.cpp; sourceTree = "<group>"; };
+		ED7B38E015BEF6940041C640 /* kinactorApp.h */ = {isa = PBXFileReference; path = kinactorApp.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -409,8 +409,8 @@
 			isa = PBXGroup;
 			children = (
 				E4B69E1D0A3A1BDC003C02F2 /* main.cpp */,
-				ED7B38DE15BEF6860041C640 /* kinectorApp.cpp */,
-				ED7B38E015BEF6940041C640 /* kinectorApp.h */,
+				ED7B38DE15BEF6860041C640 /* kinactorApp.cpp */,
+				ED7B38E015BEF6940041C640 /* kinactorApp.h */,
 				ED4F6B7515C7FCCB00A2AA95 /* actor.h */,
 				ED4F6B7615C7FCD900A2AA95 /* actor.cpp */,
 				ED4F6B8315C8005500A2AA95 /* actorBlob.cpp */,
@@ -1189,7 +1189,7 @@
 				ED7B38D015BEF2F10041C640 /* ofxCvHaarFinder.cpp in Sources */,
 				ED7B38D115BEF2F10041C640 /* ofxCvImage.cpp in Sources */,
 				ED7B38D215BEF2F10041C640 /* ofxCvShortImage.cpp in Sources */,
-				ED7B38DF15BEF6860041C640 /* kinectorApp.cpp in Sources */,
+				ED7B38DF15BEF6860041C640 /* kinactorApp.cpp in Sources */,
 				ED203A6D15C1487200B2C7E9 /* tinyxml.cpp in Sources */,
 				ED203A6E15C1487200B2C7E9 /* tinyxmlerror.cpp in Sources */,
 				ED203A6F15C1487200B2C7E9 /* tinyxmlparser.cpp in Sources */,
