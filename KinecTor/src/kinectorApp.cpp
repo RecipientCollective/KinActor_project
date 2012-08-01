@@ -34,10 +34,10 @@ void kinectorApp::setup()
     inputHeight = kinect.height;
     
     // Allocate image
-    colorImg.allocate(kinect.width, kinect.height);
-	grayImage.allocate(kinect.width, kinect.height);
-	grayThreshNear.allocate(kinect.width, kinect.height);
-	grayThreshFar.allocate(kinect.width, kinect.height);
+    colorImg.allocate(inputWidth, inputHeight);
+	grayImage.allocate(inputWidth, inputHeight);
+	grayThreshNear.allocate(inputWidth, inputHeight);
+	grayThreshFar.allocate(inputWidth, inputHeight);
     
     // PARAMETERS SETUP
     nearThreshold = 250;
@@ -52,7 +52,7 @@ void kinectorApp::setup()
 	kinectAngle = 0;
 	kinect.setCameraTiltAngle(kinectAngle);
     blobMax=2;
-	contour_min = 350;
+	contour_min = inputWidth * inputHeight / 20;  // 1/20 della CAM
     
 	// DRAW CONTROL
     currentFormat = kinector;
@@ -82,22 +82,20 @@ void kinectorApp::setupGUIleft()
     // INIT A GUI OBJECT: ofxUICanvas(float x, float y, float width, float height)		
     guileft = new ofxUICanvas(0,0,length+xInit,ofGetHeight());
     guileft->setDrawWidgetPadding(true);
-    guileft->addWidgetDown(new ofxUILabel("KINECTOR CONTROLS", OFX_UI_FONT_LARGE));
+    guileft->addWidgetDown(new ofxUILabel("CONTROLS", OFX_UI_FONT_LARGE));
     guileft->addWidgetDown(new ofxUILabel("Press [h] to hide. [f] for fullscreen", OFX_UI_FONT_LARGE));
     guileft->addWidgetDown(new ofxUILabel("KINECTOR VIEWS: [1] - kinector, [2] - debug, [3] - pointCloud", OFX_UI_FONT_SMALL));
     guileft->addWidgetDown(new ofxUISpacer(length-xInit, 2));
-    guileft->addWidgetDown(new ofxUILabel("THRESHOLDS:", OFX_UI_FONT_MEDIUM)); 
+    guileft->addWidgetDown(new ofxUILabel("KINECT:", OFX_UI_FONT_MEDIUM)); 
     guileft->addWidgetDown(new ofxUISlider(length-xInit,dim, 0.0, 255.0, nearThreshold, "NEAR THRESHOLD")); 
     guileft->addWidgetDown(new ofxUISlider(length-xInit,dim, 0.0, 255.0, farThreshold, "FAR THRESHOLD"));
+    guileft->addWidgetDown(new ofxUISlider(length-xInit,dim, 0.0, (inputWidth * inputHeight), contour_min, "CONTOUR MIN"));
+    guileft->addWidgetDown(new ofxUISlider(length-xInit,dim, 0.0, 100, blobMax, "MAX BLOBS"));
     guileft->addWidgetDown(new ofxUILabel("Kinect convert the distance in grey pixels [0-255]", OFX_UI_FONT_SMALL));
-    guileft->addWidgetDown(new ofxUISpacer(length-xInit, 2));
-    guileft->addWidgetDown(new ofxUILabel("KINECT ANGLE [< >]:", OFX_UI_FONT_MEDIUM));
-    guileft->addWidgetDown(new ofxUILabelButton(false, "UP", OFX_UI_FONT_MEDIUM)); 
-    guileft->addWidgetDown(new ofxUILabelButton(false, "DOWN", OFX_UI_FONT_MEDIUM)); 
-    guileft->addWidgetDown(new ofxUISpacer(length-xInit, 2));
-    guileft->addWidgetDown(new ofxUILabel("KINECT CONNECTION:", OFX_UI_FONT_MEDIUM));
-    guileft->addWidgetDown(new ofxUILabelButton(false, "CONNECT [o]", OFX_UI_FONT_MEDIUM));
-    guileft->addWidgetDown(new ofxUILabelButton(false, "DISCONNECT [c]", OFX_UI_FONT_MEDIUM));
+    guileft->addWidgetDown(new ofxUILabelButton(false, "TILT UP [>]", OFX_UI_FONT_SMALL)); 
+    guileft->addWidgetDown(new ofxUILabelButton(false, "TILT DOWN [<]", OFX_UI_FONT_SMALL)); 
+    guileft->addWidgetDown(new ofxUILabelButton(false, "CONNECT [o]", OFX_UI_FONT_SMALL));
+    guileft->addWidgetDown(new ofxUILabelButton(false, "DISCONNECT [c]", OFX_UI_FONT_SMALL));
     guileft->addWidgetDown(new ofxUIToggle( dim, dim, false, "DEPTH NEAR VALUE WHITE"));
     guileft->addWidgetDown(new ofxUISpacer(length-xInit, 2));
     guileft->addWidgetDown(new ofxUILabel("PLAYBACK/RECORD", OFX_UI_FONT_MEDIUM));
@@ -113,7 +111,6 @@ void kinectorApp::setupGUIleft()
     trPad = ofPoint((mtrx/ofGetScreenWidth())*(length-xInit),(mtry/ofGetScreenHeight())*padHeight);
     guileft->addWidgetDown(new ofxUI2DPad(length-xInit,padHeight, trPad, "TRANSLATE"));
     guileft->addWidgetDown(new ofxUISlider(length-xInit,dim, 0.0, 10.0, scaleFactor, "SCALE")); 
-    guileft->addWidgetDown(new ofxUISpacer(length-xInit, 2));
     ofAddListener(guileft->newGUIEvent, this, &kinectorApp::guiEvent);
     guileft->loadSettings("GUI/guileftSettings.xml");
 }
@@ -168,9 +165,9 @@ void kinectorApp::update()
          int nConsidered,
          bool bFindHoles,
          bool bUseApproximation)         
-         find contours which are between the size of 20 pixels and 1/3 the w*h pixels.
+         find contours which are between the size of contour_min pixels and 1/3 the w*h pixels.
          also, find holes is set to true so we will get interior contours as well...  */
-        contourFinder.findContours(grayImage, contour_min, (kinect.width*kinect.height)/2, blobMax, false, true);
+        contourFinder.findContours(grayImage, contour_min, (kinect.width*kinect.height)/3, blobMax, false, true);
         
         // sort by centroid
         std::sort(contourFinder.blobs.begin(),contourFinder.blobs.end(), sortByCentroid);
@@ -378,8 +375,8 @@ void kinectorApp::loggerDraw()
     << ofToString(kinect.getMksAccel().z, 2) << endl
     << "Near threshold " << nearThreshold  << endl
     << "Far threshold " << farThreshold << endl
-    << "Num blobs found " << contourFinder.nBlobs
-    << ", fps: " << ofGetFrameRate() << endl
+    << "Num blobs found " << contourFinder.nBlobs << ", max blobs: " << blobMax
+    << "Contour Min: " << contour_min << ", fps: " << ofGetFrameRate() << endl
     << "Kinect connection is: " << kinect.isConnected() << endl
     << "Tilt angle: " << kinectAngle << " degrees" << endl
     << "Record is: " << bRecord << ", playback is: " << bPlayback;
@@ -396,20 +393,38 @@ void kinectorApp::kinectorDraw()
 	ofScale(scaleFactor, scaleFactor, 1.0);
 	ofTranslate(mtrx, mtry, 1.0);
     
-    if (bBox) {
-		ofPushStyle();
-		ofSetColor(255, 255, 255);
-		ofNoFill();
-		ofRect(0, 0, kinect.width, kinect.height);
-		ofPopStyle();
-	}
+    if (bBox)
+        drawBox();
     
-    grayImage.draw(0,0);
-    for(int i = 0; i < contourFinder.blobs.size(); i++) 
+    drawBlobs();   
+    drawPlayIcons();    
+    ofPopMatrix();
+}
+
+//--------------------------------------------------------------
+void kinectorApp::drawBlobs()
+{
+    // in draw we iterate in the map
+    for(map<string, actor>::iterator i = actors.begin(); i != actors.end(); ++i)
     {
-        contourFinder.blobs[i].draw(0,0);
+        actorBlob curr_blob = i->second.blob;
+        curr_blob.drawPixels();
     }
-    
+}
+
+//--------------------------------------------------------------
+void kinectorApp::drawBox()
+{
+    ofPushStyle();
+    ofSetColor(255, 255, 255);
+    ofNoFill();
+    ofRect(0, 0, inputWidth, inputHeight);
+    ofPopStyle();    
+}
+
+//--------------------------------------------------------------
+void kinectorApp::drawPlayIcons()
+{
     // draw recording/playback indicators
 	ofPushMatrix();
 	ofTranslate(25, 25);
@@ -423,8 +438,6 @@ void kinectorApp::kinectorDraw()
 		ofTriangle(-10, -10, -10, 10, 10, 0);
 	}
 	ofPopMatrix();
-    
-    ofPopMatrix();
 }
 
 void kinectorApp::debugDraw()
@@ -526,13 +539,13 @@ void kinectorApp::keyPressed(int key)
             togglePlayback();
 			break;
 		case OF_KEY_UP:
-            mtry--;
+            mtry++;
 #ifdef DEBUG
             std::cerr << "Translate y: " << mtry << std::endl;
 #endif
 			break;
 		case OF_KEY_DOWN:
-			mtry++;
+			mtry--;
 #ifdef DEBUG
             std::cerr << "Translate y: " << mtry << std::endl;
 #endif            
@@ -704,6 +717,16 @@ void kinectorApp::guiEvent(ofxUIEventArgs &e)
     {
         ofxUISlider *slider = (ofxUISlider *) e.widget;
         scaleFactor = slider->getScaledValue();
+    }
+    else if(e.widget->getName() == "CONTOUR MIN")
+    {
+        ofxUISlider *slider = (ofxUISlider *) e.widget;
+        contour_min = (int) slider->getScaledValue();
+    }
+    else if(e.widget->getName() == "MAX BLOBS")
+    {
+        ofxUISlider *slider = (ofxUISlider *) e.widget;
+        blobMax = (int) slider->getScaledValue();
     }
     
 }

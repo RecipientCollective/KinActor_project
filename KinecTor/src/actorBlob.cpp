@@ -13,6 +13,7 @@ actorBlob::actorBlob() : ofxCvBlob()
 {
     // prove of principle object persistency
 	code = randomString(10, true, false, false);
+    mycolor = 0xDD00CC;
 }
 
 /////////////////////////////////////////////////////////////////
@@ -32,6 +33,7 @@ actorBlob::actorBlob(const ofxCvBlob &other)
     
     // prove of principle object persistency
 	code = randomString(10, true, false, false);
+    mycolor = 0xDD00CC;
 }
 
 // UPDATE
@@ -44,4 +46,16 @@ void actorBlob::update(const ofxCvBlob blob)
 	pts          = blob.pts;
 	centroid     = blob.centroid;
 	boundingRect = blob.boundingRect;
+}
+
+void actorBlob::drawPixels()
+{
+	ofPushStyle();
+	ofSetHexColor(mycolor);
+	ofBeginShape();
+	for( int j=0; j<nPts; j++ ) {
+		ofVertex( pts[j].x, pts[j].y );
+	}
+	ofEndShape();
+	ofPopStyle();
 }

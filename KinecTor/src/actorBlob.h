@@ -16,13 +16,17 @@ class actorBlob : public ofxCvBlob
 {
         
 public:
-    // UniqueID
+    // ATTRIBUTES
     string  code;
+    int	    mycolor;
+    
     // costruttori
 	actorBlob();
 	actorBlob(const ofxCvBlob &other);
-    // update
+    
+    // metodi
     void update(const ofxCvBlob blob);
+    void drawPixels();
 };
 
 

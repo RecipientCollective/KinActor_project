@@ -63,6 +63,9 @@ public:
     void kinectorDraw();
     void setFullScreen();
     void loggerDraw();
+    void drawPlayIcons();
+    void drawBox();
+    void drawBlobs();
     
     void keyPressed(int key);
     void keyReleased(int key);
@@ -106,7 +109,7 @@ private:
     // ContourFinder openCV
     ofxCvContourFinder 	contourFinder;
     
-    // BLOBS FUNCTIONS
+    // BLOBS FUNCTIONS & VARS
     void blobsInsert();
     void blobsUpdate();
     void checkStatus();
