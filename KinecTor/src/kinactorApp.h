@@ -32,7 +32,6 @@
 #define MOREBLOBS         8  // 2^3, bit 3
 #define EQUALSIZE        16  // 2^4, bit 4
 
-
 class kinactorApp : public ofBaseApp
 {
 public:
@@ -132,6 +131,7 @@ public:
     int					kinectAngle;    
     int 				pointCloudRotationY;
     int                 contour_min;
+    int                 contour_max;
     int                 blobMax;
     bool 				bRecord;
     bool 				bPlayback;

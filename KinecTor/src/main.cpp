@@ -2,6 +2,11 @@
 #include "ofAppGlutWindow.h"
 
 //--------------------------------------------------------------
+//  OPENFRAMEWORKS - KINACTOR
+//  
+//  DEBUG FLAGS: DEBUG=1 (in build settings Prerocessor MACROS)
+//
+//--------------------------------------------------------------
 int main(){
 	ofAppGlutWindow window; // create a window
 	// set width, height, mode (OF_WINDOW or OF_FULLSCREEN)

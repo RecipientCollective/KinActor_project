@@ -28,7 +28,8 @@ public:
     // UniqueID
     string  code;
     
-    // updated?
+    // update
+    void update(ofxCvBlob mb);
     bool updated;
     
     // openCV custom blob

@@ -39,8 +39,17 @@ actor::actor(const actor &other)
     blob = other.blob;
 }
 
+// UPDATE
+void actor::update(ofxCvBlob mb)
+{
+    blob.update(mb);
+    updated = true;
+}
+
 // CLEAN
 void actor::clean()
 {
-    
+#ifdef DEBUG
+    std::cerr << "Erasing routine called for actor: " << code << std::endl;
+#endif
 }

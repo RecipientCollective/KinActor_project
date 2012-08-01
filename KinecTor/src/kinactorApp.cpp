@@ -53,6 +53,7 @@ void kinactorApp::setup()
 	kinect.setCameraTiltAngle(kinectAngle);
     blobMax=2;
 	contour_min = inputWidth * inputHeight / 20;  // 1/20 della CAM
+    contour_max = inputWidth * inputHeight /3;
     
 	// DRAW CONTROL
     currentFormat = kinactor;
@@ -90,6 +91,7 @@ void kinactorApp::setupGUIleft()
     guileft->addWidgetDown(new ofxUISlider(length-xInit,dim, 0.0, 255.0, nearThreshold, "NEAR THRESHOLD")); 
     guileft->addWidgetDown(new ofxUISlider(length-xInit,dim, 0.0, 255.0, farThreshold, "FAR THRESHOLD"));
     guileft->addWidgetDown(new ofxUISlider(length-xInit,dim, 0.0, (inputWidth * inputHeight), contour_min, "CONTOUR MIN"));
+    guileft->addWidgetDown(new ofxUISlider(length-xInit,dim, 0.0, (inputWidth * inputHeight), contour_max, "CONTOUR MAX"));
     guileft->addWidgetDown(new ofxUISlider(length-xInit,dim, 0.0, 100, blobMax, "MAX BLOBS"));
     guileft->addWidgetDown(new ofxUILabel("Kinect convert the distance in grey pixels [0-255]", OFX_UI_FONT_SMALL));
     guileft->addWidgetDown(new ofxUILabelButton(false, "TILT UP [>]", OFX_UI_FONT_SMALL)); 
@@ -107,9 +109,9 @@ void kinactorApp::setupGUIleft()
     guileft->addWidgetDown(new ofxUILabel("WINDOW OPTIONS:", OFX_UI_FONT_MEDIUM));
     
     // trPad for the interface, convert mtrx as RATIO and then to the PAD sizes
-    int padHeight = (length - xInit) / 2;
+    int padHeight = (length - xInit) / 3;
     trPad = ofPoint((mtrx/ofGetScreenWidth())*(length-xInit),(mtry/ofGetScreenHeight())*padHeight);
-    guileft->addWidgetDown(new ofxUI2DPad(length-xInit,padHeight, trPad, "TRANSLATE"));
+    guileft->addWidgetDown(new ofxUI2DPad(length-xInit, padHeight, trPad, "TRANSLATE"));
     guileft->addWidgetDown(new ofxUISlider(length-xInit,dim, 0.0, 10.0, scaleFactor, "SCALE")); 
     ofAddListener(guileft->newGUIEvent, this, &kinactorApp::guiEvent);
     guileft->loadSettings("GUI/guileftSettings.xml");
@@ -167,13 +169,13 @@ void kinactorApp::update()
          bool bUseApproximation)         
          find contours which are between the size of contour_min pixels and 1/3 the w*h pixels.
          also, find holes is set to true so we will get interior contours as well...  */
-        contourFinder.findContours(grayImage, contour_min, (kinect.width*kinect.height)/3, blobMax, false, true);
+        contourFinder.findContours(grayImage, contour_min, contour_max, blobMax, false, true);
         
         // sort by centroid
         std::sort(contourFinder.blobs.begin(),contourFinder.blobs.end(), sortByCentroid);
         
         // CORE BLOBS FUNCTION
-        //checkStatus();
+        checkStatus();
     }
 
 }
@@ -265,9 +267,6 @@ void kinactorApp::checkStatus()
 #endif
                 it->second.clean(); // CLEANUP ROUTINE
                 actors.erase(it);
-                it++;
-            } else {
-                it++;
             }
         }
     }
@@ -303,6 +302,10 @@ void kinactorApp::blobsInsert()
     for(int i = 0; i < contourFinder.blobs.size(); i++) 
     {
         actor a = actor(contourFinder.blobs[i]);
+#ifdef DEBUG
+        std::cerr << "\tInserting ACTOR" << a.code << "WITH STATUS UPDATED: " << a.updated; 
+        std::cerr << std::endl;
+#endif        
         actors.insert(std::pair<string, actor>(a.code, a));
     }
 }
@@ -330,8 +333,12 @@ void kinactorApp::blobsUpdate()
 				distance = mdist;
 				blobposition = m;
 			}
-            // update del sonosBlob con il CVblob piu' vicino (byCentroid)
-            actors[it->first].blob.update(contourFinder.blobs[blobposition]);            
+            // update del actorBlob con il CVblob piu' vicino (byCentroid)
+            actors[it->first].update(contourFinder.blobs[blobposition]);
+#ifdef DEBUG
+            std::cerr << "\tUpdating ACTOR" << actors[it->first].code << "WITH STATUS UPDATED: " << actors[it->first].updated; 
+            std::cerr << std::endl;
+#endif 
             //erase this CVblob
             contourFinder.blobs.erase(contourFinder.blobs.begin() + blobposition);
         }
@@ -375,8 +382,9 @@ void kinactorApp::loggerDraw()
     << ofToString(kinect.getMksAccel().z, 2) << endl
     << "Near threshold " << nearThreshold  << endl
     << "Far threshold " << farThreshold << endl
-    << "Num blobs found " << contourFinder.nBlobs << ", max blobs: " << blobMax
-    << "Contour Min: " << contour_min << ", fps: " << ofGetFrameRate() << endl
+    << "Num blobs found " << contourFinder.nBlobs << ", max blobs: " << blobMax << endl
+    << "Actors " << actors.size() << endl
+    << "Contour Min: " << contour_min << " Contour Max: " << contour_max << ", fps: " << ofGetFrameRate() << endl
     << "Kinect connection is: " << kinect.isConnected() << endl
     << "Tilt angle: " << kinectAngle << " degrees" << endl
     << "Record is: " << bRecord << ", playback is: " << bPlayback;
@@ -664,12 +672,12 @@ void kinactorApp::guiEvent(ofxUIEventArgs &e)
         ofxUISlider *slider = (ofxUISlider *) e.widget;
         farThreshold = (int) slider->getScaledValue();
     }
-    else if(e.widget->getName() == "UP")
+    else if(e.widget->getName() == "TILT UP [>]")
     {
         ofxUIButton *button = (ofxUIButton *) e.widget;
         upKinectAngle();
     }
-    else if(e.widget->getName() == "DOWN")
+    else if(e.widget->getName() == "TILT DOWN [<]")
     {
         ofxUIButton *button = (ofxUIButton *) e.widget;
         downKinectAngle();
@@ -682,17 +690,17 @@ void kinactorApp::guiEvent(ofxUIEventArgs &e)
         std::cerr << "Depth Near Value is now: " << kinect.isDepthNearValueWhite() << std::endl;
 #endif
     }
-    else if(e.widget->getName() == "CONNECT")
+    else if(e.widget->getName() == "CONNECT [o]")
     {
         ofxUIButton *button = (ofxUIButton *) e.widget;
         kinectConnect();
     }
-    else if(e.widget->getName() == "DISCONNECT")
+    else if(e.widget->getName() == "DISCONNECT [c]")
     {
         ofxUIButton *button = (ofxUIButton *) e.widget;
         kinectDisconnect();
     }
-    else if(e.widget->getName() == "RECORD")
+    else if(e.widget->getName() == "RECORD [r]")
     {
         ofxUIToggle *toggle = (ofxUIToggle *) e.widget;
         if (toggle->getValue()) {
@@ -701,7 +709,7 @@ void kinactorApp::guiEvent(ofxUIEventArgs &e)
             stopRecording();
         }
     }
-    else if(e.widget->getName() == "PLAYBACK")
+    else if(e.widget->getName() == "PLAYBACK [p]")
     {
         ofxUIToggle *toggle = (ofxUIToggle *) e.widget;
         if (toggle->getValue()) {
@@ -729,6 +737,11 @@ void kinactorApp::guiEvent(ofxUIEventArgs &e)
     {
         ofxUISlider *slider = (ofxUISlider *) e.widget;
         contour_min = (int) slider->getScaledValue();
+    }
+    else if(e.widget->getName() == "CONTOUR MAX")
+    {
+        ofxUISlider *slider = (ofxUISlider *) e.widget;
+        contour_max = (int) slider->getScaledValue();
     }
     else if(e.widget->getName() == "MAX BLOBS")
     {
