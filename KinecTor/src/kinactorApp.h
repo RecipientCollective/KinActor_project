@@ -43,17 +43,19 @@ public:
     void exit();
     void guiEvent(ofxUIEventArgs &e);
     void setupGUIleft();
-    void setupGUIbottom();
+    void setupGUIlogger();
+    void setupGUIrightOpenCV();
     
     // GUI STUFFS    
     ofxUICanvas *guileft;
-    ofxUICanvas *guibottom;
+    ofxUICanvas *guiright_opencv;
+    ofxUICanvas *guilogger;
     ofxUIToggle *recordToggle;
     ofxUIToggle *playbackToggle;
     ofPoint      trPad;
     float xInit;
     float dim;
-    float length;
+    float guiPanelLength;
     ofPoint loggerP;
     float loggerW;
     float loggerH;
@@ -149,9 +151,16 @@ public:
 
     enum DrawFormat 
     {
-        debug,
-        cloud,
-        kinactor
+        kinactor = 1,
+        debug = 2,
+        cloud = 3
     };
     DrawFormat currentFormat;
+    
+    enum CaptureMethod
+    {
+        opencv = 9,
+        openni = 0
+    };
+    CaptureMethod currentCaptureMethod;
 };

@@ -14,6 +14,15 @@ void kinactorApp::setup()
 #ifdef DEBUG		
     std::cerr << "DEBUG MODE" << std::endl;
 #endif
+
+    // GENERAL SETUP
+    ofSetFrameRate(30);
+    bRecord = false;
+	bPlayback = false;
+    bToogleFullScreen = false;
+    bFullscreen = false;
+    bShowInterface = true;
+    bBox = false;
     
     // INIT KINECT
     kinect.init();
@@ -39,94 +48,102 @@ void kinactorApp::setup()
 	grayThreshNear.allocate(inputWidth, inputHeight);
 	grayThreshFar.allocate(inputWidth, inputHeight);
     
-    // PARAMETERS SETUP
+    // OPENCV PARAMETERS
     nearThreshold = 250;
 	farThreshold  = 100;
-    ofSetFrameRate(30);
-	bRecord = false;
-	bPlayback = false;
-    bToogleFullScreen = false;
-    bFullscreen = false;
-    bShowInterface = true;
-    bBox = false;
-	kinectAngle = 0;
-	kinect.setCameraTiltAngle(kinectAngle);
     blobMax=2;
 	contour_min = inputWidth * inputHeight / 20;  // 1/20 della CAM
     contour_max = inputWidth * inputHeight /3;
+	
+    // SET KINECT ANGLE
+	kinectAngle = 0;
+	kinect.setCameraTiltAngle(kinectAngle);
     
-	// DRAW CONTROL
-    currentFormat = kinactor;
-	pointCloudRotationY = 180;
-	scaleFactor = 1.0;
-    
-    // In the default draw I have an image on the left of the interface: 410 x, 10 y
-	mtrx = TRANSLATE_GUIVIEW_X;
-	mtry = TRANSLATE_GUIVIEW_Y;
-    
+    // SET CAPTURE METHOD
+    currentCaptureMethod = opencv;
+ 
     // GUIS STUFFS
     xInit = OFX_UI_GLOBAL_WIDGET_SPACING;
     dim = 24;
-    length = 400-xInit;
-    ofEnableSmoothing(); 
-    ofBackground(0);
+    guiPanelLength = 400-xInit;
+    loggerH = (ofGetWindowHeight() / 3.5);
+    loggerW = guiPanelLength+xInit;
     setupGUIleft();
-    setupGUIbottom();
-    
-    // INITIAL BACKGROUND IS GREY
-    ofBackground(100,100,100);
+    setupGUIrightOpenCV();
+    setupGUIlogger();
+
+    // OF DRAW STUFFS
+    currentFormat = kinactor;
+	pointCloudRotationY = 180;
+	scaleFactor = 1.0;    
+    // In the default draw I have an image on the left of the interface: 410 x, 10 y
+	mtrx = TRANSLATE_GUIVIEW_X;
+	mtry = TRANSLATE_GUIVIEW_Y;
+    ofEnableSmoothing();
+    ofBackground(100, 100, 100);
+}
+
+//--------------------------------------------------------------
+void kinactorApp::setupGUIrightOpenCV()
+{
+    guiright_opencv = new ofxUICanvas(ofGetWindowWidth()-(guiPanelLength+xInit),inputHeight+(xInit*4),guiPanelLength+xInit,ofGetHeight()-(inputHeight+(xInit*4)));
+    guiright_opencv->setDrawWidgetPadding(true);
+    guiright_opencv->addWidgetDown(new ofxUILabel("OPENCV CONTROLS", OFX_UI_FONT_LARGE));
+    guiright_opencv->addWidgetDown(new ofxUISlider(guiPanelLength-xInit,dim, 0.0, 255.0, nearThreshold, "NEAR THRESHOLD")); 
+    guiright_opencv->addWidgetDown(new ofxUISlider(guiPanelLength-xInit,dim, 0.0, 255.0, farThreshold, "FAR THRESHOLD"));
+    guiright_opencv->addWidgetDown(new ofxUISlider(guiPanelLength-xInit,dim, 0.0, (inputWidth * inputHeight), contour_min, "CONTOUR MIN"));
+    guiright_opencv->addWidgetDown(new ofxUISlider(guiPanelLength-xInit,dim, 0.0, (inputWidth * inputHeight), contour_max, "CONTOUR MAX"));
+    guiright_opencv->addWidgetDown(new ofxUISlider(guiPanelLength-xInit,dim, 0.0, 100, blobMax, "MAX BLOBS"));
+    guiright_opencv->addWidgetDown(new ofxUILabel("Kinect convert the distance in grey pixels [0-255]", OFX_UI_FONT_SMALL));    
+    ofAddListener(guiright_opencv->newGUIEvent, this, &kinactorApp::guiEvent);
+    guiright_opencv->loadSettings("GUI/guiright_opencvSettings.xml");
 }
 
 //--------------------------------------------------------------
 void kinactorApp::setupGUIleft()
 {
     // INIT A GUI OBJECT: ofxUICanvas(float x, float y, float width, float height)		
-    guileft = new ofxUICanvas(0,0,length+xInit,ofGetHeight());
+    guileft = new ofxUICanvas(0,0,guiPanelLength+xInit,ofGetHeight()-(loggerH+xInit));
     guileft->setDrawWidgetPadding(true);
     guileft->addWidgetDown(new ofxUILabel("CONTROLS", OFX_UI_FONT_LARGE));
     guileft->addWidgetDown(new ofxUILabel("Press [h] to hide. [f] for fullscreen", OFX_UI_FONT_LARGE));
+    guileft->addWidgetDown(new ofxUILabel("kinactor CAPTURE: [9] - opencv, [0] - openni", OFX_UI_FONT_SMALL));
     guileft->addWidgetDown(new ofxUILabel("kinactor VIEWS: [1] - kinactor, [2] - debug, [3] - pointCloud", OFX_UI_FONT_SMALL));
-    guileft->addWidgetDown(new ofxUISpacer(length-xInit, 2));
+    guileft->addWidgetDown(new ofxUISpacer(guiPanelLength-xInit, 2));
     guileft->addWidgetDown(new ofxUILabel("KINECT:", OFX_UI_FONT_MEDIUM)); 
-    guileft->addWidgetDown(new ofxUISlider(length-xInit,dim, 0.0, 255.0, nearThreshold, "NEAR THRESHOLD")); 
-    guileft->addWidgetDown(new ofxUISlider(length-xInit,dim, 0.0, 255.0, farThreshold, "FAR THRESHOLD"));
-    guileft->addWidgetDown(new ofxUISlider(length-xInit,dim, 0.0, (inputWidth * inputHeight), contour_min, "CONTOUR MIN"));
-    guileft->addWidgetDown(new ofxUISlider(length-xInit,dim, 0.0, (inputWidth * inputHeight), contour_max, "CONTOUR MAX"));
-    guileft->addWidgetDown(new ofxUISlider(length-xInit,dim, 0.0, 100, blobMax, "MAX BLOBS"));
-    guileft->addWidgetDown(new ofxUILabel("Kinect convert the distance in grey pixels [0-255]", OFX_UI_FONT_SMALL));
     guileft->addWidgetDown(new ofxUILabelButton(false, "TILT UP [>]", OFX_UI_FONT_SMALL)); 
     guileft->addWidgetDown(new ofxUILabelButton(false, "TILT DOWN [<]", OFX_UI_FONT_SMALL)); 
     guileft->addWidgetDown(new ofxUILabelButton(false, "CONNECT [o]", OFX_UI_FONT_SMALL));
     guileft->addWidgetDown(new ofxUILabelButton(false, "DISCONNECT [c]", OFX_UI_FONT_SMALL));
-    guileft->addWidgetDown(new ofxUIToggle( dim, dim, false, "DEPTH NEAR VALUE WHITE"));
-    guileft->addWidgetDown(new ofxUISpacer(length-xInit, 2));
+    guileft->addWidgetDown(new ofxUIToggle( dim, dim, false, "DEPTH NEAR VALUE WHITE", OFX_UI_FONT_SMALL));
+    guileft->addWidgetDown(new ofxUISpacer(guiPanelLength-xInit, 2));
     guileft->addWidgetDown(new ofxUILabel("PLAYBACK/RECORD", OFX_UI_FONT_MEDIUM));
-    playbackToggle = new ofxUIToggle( dim, dim, false, "PLAYBACK [p]");
+    playbackToggle = new ofxUIToggle( dim, dim, false, "PLAYBACK [p]", OFX_UI_FONT_SMALL);
     guileft->addWidgetDown(playbackToggle);
-    recordToggle = new ofxUIToggle( dim, dim, false, "RECORD [r]");
+    recordToggle = new ofxUIToggle( dim, dim, false, "RECORD [r]", OFX_UI_FONT_SMALL);
     guileft->addWidgetDown(recordToggle);
-    guileft->addWidgetDown(new ofxUISpacer(length-xInit, 2));
+    guileft->addWidgetDown(new ofxUISpacer(guiPanelLength-xInit, 2));
     guileft->addWidgetDown(new ofxUILabel("WINDOW OPTIONS:", OFX_UI_FONT_MEDIUM));
     
     // trPad for the interface, convert mtrx as RATIO and then to the PAD sizes
-    int padHeight = (length - xInit) / 3;
-    trPad = ofPoint((mtrx/ofGetScreenWidth())*(length-xInit),(mtry/ofGetScreenHeight())*padHeight);
-    guileft->addWidgetDown(new ofxUI2DPad(length-xInit, padHeight, trPad, "TRANSLATE"));
-    guileft->addWidgetDown(new ofxUISlider(length-xInit,dim, 0.0, 10.0, scaleFactor, "SCALE")); 
+    int padHeight = (guiPanelLength - xInit) / 3;
+    trPad = ofPoint((mtrx/ofGetScreenWidth())*(guiPanelLength-xInit),(mtry/ofGetScreenHeight())*padHeight);
+    guileft->addWidgetDown(new ofxUI2DPad(guiPanelLength-xInit, padHeight, trPad, "TRANSLATE"));
+    guileft->addWidgetDown(new ofxUISlider(guiPanelLength-xInit,dim, 0.0, 10.0, scaleFactor, "SCALE")); 
     ofAddListener(guileft->newGUIEvent, this, &kinactorApp::guiEvent);
     guileft->loadSettings("GUI/guileftSettings.xml");
 }
 
 //--------------------------------------------------------------
-void kinactorApp::setupGUIbottom()
+void kinactorApp::setupGUIlogger()
 {
     // INIT A GUI OBJECT: ofxUICanvas(float x, float y, float width, float height)
-    loggerH = (ofGetWindowHeight() / 3);
-    loggerW = (ofGetWindowWidth() -(length+(xInit*2)));
-    loggerP = ofPoint(length+(xInit*2),(ofGetWindowHeight() - loggerH));
-    guibottom = new ofxUICanvas(loggerP.x,loggerP.y,loggerW,loggerH);
-    guibottom->setDrawWidgetPadding(true);
-    guibottom->addWidgetDown(new ofxUILabel("LOGGER", OFX_UI_FONT_LARGE));
+    loggerP = ofPoint(0,(ofGetWindowHeight() - loggerH));
+    guilogger = new ofxUICanvas(loggerP.x,loggerP.y,loggerW,loggerH);
+    guilogger->setDrawWidgetPadding(true);
+    guilogger->addWidgetDown(new ofxUILabel("LOGGER", OFX_UI_FONT_LARGE));
+    ofAddListener(guilogger->newGUIEvent, this, &kinactorApp::guiEvent);
+    guilogger->loadSettings("GUI/guiloggerSettings.xml");
 }
 
 //--------------------------------------------------------------
@@ -375,7 +392,7 @@ void kinactorApp::draw()
 //--------------------------------------------------------------
 void kinactorApp::loggerDraw()
 {
-    ofSetColor(255, 255, 255);
+    ofSetColor(255, 255, 0);
     stringstream reportStream;
     reportStream << "Accel is: " << ofToString(kinect.getMksAccel().x, 2) << " / "
     << ofToString(kinect.getMksAccel().y, 2) << " / "
@@ -384,10 +401,12 @@ void kinactorApp::loggerDraw()
     << "Far threshold " << farThreshold << endl
     << "Num blobs found " << contourFinder.nBlobs << ", max blobs: " << blobMax << endl
     << "Actors " << actors.size() << endl
-    << "Contour Min: " << contour_min << " Contour Max: " << contour_max << ", fps: " << ofGetFrameRate() << endl
+    << "Contour Min: " << contour_min << ", Contour Max: " << contour_max << endl
+    << "Fps: " << ofGetFrameRate() << endl
     << "Kinect connection is: " << kinect.isConnected() << endl
     << "Tilt angle: " << kinectAngle << " degrees" << endl
-    << "Record is: " << bRecord << ", playback is: " << bPlayback;
+    << "Record is: " << bRecord << ", playback is: " << bPlayback << endl
+    << "Capture method: " << currentCaptureMethod << ", view: " << currentFormat  << endl;
     ofDrawBitmapString(reportStream.str(),(loggerP.x + xInit),(loggerP.y + (xInit * 6)));
 }
 
@@ -498,7 +517,16 @@ void kinactorApp::drawPointCloud()
 void kinactorApp::showInterface()
 {
     guileft->setVisible(true);
-    guibottom->setVisible(true);
+    guilogger->setVisible(true);
+    switch (currentCaptureMethod) {
+        case opencv:
+            guiright_opencv->setVisible(true);
+            break;
+        case openni:
+            guiright_opencv->setVisible(false);
+            break;
+    }
+    
     loggerDraw();
     bBox = true;
 }
@@ -507,7 +535,8 @@ void kinactorApp::showInterface()
 void kinactorApp::hideInterface()
 {
     guileft->setVisible(false);
-    guibottom->setVisible(false);
+    guilogger->setVisible(false);
+    guiright_opencv->setVisible(false);
     bBox = false;
 }
 
@@ -526,7 +555,13 @@ void kinactorApp::keyPressed(int key)
         case '3':
             currentFormat = cloud;
             bShowInterface = false;
-            break;            
+            break;
+        case '9':
+            currentCaptureMethod = opencv;
+            break;
+        case '0':
+            currentCaptureMethod = openni;
+            break; 
         case 'f':
 			bToogleFullScreen = true;
 			break;
