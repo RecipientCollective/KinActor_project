@@ -19,8 +19,11 @@
 #include "ofxUI.h"
 #include "actor.h"
 
+// WINDOWS SIZES
 #define OUTPUT_HEIGHT 1040
 #define OUTPUT_WIDTH 1280
+#define TRANSLATE_GUIVIEW_X 410
+#define TRANSLATE_GUIVIEW_Y 10
 
 // BITMASK blobUpdate
 #define ACTORSEMPTY        1  // 2^0, bit 0
@@ -28,6 +31,7 @@
 #define MOREACTORS         4  // 2^2, bit 2
 #define MOREBLOBS         8  // 2^3, bit 3
 #define EQUALSIZE        16  // 2^4, bit 4
+
 
 class kinactorApp : public ofBaseApp
 {

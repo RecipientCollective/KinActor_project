@@ -306,7 +306,7 @@
 		ED7B38C915BEF2F10041C640 /* ofxCvShortImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxCvShortImage.h; sourceTree = "<group>"; };
 		ED7B38CA15BEF2F10041C640 /* ofxOpenCv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxOpenCv.h; sourceTree = "<group>"; };
 		ED7B38DE15BEF6860041C640 /* kinactorApp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = kinactorApp.cpp; sourceTree = "<group>"; };
-		ED7B38E015BEF6940041C640 /* kinactorApp.h */ = {isa = PBXFileReference; path = kinactorApp.h; sourceTree = "<group>"; };
+		ED7B38E015BEF6940041C640 /* kinactorApp.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = kinactorApp.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */

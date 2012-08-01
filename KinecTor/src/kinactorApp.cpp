@@ -60,8 +60,8 @@ void kinactorApp::setup()
 	scaleFactor = 1.0;
     
     // In the default draw I have an image on the left of the interface: 410 x, 10 y
-	mtrx = 410;
-	mtry = 10;
+	mtrx = TRANSLATE_GUIVIEW_X;
+	mtry = TRANSLATE_GUIVIEW_Y;
     
     // GUIS STUFFS
     xInit = OFX_UI_GLOBAL_WIDGET_SPACING;
@@ -442,9 +442,14 @@ void kinactorApp::drawPlayIcons()
 
 void kinactorApp::debugDraw()
 {
+    /********************************* 
+     *   DEBUG DRAW 
+     *  DEPTH - CAMERA - GRAYIMAGE+CONTOUR - CONTOUR
+     *********************************/
+    ofPushMatrix();
     ofSetColor(255, 255, 255);
-
-    // DEBUG DRAW
+    ofTranslate(TRANSLATE_GUIVIEW_X, TRANSLATE_GUIVIEW_Y);
+    
     if(!bPlayback) {
         // draw from the live kinect
         kinect.drawDepth(10, 10, 400, 300);
@@ -453,10 +458,12 @@ void kinactorApp::debugDraw()
         // draw from the player
         kinectPlayer.drawDepth(10, 10, 400, 300);
         kinectPlayer.draw(420, 10, 400, 300);
-    }
-    
+    }    
     grayImage.draw(10, 320, 400, 300);
-    contourFinder.draw(10, 320, 400, 300);
+    contourFinder.draw(10, 320, 400, 300);    
+    contourFinder.draw(420, 320, 400, 300);
+    
+    ofPopMatrix();    
 }
 
 //--------------------------------------------------------------
@@ -506,7 +513,7 @@ void kinactorApp::keyPressed(int key)
             break;
         case '2':
             currentFormat = debug;
-            bShowInterface = false;
+            bShowInterface = true;
             break;
         case '3':
             currentFormat = cloud;
