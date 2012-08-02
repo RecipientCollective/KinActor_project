@@ -14,35 +14,23 @@ actor::actor()
     // an actor have a CODE, a FLAG and a BLOB
 	code = randomString(10, true, false, false);
     updated = true;
-    blob = actorBlob();
+
 }
 
-// COSTRUTTORE CON UN BLOB
-actor::actor(ofxCvBlob mb)
-{
-    // take the blob, cast in an actorBlob and store
-    blob = mb;
-    code = blob.code; // the actor code is the blob code
-    updated = true;
-}
 
 /////////////////////////////////////////////////////////////////
-// copiatore da ofxCvBlob (a = ofCvBlob)
-// Questo metodo viene chiamata ad ogni update con contourFinder
-// quindi ogni frame ho un actorBlob nuovo.
+// copiatore
 /////////////////////////////////////////////////////////////////
 actor::actor(const actor &other)
 {    
     // it's a copy ...
 	code = other.code;
 	updated = other.updated;
-    blob = other.blob;
 }
 
 // UPDATE
-void actor::update(ofxCvBlob mb)
+void actor::update()
 {
-    blob.update(mb);
     updated = true;
 }
 

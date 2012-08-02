@@ -15,26 +15,23 @@
 #ifndef KinectTor_actor_h
 #define KinectTor_actor_h
 
-#include "actorBlob.h"
+#include <iostream>
+#include "functions.h"
 
 class actor
 {
 public:
     // costruttori
     actor();
-    actor(ofxCvBlob mb);
     actor(const actor &other);
     
     // UniqueID
-    string  code;
+    std::string  code;
     
     // update
-    void update(ofxCvBlob mb);
+    void update();
     bool updated;
-    
-    // openCV custom blob
-    actorBlob blob;
-    
+        
     // cleanup
     void clean();
 };

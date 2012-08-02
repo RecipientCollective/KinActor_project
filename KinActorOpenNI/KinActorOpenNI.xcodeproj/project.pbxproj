@@ -28,7 +28,6 @@
 		ED203A6F15C1487200B2C7E9 /* tinyxmlparser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED203A6915C1487200B2C7E9 /* tinyxmlparser.cpp */; };
 		ED203A7015C1487200B2C7E9 /* ofxXmlSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED203A6B15C1487200B2C7E9 /* ofxXmlSettings.cpp */; };
 		ED4F6B7715C7FCD900A2AA95 /* actor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED4F6B7615C7FCD900A2AA95 /* actor.cpp */; };
-		ED4F6B8415C8005500A2AA95 /* actorBlob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED4F6B8315C8005500A2AA95 /* actorBlob.cpp */; };
 		ED4F6B8715C8021500A2AA95 /* functions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ED4F6B8615C8021500A2AA95 /* functions.cpp */; };
 		ED7B383215BEEFC90041C640 /* cameras.c in Sources */ = {isa = PBXBuildFile; fileRef = ED7B37E215BEEFC90041C640 /* cameras.c */; };
 		ED7B383315BEEFC90041C640 /* core.c in Sources */ = {isa = PBXBuildFile; fileRef = ED7B37E315BEEFC90041C640 /* core.c */; };
@@ -173,8 +172,6 @@
 		ED203A6C15C1487200B2C7E9 /* ofxXmlSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxXmlSettings.h; sourceTree = "<group>"; };
 		ED4F6B7515C7FCCB00A2AA95 /* actor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = actor.h; sourceTree = "<group>"; };
 		ED4F6B7615C7FCD900A2AA95 /* actor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = actor.cpp; sourceTree = "<group>"; };
-		ED4F6B8315C8005500A2AA95 /* actorBlob.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = actorBlob.cpp; sourceTree = "<group>"; };
-		ED4F6B8515C8006300A2AA95 /* actorBlob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = actorBlob.h; sourceTree = "<group>"; };
 		ED4F6B8615C8021500A2AA95 /* functions.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = functions.cpp; sourceTree = "<group>"; };
 		ED4F6B8815C8022300A2AA95 /* functions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = functions.h; sourceTree = "<group>"; };
 		ED7B37E215BEEFC90041C640 /* cameras.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cameras.c; sourceTree = "<group>"; };
@@ -620,8 +617,6 @@
 				ED7B38E015BEF6940041C640 /* kinactorApp.h */,
 				ED4F6B7515C7FCCB00A2AA95 /* actor.h */,
 				ED4F6B7615C7FCD900A2AA95 /* actor.cpp */,
-				ED4F6B8315C8005500A2AA95 /* actorBlob.cpp */,
-				ED4F6B8515C8006300A2AA95 /* actorBlob.h */,
 				ED4F6B8615C8021500A2AA95 /* functions.cpp */,
 				ED4F6B8815C8022300A2AA95 /* functions.h */,
 			);
@@ -1675,7 +1670,6 @@
 				ED203A6F15C1487200B2C7E9 /* tinyxmlparser.cpp in Sources */,
 				ED203A7015C1487200B2C7E9 /* ofxXmlSettings.cpp in Sources */,
 				ED4F6B7715C7FCD900A2AA95 /* actor.cpp in Sources */,
-				ED4F6B8415C8005500A2AA95 /* actorBlob.cpp in Sources */,
 				ED4F6B8715C8021500A2AA95 /* functions.cpp in Sources */,
 				EDAE0AB415CAAB50001A0271 /* ofxDepthGenerator.cpp in Sources */,
 				EDAE0AB515CAAB50001A0271 /* ofxGestureGenerator.cpp in Sources */,
