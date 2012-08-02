@@ -1,5 +1,6 @@
-#include "kinactorApp.h"
+//#include "kinactorApp.h"
 #include "ofAppGlutWindow.h"
+#include "ofxOpenNI.h"
 
 //--------------------------------------------------------------
 //  OPENFRAMEWORKS - KINACTOR
@@ -10,6 +11,6 @@
 int main(){
 	ofAppGlutWindow window; // create a window
 	// set width, height, mode (OF_WINDOW or OF_FULLSCREEN)
-	ofSetupOpenGL(&window, OUTPUT_WIDTH, OUTPUT_HEIGHT, OF_WINDOW);
-	ofRunApp(new kinactorApp()); // start the app
+//	ofSetupOpenGL(&window, OUTPUT_WIDTH, OUTPUT_HEIGHT, OF_WINDOW);
+//	ofRunApp(new kinactorApp()); // start the app
 }
