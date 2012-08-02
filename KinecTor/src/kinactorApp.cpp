@@ -62,10 +62,7 @@ void kinactorApp::setup()
     // SET KINECT ANGLE
 	kinectAngle = 0;
 	kinect.setCameraTiltAngle(kinectAngle);
-    
-    // SET CAPTURE METHOD
-    currentCaptureMethod = opencv;
- 
+     
     // GUIS STUFFS
     xInit = OFX_UI_GLOBAL_WIDGET_SPACING;
     dim = 24;
@@ -73,7 +70,7 @@ void kinactorApp::setup()
     loggerH = (ofGetWindowHeight() / 3.5);
     loggerW = guiPanelLength+xInit;
     setupGUIleft();
-    setupGUIrightOpenCV();
+    setupGUIright();
     setupGUIlogger();
 
     // OF DRAW STUFFS
@@ -182,12 +179,6 @@ void kinactorApp::keyPressed(int key)
             currentFormat = cloud;
             bShowInterface = false;
             break;
-        case '9':
-            currentCaptureMethod = opencv;
-            break;
-        case '0':
-            currentCaptureMethod = openni;
-            break; 
         case 'f':
 			bToogleFullScreen = true;
 			break;
@@ -253,19 +244,19 @@ void kinactorApp::keyPressed(int key)
 //--------------------------------------------------------------
 // GUI FUNCTIONS
 //--------------------------------------------------------------
-void kinactorApp::setupGUIrightOpenCV()
+void kinactorApp::setupGUIright()
 {
-    guiright_opencv = new ofxUICanvas(ofGetWindowWidth()-(guiPanelLength+xInit),inputHeight+(xInit*4),guiPanelLength+xInit,ofGetHeight()-(inputHeight+(xInit*4)));
-    guiright_opencv->setDrawWidgetPadding(true);
-    guiright_opencv->addWidgetDown(new ofxUILabel("OPENCV CONTROLS", OFX_UI_FONT_LARGE));
-    guiright_opencv->addWidgetDown(new ofxUISlider(guiPanelLength-xInit,dim, 0.0, 255.0, nearThreshold, "NEAR THRESHOLD")); 
-    guiright_opencv->addWidgetDown(new ofxUISlider(guiPanelLength-xInit,dim, 0.0, 255.0, farThreshold, "FAR THRESHOLD"));
-    guiright_opencv->addWidgetDown(new ofxUISlider(guiPanelLength-xInit,dim, 0.0, (inputWidth * inputHeight), contour_min, "CONTOUR MIN"));
-    guiright_opencv->addWidgetDown(new ofxUISlider(guiPanelLength-xInit,dim, 0.0, (inputWidth * inputHeight), contour_max, "CONTOUR MAX"));
-    guiright_opencv->addWidgetDown(new ofxUISlider(guiPanelLength-xInit,dim, 0.0, 100, blobMax, "MAX BLOBS"));
-    guiright_opencv->addWidgetDown(new ofxUILabel("Kinect convert the distance in grey pixels [0-255]", OFX_UI_FONT_SMALL));    
-    ofAddListener(guiright_opencv->newGUIEvent, this, &kinactorApp::guiEvent);
-    guiright_opencv->loadSettings("GUI/guiright_opencvSettings.xml");
+    guiright = new ofxUICanvas(ofGetWindowWidth()-(guiPanelLength+xInit),inputHeight+(xInit*4),guiPanelLength+xInit,ofGetHeight()-(inputHeight+(xInit*4)));
+    guiright->setDrawWidgetPadding(true);
+    guiright->addWidgetDown(new ofxUILabel("OPENCV CONTROLS", OFX_UI_FONT_LARGE));
+    guiright->addWidgetDown(new ofxUISlider(guiPanelLength-xInit,dim, 0.0, 255.0, nearThreshold, "NEAR THRESHOLD")); 
+    guiright->addWidgetDown(new ofxUISlider(guiPanelLength-xInit,dim, 0.0, 255.0, farThreshold, "FAR THRESHOLD"));
+    guiright->addWidgetDown(new ofxUISlider(guiPanelLength-xInit,dim, 0.0, (inputWidth * inputHeight), contour_min, "CONTOUR MIN"));
+    guiright->addWidgetDown(new ofxUISlider(guiPanelLength-xInit,dim, 0.0, (inputWidth * inputHeight), contour_max, "CONTOUR MAX"));
+    guiright->addWidgetDown(new ofxUISlider(guiPanelLength-xInit,dim, 0.0, 100, blobMax, "MAX BLOBS"));
+    guiright->addWidgetDown(new ofxUILabel("Kinect convert the distance in grey pixels [0-255]", OFX_UI_FONT_SMALL));    
+    ofAddListener(guiright->newGUIEvent, this, &kinactorApp::guiEvent);
+    guiright->loadSettings("GUI/guirightSettings.xml");
 }
 
 void kinactorApp::setupGUIleft()
@@ -275,7 +266,6 @@ void kinactorApp::setupGUIleft()
     guileft->setDrawWidgetPadding(true);
     guileft->addWidgetDown(new ofxUILabel("CONTROLS", OFX_UI_FONT_LARGE));
     guileft->addWidgetDown(new ofxUILabel("Press [h] to hide. [f] for fullscreen", OFX_UI_FONT_LARGE));
-    guileft->addWidgetDown(new ofxUILabel("kinactor CAPTURE: [9] - opencv, [0] - openni", OFX_UI_FONT_SMALL));
     guileft->addWidgetDown(new ofxUILabel("kinactor VIEWS: [1] - kinactor, [2] - debug, [3] - pointCloud", OFX_UI_FONT_SMALL));
     guileft->addWidgetDown(new ofxUISpacer(guiPanelLength-xInit, 2));
     guileft->addWidgetDown(new ofxUILabel("KINECT:", OFX_UI_FONT_MEDIUM)); 
@@ -317,15 +307,7 @@ void kinactorApp::showInterface()
 {
     guileft->setVisible(true);
     guilogger->setVisible(true);
-    switch (currentCaptureMethod) {
-        case opencv:
-            guiright_opencv->setVisible(true);
-            break;
-        case openni:
-            guiright_opencv->setVisible(false);
-            break;
-    }
-    
+    guiright->setVisible(true);
     loggerDraw();
     bBox = true;
 }
@@ -334,7 +316,7 @@ void kinactorApp::hideInterface()
 {
     guileft->setVisible(false);
     guilogger->setVisible(false);
-    guiright_opencv->setVisible(false);
+    guiright->setVisible(false);
     bBox = false;
 }
 
@@ -751,8 +733,7 @@ void kinactorApp::loggerDraw()
     << "Fps: " << ofGetFrameRate() << endl
     << "Kinect connection is: " << kinect.isConnected() << endl
     << "Tilt angle: " << kinectAngle << " degrees" << endl
-    << "Record is: " << bRecord << ", playback is: " << bPlayback << endl
-    << "Capture method: " << currentCaptureMethod << ", view: " << currentFormat  << endl;
+    << "Record is: " << bRecord << ", playback is: " << bPlayback << endl;
     ofDrawBitmapString(reportStream.str(),(loggerP.x + xInit),(loggerP.y + (xInit * 6)));
 }
 

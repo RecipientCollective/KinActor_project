@@ -44,11 +44,11 @@ public:
     void guiEvent(ofxUIEventArgs &e);
     void setupGUIleft();
     void setupGUIlogger();
-    void setupGUIrightOpenCV();
+    void setupGUIright();
     
     // GUI STUFFS    
     ofxUICanvas *guileft;
-    ofxUICanvas *guiright_opencv;
+    ofxUICanvas *guiright;
     ofxUICanvas *guilogger;
     ofxUIToggle *recordToggle;
     ofxUIToggle *playbackToggle;
@@ -157,10 +157,4 @@ public:
     };
     DrawFormat currentFormat;
     
-    enum CaptureMethod
-    {
-        opencv = 9,
-        openni = 0
-    };
-    CaptureMethod currentCaptureMethod;
 };
