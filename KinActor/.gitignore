@@ -1,5 +1,6 @@
-# DONT Exclude the build directory (bin) contains data
- 
+# DONT Exclude the build directory (bin/data) contains data
+bin/*.app
+
 # Exclude temp nibs and swap files
 *~.nib
 *.swp
