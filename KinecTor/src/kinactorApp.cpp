@@ -9,10 +9,14 @@
 #include <kinactorApp.h>
 
 //--------------------------------------------------------------
+// OF MAIN FUNCTIONS
+//--------------------------------------------------------------
 void kinactorApp::setup()
 {
+    
 #ifdef DEBUG		
-    std::cerr << "DEBUG MODE" << std::endl;
+    cerr << ".... KINACTOR DEBUG MODE ...." << endl 
+    << "Entering setup:" << endl;
 #endif
 
     // GENERAL SETUP
@@ -81,72 +85,12 @@ void kinactorApp::setup()
 	mtry = TRANSLATE_GUIVIEW_Y;
     ofEnableSmoothing();
     ofBackground(100, 100, 100);
+#ifdef DEBUG		
+    cerr << "END setup" << endl;
+#endif
+
 }
 
-//--------------------------------------------------------------
-void kinactorApp::setupGUIrightOpenCV()
-{
-    guiright_opencv = new ofxUICanvas(ofGetWindowWidth()-(guiPanelLength+xInit),inputHeight+(xInit*4),guiPanelLength+xInit,ofGetHeight()-(inputHeight+(xInit*4)));
-    guiright_opencv->setDrawWidgetPadding(true);
-    guiright_opencv->addWidgetDown(new ofxUILabel("OPENCV CONTROLS", OFX_UI_FONT_LARGE));
-    guiright_opencv->addWidgetDown(new ofxUISlider(guiPanelLength-xInit,dim, 0.0, 255.0, nearThreshold, "NEAR THRESHOLD")); 
-    guiright_opencv->addWidgetDown(new ofxUISlider(guiPanelLength-xInit,dim, 0.0, 255.0, farThreshold, "FAR THRESHOLD"));
-    guiright_opencv->addWidgetDown(new ofxUISlider(guiPanelLength-xInit,dim, 0.0, (inputWidth * inputHeight), contour_min, "CONTOUR MIN"));
-    guiright_opencv->addWidgetDown(new ofxUISlider(guiPanelLength-xInit,dim, 0.0, (inputWidth * inputHeight), contour_max, "CONTOUR MAX"));
-    guiright_opencv->addWidgetDown(new ofxUISlider(guiPanelLength-xInit,dim, 0.0, 100, blobMax, "MAX BLOBS"));
-    guiright_opencv->addWidgetDown(new ofxUILabel("Kinect convert the distance in grey pixels [0-255]", OFX_UI_FONT_SMALL));    
-    ofAddListener(guiright_opencv->newGUIEvent, this, &kinactorApp::guiEvent);
-    guiright_opencv->loadSettings("GUI/guiright_opencvSettings.xml");
-}
-
-//--------------------------------------------------------------
-void kinactorApp::setupGUIleft()
-{
-    // INIT A GUI OBJECT: ofxUICanvas(float x, float y, float width, float height)		
-    guileft = new ofxUICanvas(0,0,guiPanelLength+xInit,ofGetHeight()-(loggerH+xInit));
-    guileft->setDrawWidgetPadding(true);
-    guileft->addWidgetDown(new ofxUILabel("CONTROLS", OFX_UI_FONT_LARGE));
-    guileft->addWidgetDown(new ofxUILabel("Press [h] to hide. [f] for fullscreen", OFX_UI_FONT_LARGE));
-    guileft->addWidgetDown(new ofxUILabel("kinactor CAPTURE: [9] - opencv, [0] - openni", OFX_UI_FONT_SMALL));
-    guileft->addWidgetDown(new ofxUILabel("kinactor VIEWS: [1] - kinactor, [2] - debug, [3] - pointCloud", OFX_UI_FONT_SMALL));
-    guileft->addWidgetDown(new ofxUISpacer(guiPanelLength-xInit, 2));
-    guileft->addWidgetDown(new ofxUILabel("KINECT:", OFX_UI_FONT_MEDIUM)); 
-    guileft->addWidgetDown(new ofxUILabelButton(false, "TILT UP [>]", OFX_UI_FONT_SMALL)); 
-    guileft->addWidgetDown(new ofxUILabelButton(false, "TILT DOWN [<]", OFX_UI_FONT_SMALL)); 
-    guileft->addWidgetDown(new ofxUILabelButton(false, "CONNECT [o]", OFX_UI_FONT_SMALL));
-    guileft->addWidgetDown(new ofxUILabelButton(false, "DISCONNECT [c]", OFX_UI_FONT_SMALL));
-    guileft->addWidgetDown(new ofxUIToggle( dim, dim, false, "DEPTH NEAR VALUE WHITE", OFX_UI_FONT_SMALL));
-    guileft->addWidgetDown(new ofxUISpacer(guiPanelLength-xInit, 2));
-    guileft->addWidgetDown(new ofxUILabel("PLAYBACK/RECORD", OFX_UI_FONT_MEDIUM));
-    playbackToggle = new ofxUIToggle( dim, dim, false, "PLAYBACK [p]", OFX_UI_FONT_SMALL);
-    guileft->addWidgetDown(playbackToggle);
-    recordToggle = new ofxUIToggle( dim, dim, false, "RECORD [r]", OFX_UI_FONT_SMALL);
-    guileft->addWidgetDown(recordToggle);
-    guileft->addWidgetDown(new ofxUISpacer(guiPanelLength-xInit, 2));
-    guileft->addWidgetDown(new ofxUILabel("WINDOW OPTIONS:", OFX_UI_FONT_MEDIUM));
-    
-    // trPad for the interface, convert mtrx as RATIO and then to the PAD sizes
-    int padHeight = (guiPanelLength - xInit) / 3;
-    trPad = ofPoint((mtrx/ofGetScreenWidth())*(guiPanelLength-xInit),(mtry/ofGetScreenHeight())*padHeight);
-    guileft->addWidgetDown(new ofxUI2DPad(guiPanelLength-xInit, padHeight, trPad, "TRANSLATE"));
-    guileft->addWidgetDown(new ofxUISlider(guiPanelLength-xInit,dim, 0.0, 10.0, scaleFactor, "SCALE")); 
-    ofAddListener(guileft->newGUIEvent, this, &kinactorApp::guiEvent);
-    guileft->loadSettings("GUI/guileftSettings.xml");
-}
-
-//--------------------------------------------------------------
-void kinactorApp::setupGUIlogger()
-{
-    // INIT A GUI OBJECT: ofxUICanvas(float x, float y, float width, float height)
-    loggerP = ofPoint(0,(ofGetWindowHeight() - loggerH));
-    guilogger = new ofxUICanvas(loggerP.x,loggerP.y,loggerW,loggerH);
-    guilogger->setDrawWidgetPadding(true);
-    guilogger->addWidgetDown(new ofxUILabel("LOGGER", OFX_UI_FONT_LARGE));
-    ofAddListener(guilogger->newGUIEvent, this, &kinactorApp::guiEvent);
-    guilogger->loadSettings("GUI/guiloggerSettings.xml");
-}
-
-//--------------------------------------------------------------
 void kinactorApp::update()
 {
     // update kinect source
@@ -154,7 +98,7 @@ void kinactorApp::update()
     
     // there is a new frame and we are connected
 	if(kinectSource->isFrameNew()) {
-
+        
         // record ?
 		if(bRecord && kinectRecorder.isOpened()) {
 			kinectRecorder.newFrame(kinect.getRawDepthPixels(), kinect.getPixels());
@@ -194,9 +138,485 @@ void kinactorApp::update()
         // CORE BLOBS FUNCTION
         checkStatus();
     }
-
+    
 }
 
+void kinactorApp::draw()
+{
+    setFullScreen();
+    
+    switch (currentFormat) 
+    {
+        case kinactor:
+            kinactorDraw();
+            break;
+        case debug:
+            debugDraw();
+            break;
+        case cloud:
+            ofPushMatrix();
+            ofTranslate(420, 320);
+            // we need a proper camera class
+            drawPointCloud();
+            ofPopMatrix();
+        default:
+            break;
+    }
+    
+    // show interface?
+    bShowInterface == true ? showInterface() : hideInterface();
+}
+
+void kinactorApp::keyPressed(int key)
+{
+    switch (key) {
+        case '1':
+            currentFormat = kinactor;
+            bShowInterface = true;
+            break;
+        case '2':
+            currentFormat = debug;
+            bShowInterface = true;
+            break;
+        case '3':
+            currentFormat = cloud;
+            bShowInterface = false;
+            break;
+        case '9':
+            currentCaptureMethod = opencv;
+            break;
+        case '0':
+            currentCaptureMethod = openni;
+            break; 
+        case 'f':
+			bToogleFullScreen = true;
+			break;
+        case 'h':
+            bShowInterface = !bShowInterface;
+            break;
+		case '>':
+        case '.':
+            upKinectAngle();
+			break;
+        case '<':
+        case ',':
+            downKinectAngle();
+			break;
+		case 'o':
+            kinectConnect();
+			break;           
+		case 'c':
+            kinectDisconnect();
+			break;
+		case 'r':
+            toggleRecord();
+			break;           
+		case 'p':
+            togglePlayback();
+			break;
+		case OF_KEY_UP:
+            mtry++;
+#ifdef DEBUG
+            std::cerr << "Translate y: " << mtry << std::endl;
+#endif
+			break;
+		case OF_KEY_DOWN:
+			mtry--;
+#ifdef DEBUG
+            std::cerr << "Translate y: " << mtry << std::endl;
+#endif            
+			break;
+		case OF_KEY_LEFT:
+			mtrx--;
+#ifdef DEBUG
+            std::cerr << "Translate x: " << mtrx << std::endl;
+#endif            
+			break;
+		case OF_KEY_RIGHT:
+			mtrx++;
+#ifdef DEBUG
+            std::cerr << "Translate x: " << mtrx << std::endl;
+#endif
+			break;
+        case '-':
+            scaleFactor-=0.01;
+            break;
+        case '+':
+        case '=':
+            scaleFactor+=0.01;
+            break;
+	}
+    
+}
+
+
+//--------------------------------------------------------------
+// GUI FUNCTIONS
+//--------------------------------------------------------------
+void kinactorApp::setupGUIrightOpenCV()
+{
+    guiright_opencv = new ofxUICanvas(ofGetWindowWidth()-(guiPanelLength+xInit),inputHeight+(xInit*4),guiPanelLength+xInit,ofGetHeight()-(inputHeight+(xInit*4)));
+    guiright_opencv->setDrawWidgetPadding(true);
+    guiright_opencv->addWidgetDown(new ofxUILabel("OPENCV CONTROLS", OFX_UI_FONT_LARGE));
+    guiright_opencv->addWidgetDown(new ofxUISlider(guiPanelLength-xInit,dim, 0.0, 255.0, nearThreshold, "NEAR THRESHOLD")); 
+    guiright_opencv->addWidgetDown(new ofxUISlider(guiPanelLength-xInit,dim, 0.0, 255.0, farThreshold, "FAR THRESHOLD"));
+    guiright_opencv->addWidgetDown(new ofxUISlider(guiPanelLength-xInit,dim, 0.0, (inputWidth * inputHeight), contour_min, "CONTOUR MIN"));
+    guiright_opencv->addWidgetDown(new ofxUISlider(guiPanelLength-xInit,dim, 0.0, (inputWidth * inputHeight), contour_max, "CONTOUR MAX"));
+    guiright_opencv->addWidgetDown(new ofxUISlider(guiPanelLength-xInit,dim, 0.0, 100, blobMax, "MAX BLOBS"));
+    guiright_opencv->addWidgetDown(new ofxUILabel("Kinect convert the distance in grey pixels [0-255]", OFX_UI_FONT_SMALL));    
+    ofAddListener(guiright_opencv->newGUIEvent, this, &kinactorApp::guiEvent);
+    guiright_opencv->loadSettings("GUI/guiright_opencvSettings.xml");
+}
+
+void kinactorApp::setupGUIleft()
+{
+    // INIT A GUI OBJECT: ofxUICanvas(float x, float y, float width, float height)		
+    guileft = new ofxUICanvas(0,0,guiPanelLength+xInit,ofGetHeight()-(loggerH+xInit));
+    guileft->setDrawWidgetPadding(true);
+    guileft->addWidgetDown(new ofxUILabel("CONTROLS", OFX_UI_FONT_LARGE));
+    guileft->addWidgetDown(new ofxUILabel("Press [h] to hide. [f] for fullscreen", OFX_UI_FONT_LARGE));
+    guileft->addWidgetDown(new ofxUILabel("kinactor CAPTURE: [9] - opencv, [0] - openni", OFX_UI_FONT_SMALL));
+    guileft->addWidgetDown(new ofxUILabel("kinactor VIEWS: [1] - kinactor, [2] - debug, [3] - pointCloud", OFX_UI_FONT_SMALL));
+    guileft->addWidgetDown(new ofxUISpacer(guiPanelLength-xInit, 2));
+    guileft->addWidgetDown(new ofxUILabel("KINECT:", OFX_UI_FONT_MEDIUM)); 
+    guileft->addWidgetDown(new ofxUILabelButton(false, "TILT UP [>]", OFX_UI_FONT_SMALL)); 
+    guileft->addWidgetDown(new ofxUILabelButton(false, "TILT DOWN [<]", OFX_UI_FONT_SMALL)); 
+    guileft->addWidgetDown(new ofxUILabelButton(false, "CONNECT [o]", OFX_UI_FONT_SMALL));
+    guileft->addWidgetDown(new ofxUILabelButton(false, "DISCONNECT [c]", OFX_UI_FONT_SMALL));
+    guileft->addWidgetDown(new ofxUIToggle( dim, dim, false, "DEPTH NEAR VALUE WHITE", OFX_UI_FONT_SMALL));
+    guileft->addWidgetDown(new ofxUISpacer(guiPanelLength-xInit, 2));
+    guileft->addWidgetDown(new ofxUILabel("PLAYBACK/RECORD", OFX_UI_FONT_MEDIUM));
+    playbackToggle = new ofxUIToggle( dim, dim, false, "PLAYBACK [p]", OFX_UI_FONT_SMALL);
+    guileft->addWidgetDown(playbackToggle);
+    recordToggle = new ofxUIToggle( dim, dim, false, "RECORD [r]", OFX_UI_FONT_SMALL);
+    guileft->addWidgetDown(recordToggle);
+    guileft->addWidgetDown(new ofxUISpacer(guiPanelLength-xInit, 2));
+    guileft->addWidgetDown(new ofxUILabel("WINDOW OPTIONS:", OFX_UI_FONT_MEDIUM));
+    
+    // trPad for the interface, convert mtrx as RATIO and then to the PAD sizes
+    int padHeight = (guiPanelLength - xInit) / 3;
+    trPad = ofPoint((mtrx/ofGetScreenWidth())*(guiPanelLength-xInit),(mtry/ofGetScreenHeight())*padHeight);
+    guileft->addWidgetDown(new ofxUI2DPad(guiPanelLength-xInit, padHeight, trPad, "TRANSLATE"));
+    guileft->addWidgetDown(new ofxUISlider(guiPanelLength-xInit,dim, 0.0, 10.0, scaleFactor, "SCALE")); 
+    ofAddListener(guileft->newGUIEvent, this, &kinactorApp::guiEvent);
+    guileft->loadSettings("GUI/guileftSettings.xml");
+}
+
+void kinactorApp::setupGUIlogger()
+{
+    // INIT A GUI OBJECT: ofxUICanvas(float x, float y, float width, float height)
+    loggerP = ofPoint(0,(ofGetWindowHeight() - loggerH));
+    guilogger = new ofxUICanvas(loggerP.x,loggerP.y,loggerW,loggerH);
+    guilogger->setDrawWidgetPadding(true);
+    guilogger->addWidgetDown(new ofxUILabel("LOGGER", OFX_UI_FONT_LARGE));
+    ofAddListener(guilogger->newGUIEvent, this, &kinactorApp::guiEvent);
+    guilogger->loadSettings("GUI/guiloggerSettings.xml");
+}
+
+void kinactorApp::showInterface()
+{
+    guileft->setVisible(true);
+    guilogger->setVisible(true);
+    switch (currentCaptureMethod) {
+        case opencv:
+            guiright_opencv->setVisible(true);
+            break;
+        case openni:
+            guiright_opencv->setVisible(false);
+            break;
+    }
+    
+    loggerDraw();
+    bBox = true;
+}
+
+void kinactorApp::hideInterface()
+{
+    guileft->setVisible(false);
+    guilogger->setVisible(false);
+    guiright_opencv->setVisible(false);
+    bBox = false;
+}
+
+void kinactorApp::guiEvent(ofxUIEventArgs &e)
+{
+    if(e.widget->getName() == "NEAR THRESHOLD")
+    {
+        ofxUISlider *slider = (ofxUISlider *) e.widget;
+        nearThreshold = (int) slider->getScaledValue();
+#ifdef DEBUG
+        std::cerr << "slider event: " << slider -> getScaledValue() << " , threshold: " << nearThreshold << std::endl;
+#endif
+        
+    } 
+    else if(e.widget->getName() == "FAR THRESHOLD") 
+    {
+        ofxUISlider *slider = (ofxUISlider *) e.widget;
+        farThreshold = (int) slider->getScaledValue();
+    }
+    else if(e.widget->getName() == "TILT UP [>]")
+    {
+        ofxUIButton *button = (ofxUIButton *) e.widget;
+        upKinectAngle();
+    }
+    else if(e.widget->getName() == "TILT DOWN [<]")
+    {
+        ofxUIButton *button = (ofxUIButton *) e.widget;
+        downKinectAngle();
+    }
+    else if(e.widget->getName() == "DEPTH NEAR VALUE WHITE")
+    {
+        ofxUIToggle *toggle = (ofxUIToggle *) e.widget; 
+        kinect.enableDepthNearValueWhite(toggle->getValue());
+#ifdef DEBUG
+        std::cerr << "Depth Near Value is now: " << kinect.isDepthNearValueWhite() << std::endl;
+#endif
+    }
+    else if(e.widget->getName() == "CONNECT [o]")
+    {
+        ofxUIButton *button = (ofxUIButton *) e.widget;
+        kinectConnect();
+    }
+    else if(e.widget->getName() == "DISCONNECT [c]")
+    {
+        ofxUIButton *button = (ofxUIButton *) e.widget;
+        kinectDisconnect();
+    }
+    else if(e.widget->getName() == "RECORD [r]")
+    {
+        ofxUIToggle *toggle = (ofxUIToggle *) e.widget;
+        if (toggle->getValue()) {
+            startRecording();
+        } else {
+            stopRecording();
+        }
+    }
+    else if(e.widget->getName() == "PLAYBACK [p]")
+    {
+        ofxUIToggle *toggle = (ofxUIToggle *) e.widget;
+        if (toggle->getValue()) {
+            startPlayback();
+        } else {
+            stopPlayback();
+        }
+    }
+    else if(e.widget->getName() == "TRANSLATE")
+    {
+        ofxUI2DPad *pad = (ofxUI2DPad *) e.widget;
+#ifdef DEBUG
+        std::cerr << "PAD % VALUES x:" << pad->getPercentValue().x << " y:" << pad->getPercentValue().y << std::endl;
+        std::cerr << "Conversion x:" << pad->getPercentValue().x * ofGetWindowWidth() << " y:" << pad->getPercentValue().y * ofGetWindowHeight() << std::endl;
+#endif
+        mtrx = pad->getPercentValue().x * ofGetWindowWidth();
+        mtry = pad->getPercentValue().y * ofGetWindowWidth();
+    }
+    else if(e.widget->getName() == "SCALE")
+    {
+        ofxUISlider *slider = (ofxUISlider *) e.widget;
+        scaleFactor = slider->getScaledValue();
+    }
+    else if(e.widget->getName() == "CONTOUR MIN")
+    {
+        ofxUISlider *slider = (ofxUISlider *) e.widget;
+        contour_min = (int) slider->getScaledValue();
+    }
+    else if(e.widget->getName() == "CONTOUR MAX")
+    {
+        ofxUISlider *slider = (ofxUISlider *) e.widget;
+        contour_max = (int) slider->getScaledValue();
+    }
+    else if(e.widget->getName() == "MAX BLOBS")
+    {
+        ofxUISlider *slider = (ofxUISlider *) e.widget;
+        blobMax = (int) slider->getScaledValue();
+    }
+    
+}
+
+void kinactorApp::exit() 
+{
+	kinect.setCameraTiltAngle(0); // zero the tilt on exit
+	kinect.close();
+	kinectPlayer.close();
+	kinectRecorder.close();
+    
+    // ON EXIT SAVE GUI and DELETE
+    guileft->saveSettings("GUI/guiSettings.xml"); 
+    delete guileft;
+    
+#ifdef DEBUG
+    std::cerr << "END OF EXIT ROUTINE ...." << std::endl;
+#endif
+    
+    OF_EXIT_APP(0);
+}
+
+void kinactorApp::startRecording()
+{
+    
+	// stop playback if running
+	stopPlayback();
+    recordToggle->setValue(true);
+    playbackToggle->setValue(false);
+	kinectRecorder.init(ofToDataPath("recording.dat"));
+	bRecord = true;
+}
+
+void kinactorApp::stopRecording()
+{
+	kinectRecorder.close();
+	bRecord = false;
+    recordToggle->setValue(false);
+}
+
+void kinactorApp::startPlayback() 
+{    
+	stopRecording();
+	kinect.close();
+    recordToggle->setValue(false);
+    playbackToggle->setValue(true);
+	// set record file and source
+	kinectPlayer.setup(ofToDataPath("recording.dat"), true);
+	kinectPlayer.loop();
+	kinectSource = &kinectPlayer;
+	bPlayback = true;
+}
+
+void kinactorApp::stopPlayback() 
+{
+    playbackToggle->setValue(false);
+	kinectPlayer.close();
+	kinect.open();
+	kinectSource = &kinect;
+	bPlayback = false;
+}
+
+void kinactorApp::toggleRecord()
+{
+    bRecord = !bRecord;
+    if(bRecord) {
+        startRecording();
+    } else {
+        stopRecording();
+    }
+}
+
+void kinactorApp::togglePlayback()
+{
+    bPlayback = !bPlayback;
+    if(bPlayback) {
+        startPlayback();
+    } else {
+        stopPlayback();
+    }    
+}
+
+void kinactorApp::setFullScreen()
+{
+    if (bToogleFullScreen && !bFullscreen) {
+		ofSetFullscreen(true);
+		bFullscreen = true;
+		bToogleFullScreen = false;
+	} else if (bToogleFullScreen && bFullscreen) {
+		bFullscreen = false;
+		bToogleFullScreen = false;
+		ofSetWindowShape(OUTPUT_WIDTH,OUTPUT_HEIGHT);
+		ofSetFullscreen(false);
+	}
+}
+
+void kinactorApp::downKinectAngle()
+{
+    kinectAngle--;
+    if(kinectAngle<-30) kinectAngle=-30;
+    kinect.setCameraTiltAngle(kinectAngle);
+#ifdef DEBUG
+    std::cerr << "DOWN" << std::endl;
+#endif
+}
+
+void kinactorApp::upKinectAngle()
+{
+    kinectAngle++;
+    if(kinectAngle>30) kinectAngle=30;
+    kinect.setCameraTiltAngle(kinectAngle);
+#ifdef DEBUG
+    std::cerr << "UP" << std::endl;
+#endif
+}
+
+void kinactorApp::kinectConnect()
+{
+    kinect.setCameraTiltAngle(kinectAngle);	// go back to prev tilt
+    kinect.open();    
+#ifdef DEBUG
+    std::cerr << "KINECT: CONNECTED" << std::endl;
+#endif
+}
+
+void kinactorApp::kinectDisconnect()
+{
+    kinect.setCameraTiltAngle(0);		// zero the tilt
+    kinect.close();    
+#ifdef DEBUG
+    std::cerr << "KINECT: DISCONNECTED" << std::endl;
+#endif
+}
+
+
+//--------------------------------------------------------------
+// OPENCV FUNCTIONS
+//--------------------------------------------------------------
+void kinactorApp::blobsInsert()
+{
+    // costruisco actors with a blob
+    for(int i = 0; i < contourFinder.blobs.size(); i++) 
+    {
+        actor a = actor(contourFinder.blobs[i]);
+#ifdef DEBUG
+        std::cerr << "\tInserting ACTOR" << a.code << "WITH STATUS UPDATED: " << a.updated; 
+        std::cerr << std::endl;
+#endif        
+        actors.insert(std::pair<string, actor>(a.code, a));
+    }
+}
+
+void kinactorApp::blobsUpdate()
+{
+    // Itero sugli actors
+    for(map<string, actor>::iterator it = actors.begin(); it != actors.end(); ++it)
+    {
+        // se non ci sono blobs in contourFinder picche
+		if (contourFinder.blobs.size() == 0) return;
+        
+        // set initial MAX distance as inputWidth
+		float distance = inputWidth;
+		int blobposition;
+        
+        // Itero sui CVblobs
+		for ( int m=0; m < contourFinder.blobs.size(); m++ ) 
+		{
+            unsigned mdist = abs(contourFinder.blobs[m].centroid.x - it->second.blob.centroid.x);
+            // cerca minimal distance
+			if (mdist < distance) {
+				distance = mdist;
+				blobposition = m;
+			}
+            // update del actorBlob con il CVblob piu' vicino (byCentroid)
+            actors[it->first].update(contourFinder.blobs[blobposition]);
+#ifdef DEBUG
+            std::cerr << "\tUpdating ACTOR" << actors[it->first].code << "WITH STATUS UPDATED: " << actors[it->first].updated; 
+            std::cerr << std::endl;
+#endif 
+            //erase this CVblob
+            contourFinder.blobs.erase(contourFinder.blobs.begin() + blobposition);
+        }
+    }
+}
+
+
+//--------------------------------------------------------------
+// ACTORS FUNCTIONS
 //--------------------------------------------------------------
 void kinactorApp::checkStatus()
 {
@@ -312,83 +732,9 @@ void kinactorApp::checkStatus()
     // a questo livello ho i miei sonosBlobs per ulteriori loops    
 }
 
-//--------------------------------------------------------------
-void kinactorApp::blobsInsert()
-{
-    // costruisco actors with a blob
-    for(int i = 0; i < contourFinder.blobs.size(); i++) 
-    {
-        actor a = actor(contourFinder.blobs[i]);
-#ifdef DEBUG
-        std::cerr << "\tInserting ACTOR" << a.code << "WITH STATUS UPDATED: " << a.updated; 
-        std::cerr << std::endl;
-#endif        
-        actors.insert(std::pair<string, actor>(a.code, a));
-    }
-}
-                 
 
 //--------------------------------------------------------------
-void kinactorApp::blobsUpdate()
-{
-    // Itero sugli actors
-    for(map<string, actor>::iterator it = actors.begin(); it != actors.end(); ++it)
-    {
-        // se non ci sono blobs in contourFinder picche
-		if (contourFinder.blobs.size() == 0) return;
-        
-        // set initial MAX distance as inputWidth
-		float distance = inputWidth;
-		int blobposition;
-        
-        // Itero sui CVblobs
-		for ( int m=0; m < contourFinder.blobs.size(); m++ ) 
-		{
-            unsigned mdist = abs(contourFinder.blobs[m].centroid.x - it->second.blob.centroid.x);
-            // cerca minimal distance
-			if (mdist < distance) {
-				distance = mdist;
-				blobposition = m;
-			}
-            // update del actorBlob con il CVblob piu' vicino (byCentroid)
-            actors[it->first].update(contourFinder.blobs[blobposition]);
-#ifdef DEBUG
-            std::cerr << "\tUpdating ACTOR" << actors[it->first].code << "WITH STATUS UPDATED: " << actors[it->first].updated; 
-            std::cerr << std::endl;
-#endif 
-            //erase this CVblob
-            contourFinder.blobs.erase(contourFinder.blobs.begin() + blobposition);
-        }
-    }
-}
-
-//--------------------------------------------------------------
-void kinactorApp::draw()
-{
-    setFullScreen();
-    
-    switch (currentFormat) 
-    {
-        case kinactor:
-            kinactorDraw();
-            break;
-        case debug:
-            debugDraw();
-            break;
-        case cloud:
-            ofPushMatrix();
-            ofTranslate(420, 320);
-            // we need a proper camera class
-            drawPointCloud();
-            ofPopMatrix();
-        default:
-            break;
-    }
-    
-    // show interface?
-    bShowInterface == true ? showInterface() : hideInterface();
-}
-
+// DRAW FUNCTIONS
 //--------------------------------------------------------------
 void kinactorApp::loggerDraw()
 {
@@ -410,7 +756,6 @@ void kinactorApp::loggerDraw()
     ofDrawBitmapString(reportStream.str(),(loggerP.x + xInit),(loggerP.y + (xInit * 6)));
 }
 
-//--------------------------------------------------------------
 void kinactorApp::kinactorDraw()
 {
     // JUST CONTOUR FOR NOW
@@ -428,7 +773,6 @@ void kinactorApp::kinactorDraw()
     ofPopMatrix();
 }
 
-//--------------------------------------------------------------
 void kinactorApp::drawBlobs()
 {
     // in draw we iterate in the map
@@ -439,7 +783,6 @@ void kinactorApp::drawBlobs()
     }
 }
 
-//--------------------------------------------------------------
 void kinactorApp::drawBox()
 {
     ofPushStyle();
@@ -449,7 +792,6 @@ void kinactorApp::drawBox()
     ofPopStyle();    
 }
 
-//--------------------------------------------------------------
 void kinactorApp::drawPlayIcons()
 {
     // draw recording/playback indicators
@@ -493,7 +835,6 @@ void kinactorApp::debugDraw()
     ofPopMatrix();    
 }
 
-//--------------------------------------------------------------
 void kinactorApp::drawPointCloud() 
 {
 	ofScale(400, 400, 400);
@@ -513,398 +854,47 @@ void kinactorApp::drawPointCloud()
 	glEnd();
 }
 
-//--------------------------------------------------------------
-void kinactorApp::showInterface()
-{
-    guileft->setVisible(true);
-    guilogger->setVisible(true);
-    switch (currentCaptureMethod) {
-        case opencv:
-            guiright_opencv->setVisible(true);
-            break;
-        case openni:
-            guiright_opencv->setVisible(false);
-            break;
-    }
-    
-    loggerDraw();
-    bBox = true;
-}
 
 //--------------------------------------------------------------
-void kinactorApp::hideInterface()
-{
-    guileft->setVisible(false);
-    guilogger->setVisible(false);
-    guiright_opencv->setVisible(false);
-    bBox = false;
-}
-
-//--------------------------------------------------------------
-void kinactorApp::keyPressed(int key)
-{
-    switch (key) {
-        case '1':
-            currentFormat = kinactor;
-            bShowInterface = true;
-            break;
-        case '2':
-            currentFormat = debug;
-            bShowInterface = true;
-            break;
-        case '3':
-            currentFormat = cloud;
-            bShowInterface = false;
-            break;
-        case '9':
-            currentCaptureMethod = opencv;
-            break;
-        case '0':
-            currentCaptureMethod = openni;
-            break; 
-        case 'f':
-			bToogleFullScreen = true;
-			break;
-        case 'h':
-            bShowInterface = !bShowInterface;
-            break;
-		case '>':
-        case '.':
-            upKinectAngle();
-			break;
-        case '<':
-        case ',':
-            downKinectAngle();
-			break;
-		case 'o':
-            kinectConnect();
-			break;           
-		case 'c':
-            kinectDisconnect();
-			break;
-		case 'r':
-            toggleRecord();
-			break;           
-		case 'p':
-            togglePlayback();
-			break;
-		case OF_KEY_UP:
-            mtry++;
-#ifdef DEBUG
-            std::cerr << "Translate y: " << mtry << std::endl;
-#endif
-			break;
-		case OF_KEY_DOWN:
-			mtry--;
-#ifdef DEBUG
-            std::cerr << "Translate y: " << mtry << std::endl;
-#endif            
-			break;
-		case OF_KEY_LEFT:
-			mtrx--;
-#ifdef DEBUG
-            std::cerr << "Translate x: " << mtrx << std::endl;
-#endif            
-			break;
-		case OF_KEY_RIGHT:
-			mtrx++;
-#ifdef DEBUG
-            std::cerr << "Translate x: " << mtrx << std::endl;
-#endif
-			break;
-        case '-':
-            scaleFactor-=0.01;
-            break;
-        case '+':
-        case '=':
-            scaleFactor+=0.01;
-            break;
-	}
-
-}
-
+// OTHER OF FUNCTIONS
 //--------------------------------------------------------------
 void kinactorApp::keyReleased(int key)
 {
     
 }
 
-//--------------------------------------------------------------
 void kinactorApp::mouseMoved(int x, int y)
 {
     pointCloudRotationY = x;
 }
 
-//--------------------------------------------------------------
 void kinactorApp::mouseDragged(int x, int y, int button)
 {
     
 }
 
-//--------------------------------------------------------------
 void kinactorApp::mousePressed(int x, int y, int button)
 {
     
 }
 
-//--------------------------------------------------------------
 void kinactorApp::mouseReleased(int x, int y, int button)
 {
     
 }
 
-//--------------------------------------------------------------
 void kinactorApp::windowResized(int w, int h)
 {
     
 }
 
-//--------------------------------------------------------------
 void kinactorApp::gotMessage(ofMessage msg)
 {
     
 }
 
-//--------------------------------------------------------------
 void kinactorApp::dragEvent(ofDragInfo dragInfo)
 { 
     
 }
 
-//--------------------------------------------------------------
-void kinactorApp::exit() 
-{
-	kinect.setCameraTiltAngle(0); // zero the tilt on exit
-	kinect.close();
-	kinectPlayer.close();
-	kinectRecorder.close();
-    
-    // ON EXIT SAVE GUI and DELETE
-    guileft->saveSettings("GUI/guiSettings.xml"); 
-    delete guileft;
-
-#ifdef DEBUG
-    std::cerr << "END OF EXIT ROUTINE ...." << std::endl;
-#endif
-    
-    OF_EXIT_APP(0);
-}
-
-//--------------------------------------------------------------
-void kinactorApp::guiEvent(ofxUIEventArgs &e)
-{
-    if(e.widget->getName() == "NEAR THRESHOLD")
-    {
-        ofxUISlider *slider = (ofxUISlider *) e.widget;
-        nearThreshold = (int) slider->getScaledValue();
-#ifdef DEBUG
-        std::cerr << "slider event: " << slider -> getScaledValue() << " , threshold: " << nearThreshold << std::endl;
-#endif
-        
-    } 
-    else if(e.widget->getName() == "FAR THRESHOLD") 
-    {
-        ofxUISlider *slider = (ofxUISlider *) e.widget;
-        farThreshold = (int) slider->getScaledValue();
-    }
-    else if(e.widget->getName() == "TILT UP [>]")
-    {
-        ofxUIButton *button = (ofxUIButton *) e.widget;
-        upKinectAngle();
-    }
-    else if(e.widget->getName() == "TILT DOWN [<]")
-    {
-        ofxUIButton *button = (ofxUIButton *) e.widget;
-        downKinectAngle();
-    }
-    else if(e.widget->getName() == "DEPTH NEAR VALUE WHITE")
-    {
-        ofxUIToggle *toggle = (ofxUIToggle *) e.widget; 
-        kinect.enableDepthNearValueWhite(toggle->getValue());
-#ifdef DEBUG
-        std::cerr << "Depth Near Value is now: " << kinect.isDepthNearValueWhite() << std::endl;
-#endif
-    }
-    else if(e.widget->getName() == "CONNECT [o]")
-    {
-        ofxUIButton *button = (ofxUIButton *) e.widget;
-        kinectConnect();
-    }
-    else if(e.widget->getName() == "DISCONNECT [c]")
-    {
-        ofxUIButton *button = (ofxUIButton *) e.widget;
-        kinectDisconnect();
-    }
-    else if(e.widget->getName() == "RECORD [r]")
-    {
-        ofxUIToggle *toggle = (ofxUIToggle *) e.widget;
-        if (toggle->getValue()) {
-            startRecording();
-        } else {
-            stopRecording();
-        }
-    }
-    else if(e.widget->getName() == "PLAYBACK [p]")
-    {
-        ofxUIToggle *toggle = (ofxUIToggle *) e.widget;
-        if (toggle->getValue()) {
-            startPlayback();
-        } else {
-            stopPlayback();
-        }
-    }
-    else if(e.widget->getName() == "TRANSLATE")
-    {
-        ofxUI2DPad *pad = (ofxUI2DPad *) e.widget;
-#ifdef DEBUG
-        std::cerr << "PAD % VALUES x:" << pad->getPercentValue().x << " y:" << pad->getPercentValue().y << std::endl;
-        std::cerr << "Conversion x:" << pad->getPercentValue().x * ofGetWindowWidth() << " y:" << pad->getPercentValue().y * ofGetWindowHeight() << std::endl;
-#endif
-        mtrx = pad->getPercentValue().x * ofGetWindowWidth();
-        mtry = pad->getPercentValue().y * ofGetWindowWidth();
-    }
-    else if(e.widget->getName() == "SCALE")
-    {
-        ofxUISlider *slider = (ofxUISlider *) e.widget;
-        scaleFactor = slider->getScaledValue();
-    }
-    else if(e.widget->getName() == "CONTOUR MIN")
-    {
-        ofxUISlider *slider = (ofxUISlider *) e.widget;
-        contour_min = (int) slider->getScaledValue();
-    }
-    else if(e.widget->getName() == "CONTOUR MAX")
-    {
-        ofxUISlider *slider = (ofxUISlider *) e.widget;
-        contour_max = (int) slider->getScaledValue();
-    }
-    else if(e.widget->getName() == "MAX BLOBS")
-    {
-        ofxUISlider *slider = (ofxUISlider *) e.widget;
-        blobMax = (int) slider->getScaledValue();
-    }
-    
-}
-
-//--------------------------------------------------------------
-void kinactorApp::startRecording()
-{
-    
-	// stop playback if running
-	stopPlayback();
-    recordToggle->setValue(true);
-    playbackToggle->setValue(false);
-	kinectRecorder.init(ofToDataPath("recording.dat"));
-	bRecord = true;
-}
-
-//--------------------------------------------------------------
-void kinactorApp::stopRecording()
-{
-	kinectRecorder.close();
-	bRecord = false;
-    recordToggle->setValue(false);
-}
-
-//--------------------------------------------------------------
-void kinactorApp::startPlayback() 
-{    
-	stopRecording();
-	kinect.close();
-    recordToggle->setValue(false);
-    playbackToggle->setValue(true);
-	// set record file and source
-	kinectPlayer.setup(ofToDataPath("recording.dat"), true);
-	kinectPlayer.loop();
-	kinectSource = &kinectPlayer;
-	bPlayback = true;
-}
-
-//--------------------------------------------------------------
-void kinactorApp::stopPlayback() 
-{
-    playbackToggle->setValue(false);
-	kinectPlayer.close();
-	kinect.open();
-	kinectSource = &kinect;
-	bPlayback = false;
-}
-
-//--------------------------------------------------------------
-void kinactorApp::toggleRecord()
-{
-    bRecord = !bRecord;
-    if(bRecord) {
-        startRecording();
-    } else {
-        stopRecording();
-    }
-}
-
-//--------------------------------------------------------------
-void kinactorApp::togglePlayback()
-{
-    bPlayback = !bPlayback;
-    if(bPlayback) {
-        startPlayback();
-    } else {
-        stopPlayback();
-    }    
-}
-
-//--------------------------------------------------------------
-void kinactorApp::setFullScreen()
-{
-    if (bToogleFullScreen && !bFullscreen) {
-		ofSetFullscreen(true);
-		bFullscreen = true;
-		bToogleFullScreen = false;
-	} else if (bToogleFullScreen && bFullscreen) {
-		bFullscreen = false;
-		bToogleFullScreen = false;
-		ofSetWindowShape(OUTPUT_WIDTH,OUTPUT_HEIGHT);
-		ofSetFullscreen(false);
-	}
-}
-
-//--------------------------------------------------------------
-void kinactorApp::downKinectAngle()
-{
-    kinectAngle--;
-    if(kinectAngle<-30) kinectAngle=-30;
-    kinect.setCameraTiltAngle(kinectAngle);
-#ifdef DEBUG
-    std::cerr << "DOWN" << std::endl;
-#endif
-}
-
-//--------------------------------------------------------------
-void kinactorApp::upKinectAngle()
-{
-    kinectAngle++;
-    if(kinectAngle>30) kinectAngle=30;
-    kinect.setCameraTiltAngle(kinectAngle);
-#ifdef DEBUG
-    std::cerr << "UP" << std::endl;
-#endif
-}
-
-//--------------------------------------------------------------
-void kinactorApp::kinectConnect()
-{
-    kinect.setCameraTiltAngle(kinectAngle);	// go back to prev tilt
-    kinect.open();    
-#ifdef DEBUG
-    std::cerr << "KINECT: CONNECTED" << std::endl;
-#endif
-}
-
-//--------------------------------------------------------------
-void kinactorApp::kinectDisconnect()
-{
-    kinect.setCameraTiltAngle(0);		// zero the tilt
-    kinect.close();    
-#ifdef DEBUG
-    std::cerr << "KINECT: DISCONNECTED" << std::endl;
-#endif
-}

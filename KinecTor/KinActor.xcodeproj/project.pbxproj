@@ -1244,6 +1244,7 @@
 				OFX_OPENCV_HEADERS = "\"$(ADDONS_PATH)/ofxOpenCv/libs/opencv/include/\"";
 				OF_ADDON_HEADERS = "$(OFX_KINECT_HEADERS) $(OFX_OPENCV_HEADERS)";
 				OF_ADDON_LIBS = "$(OFX_KINECT_LIBS)";
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CPLUSPLUSFLAGS = (
 					"-D__MACOSX_CORE__",
 					"-lpthread",
@@ -1284,6 +1285,7 @@
 				OFX_OPENCV_HEADERS = "\"$(ADDONS_PATH)/ofxOpenCv/libs/opencv/include/\"";
 				OF_ADDON_HEADERS = "$(OFX_KINECT_HEADERS) $(OFX_OPENCV_HEADERS)";
 				OF_ADDON_LIBS = "$(OFX_KINECT_LIBS)";
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CPLUSPLUSFLAGS = (
 					"-D__MACOSX_CORE__",
 					"-lpthread",
