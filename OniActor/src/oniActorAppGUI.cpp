@@ -20,6 +20,7 @@ void oniActorApp::setupWindowOptions()
 void oniActorApp::setupGUI()
 {
     setupGUIleft();
+    setupGUIright();
 }
 
 void oniActorApp::updateGUI()
@@ -128,11 +129,40 @@ void oniActorApp::setupGUIleft()
     guileft->loadSettings(GUILEFT_FILE);
 }
 
+void oniActorApp::setupGUIright()
+{
+    guiright = new ofxUICanvas(ofGetWindowWidth()-(guiPanelLength+xInit), 0, guiPanelLength+xInit,ofGetHeight());
+    guiright -> setDrawWidgetPadding(true);
+    
+    guiright->addWidgetDown(new ofxUILabel("CONTROLS",OFX_UI_FONT_LARGE));
+    guiright->addWidgetDown(new ofxUISpacer(guiPanelLength-xInit, 2));
+    float half_panel = ((guiPanelLength-xInit) / 2.0f) - xInit;
+    recordToggle = new ofxUILabelToggle(half_panel, isRecording, RECORDING_TOGGLE, OFX_UI_FONT_MEDIUM);
+    playbackToggle = new ofxUILabelToggle(half_panel, isRecording, PLAYBACK_TOGGLE, OFX_UI_FONT_MEDIUM);
+    guiright->addWidgetDown(recordToggle);
+    guiright->addWidgetEastOf(playbackToggle, RECORDING_TOGGLE);
+    
+    guiright->addWidgetDown(new ofxUILabelToggle(half_panel, isTracking, SKELETON_TRACKING_TOGGLE, OFX_UI_FONT_MEDIUM));
+    
+    
+    guiright->addWidgetDown(new ofxUISlider(guiPanelLength-xInit,dim, 0.0, recordDepth.getMaxDepth(), nearThreshold, NEAR_THRESHOLD_SLIDER)); 
+    guiright->addWidgetDown(new ofxUISlider(guiPanelLength-xInit,dim, 0.0, recordDepth.getMaxDepth(), farThreshold, FAR_THRESHOLD_SLIDER));
+    guiright->addWidgetDown(new ofxUISlider(guiPanelLength-xInit,dim, 0.0,1.0, recordUser.getSmoothing(), SMOOTH_SKELETON_SLIDER));
+    guiright->addWidgetDown(new ofxUISlider(guiPanelLength-xInit,dim, 0.0,1.0, filterFactor, FILTER_HANDS_SLIDER));
+    guiright->addWidgetDown(new ofxUISlider(guiPanelLength-xInit,dim, 0.0,1.0, recordHandTracker.getSmoothing(), SMOOTH_HANDS_SLIDER));
+    
+    // LISTENER AND LOAD SETTINGS
+    ofAddListener(guiright->newGUIEvent, this, &oniActorApp::guiEvent);
+    guiright->loadSettings(GUIRIGHT_FILE);
+}
+
 void oniActorApp::closeGUI()
 {
     // ON EXIT SAVE GUI and DELETE
     guileft->saveSettings(GUILEFT_FILE); 
     delete guileft;
+    guiright->saveSettings(GUIRIGHT_FILE);
+    delete guiright;
 }
 
 void oniActorApp::guiEvent(ofxUIEventArgs &e)
@@ -152,16 +182,101 @@ void oniActorApp::guiEvent(ofxUIEventArgs &e)
         ofxUISlider *slider = (ofxUISlider *) e.widget;
         scaleFactor = slider->getScaledValue();
     }
+    else if(e.widget->getName() == NEAR_THRESHOLD_SLIDER)
+    {
+        ofxUISlider *slider = (ofxUISlider *) e.widget;
+        nearThreshold = (int) slider->getScaledValue();
+    }
+    else if(e.widget->getName() == FAR_THRESHOLD_SLIDER)
+    {
+        ofxUISlider *slider = (ofxUISlider *) e.widget;
+        farThreshold = (int) slider->getScaledValue();
+    }
+    else if(e.widget->getName() == SMOOTH_SKELETON_SLIDER)
+    {
+        ofxUISlider *slider = (ofxUISlider *) e.widget;
+        recordUser.setSmoothing(slider->getScaledValue());
+        playUser.setSmoothing(slider->getScaledValue());
+    }
+    else if(e.widget->getName() == FILTER_HANDS_SLIDER)
+    {
+        ofxUISlider *slider = (ofxUISlider *) e.widget;
+        filterFactor = slider->getScaledValue();
+    }
+    else if(e.widget->getName() == SMOOTH_HANDS_SLIDER)
+    {
+        ofxUISlider *slider = (ofxUISlider *) e.widget;
+        recordHandTracker.setSmoothing(slider->getScaledValue());
+        playHandTracker.setSmoothing(slider->getScaledValue());
+    }
+    else if(e.widget->getName() == RECORDING_TOGGLE)
+    {
+        ofxUIToggle *toggle = (ofxUIToggle *) e.widget;
+        // CHECK FOR STATE CHANGE
+        if (toggle->getValue() != isRecording)
+        {     
+#ifdef DEBUG		
+            cerr << endl << "RECORD STATE CHANGE: " << toggle->getValue() << "," << isRecording << endl;
+#endif                
+            isRecording = toggle->getValue();
+            if (isRecording) {
+                if (playbackToggle->getValue()) {
+                    // IS IN PLAYBACK ... STOP
+                    playbackToggle->setValue(false);
+                    isLive = true;
+                }
+                oniRecorder.startRecord(generateFileName());
+            } else {
+                oniRecorder.stopRecord();
+            }
+        }
+    }
+    else if(e.widget->getName() == PLAYBACK_TOGGLE)
+    {
+        ofxUIToggle *toggle = (ofxUIToggle *) e.widget;
+        // CHECK FOR STATE CHANGE
+        bool isPlayBack = !isLive;
+        if (toggle->getValue() != isPlayBack)
+        {
+#ifdef DEBUG		
+            cerr << endl << "PLAYBACK STATE CHANGE: " << toggle->getValue() << "," << isPlayBack << endl;
+#endif      
+            isPlayBack = toggle -> getValue();
+            if (isPlayBack)
+            {
+                if (oniRecorder.getCurrentFileName() != "" && !isRecording && isLive) {
+                    setupPlayback(oniRecorder.getCurrentFileName());
+                    isLive = false;
+                } else {
+                    toggle->setValue(false);
+                }
+            } else {
+#ifdef DEBUG		
+                cerr << endl << "PLAYBACK STATE CHANGE CRASH HERE? isLive: " << isLive << endl;
+#endif
+        
+                // FIXME CRASH HERE ON CLOSE PLAYBACK
+                // isLive = true;
+            }
+        }
+    }
+    else if(e.widget->getName() == SKELETON_TRACKING_TOGGLE)
+    {
+        ofxUIToggle *toggle = (ofxUIToggle *) e.widget;
+        isTracking = toggle->getValue();
+    }
 }
 
 void oniActorApp::showInterface()
 {
     guileft->setVisible(true);
+    guiright->setVisible(true);
 }
 
 void oniActorApp::hideInterface()
 {
     guileft->setVisible(false);
+    guiright->setVisible(false);
 }
 
 void oniActorApp::setFullScreen()

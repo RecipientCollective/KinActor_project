@@ -28,8 +28,14 @@
 
 // GUI DEFINES
 #define GUILEFT_FILE "GUI/guileftSettings.xml"
+#define GUIRIGHT_FILE "GUI/guirightSettings.xml"
 #define TRANSLATE_PAD "TRANSLATE"
 #define SCALE_SLIDER  "SCALE"
+#define NEAR_THRESHOLD_SLIDER "NEAR THRESHOLD"
+#define FAR_THRESHOLD_SLIDER "FAR THRESHOLD"
+#define SMOOTH_SKELETON_SLIDER "SMOOTH SKELETON"
+#define FILTER_HANDS_SLIDER "FILTER HANDS FACTOR"
+#define SMOOTH_HANDS_SLIDER "SMOOTH HANDS"
 #define ACCEL_STRING_DEFAULT "TILT: 0/0 x - 0 y - 0 z - 0"
 #define RECORDING_FILENAME_STR "RECORDING FILENAME:"
 #define STATUS_PLAY_DEFAULT "STATUS STREAM: "
@@ -42,6 +48,9 @@
 #define STATUS_DRAW_MASKS_DEFAULT "DRAWING MASKS: "
 #define STATUS_CLOUD_DEFAULT "DRAWING CLOUD POINTS: "
 #define STATUS_CLOUD_DATA_DEFAULT "CLOUD USER DATA: "
+#define RECORDING_TOGGLE "RECORD"
+#define PLAYBACK_TOGGLE  "PLAYBACK"
+#define SKELETON_TRACKING_TOGGLE  "SKELY TRACKING"
 
 class oniActorApp : public ofBaseApp
 {
@@ -75,6 +84,7 @@ private:
     
     // GUI OBJECTS
     ofxUICanvas *guileft;
+    ofxUICanvas *guiright;
     ofPoint      trPad;
     ofxUILabel  *accelerationLabel;
     ofxUILabel  *filenameLabel;
@@ -88,7 +98,8 @@ private:
     ofxUILabel  *statusDrawMasksLabel;
     ofxUILabel  *statusCloudLabel;
     ofxUILabel  *statusCloudDataLabel;
-    
+    ofxUILabelToggle *recordToggle;
+    ofxUILabelToggle *playbackToggle;
     
     // GUI PARAMETERS
     float xInit;
@@ -135,6 +146,7 @@ private:
     void setupWindowOptions();
     void setupGUI();
     void setupGUIleft();
+    void setupGUIright();
     void closeGUI();
     void guiEvent(ofxUIEventArgs &e);
     void setFullScreen();
@@ -155,6 +167,9 @@ private:
     void drawPointCloud(ofxUserGenerator * user_generator, int userID);
     void oniactorDraw();
     void cloudDraw();
+    
+    // oniActorAppUtils.cpp METHODS
+    string	generateFileName();
 };
 
 
