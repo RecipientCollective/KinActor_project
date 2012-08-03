@@ -1,6 +1,6 @@
 # DONT Exclude the build directory (bin/data) contains data
 bin/*.app
-bin/data/recording.dat
+bin/data/*.oni
 
 # Exclude temp nibs and swap files
 *~.nib
