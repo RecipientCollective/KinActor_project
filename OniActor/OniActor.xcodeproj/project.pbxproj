@@ -49,6 +49,7 @@
 		EDD95F9215CBB8C2008635A0 /* libXnVFeatures_1_5_2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = EDD95F8415CBB8C2008635A0 /* libXnVFeatures_1_5_2.dylib */; };
 		EDD95F9315CBB8C2008635A0 /* libXnVHandGenerator_1_5_2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = EDD95F8515CBB8C2008635A0 /* libXnVHandGenerator_1_5_2.dylib */; };
 		EDD95F9415CBB8C2008635A0 /* libXnVNite_1_5_2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = EDD95F8615CBB8C2008635A0 /* libXnVNite_1_5_2.dylib */; };
+		EDD95FA615CBBBE6008635A0 /* oniActorApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDD95FA515CBBBE6008635A0 /* oniActorApp.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -270,6 +271,8 @@
 		EDD95F8415CBB8C2008635A0 /* libXnVFeatures_1_5_2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libXnVFeatures_1_5_2.dylib; sourceTree = "<group>"; };
 		EDD95F8515CBB8C2008635A0 /* libXnVHandGenerator_1_5_2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libXnVHandGenerator_1_5_2.dylib; sourceTree = "<group>"; };
 		EDD95F8615CBB8C2008635A0 /* libXnVNite_1_5_2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libXnVNite_1_5_2.dylib; sourceTree = "<group>"; };
+		EDD95FA415CBBBDB008635A0 /* oniActorApp.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = oniActorApp.h; sourceTree = "<group>"; };
+		EDD95FA515CBBBE6008635A0 /* oniActorApp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = oniActorApp.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -382,6 +385,8 @@
 				E4B69E1D0A3A1BDC003C02F2 /* main.cpp */,
 				E4B69E1E0A3A1BDC003C02F2 /* testApp.cpp */,
 				E4B69E1F0A3A1BDC003C02F2 /* testApp.h */,
+				EDD95FA415CBBBDB008635A0 /* oniActorApp.h */,
+				EDD95FA515CBBBE6008635A0 /* oniActorApp.cpp */,
 			);
 			path = src;
 			sourceTree = SOURCE_ROOT;
@@ -768,6 +773,7 @@
 				EDD95F7415CBB8AB008635A0 /* ofxTrackedHand.cpp in Sources */,
 				EDD95F7515CBB8AB008635A0 /* ofxTrackedUser.cpp in Sources */,
 				EDD95F7615CBB8AB008635A0 /* ofxUserGenerator.cpp in Sources */,
+				EDD95FA615CBBBE6008635A0 /* oniActorApp.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
