@@ -53,6 +53,7 @@
 		EDD95FAD15CBC06F008635A0 /* oniActorAppGUI.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDD95FAC15CBC06F008635A0 /* oniActorAppGUI.cpp */; };
 		EDD95FAF15CBC100008635A0 /* oniActorAppDraw.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDD95FAE15CBC100008635A0 /* oniActorAppDraw.cpp */; };
 		EDD95FB115CBC220008635A0 /* oniActorAppUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDD95FB015CBC220008635A0 /* oniActorAppUtils.cpp */; };
+		EDD95FB315CBC462008635A0 /* oniActorAppOpenNI.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EDD95FB215CBC462008635A0 /* oniActorAppOpenNI.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -279,6 +280,7 @@
 		EDD95FAC15CBC06F008635A0 /* oniActorAppGUI.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = oniActorAppGUI.cpp; sourceTree = "<group>"; };
 		EDD95FAE15CBC100008635A0 /* oniActorAppDraw.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = oniActorAppDraw.cpp; sourceTree = "<group>"; };
 		EDD95FB015CBC220008635A0 /* oniActorAppUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = oniActorAppUtils.cpp; sourceTree = "<group>"; };
+		EDD95FB215CBC462008635A0 /* oniActorAppOpenNI.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = oniActorAppOpenNI.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -396,6 +398,7 @@
 				EDD95FAC15CBC06F008635A0 /* oniActorAppGUI.cpp */,
 				EDD95FAE15CBC100008635A0 /* oniActorAppDraw.cpp */,
 				EDD95FB015CBC220008635A0 /* oniActorAppUtils.cpp */,
+				EDD95FB215CBC462008635A0 /* oniActorAppOpenNI.cpp */,
 			);
 			path = src;
 			sourceTree = SOURCE_ROOT;
@@ -786,6 +789,7 @@
 				EDD95FAD15CBC06F008635A0 /* oniActorAppGUI.cpp in Sources */,
 				EDD95FAF15CBC100008635A0 /* oniActorAppDraw.cpp in Sources */,
 				EDD95FB115CBC220008635A0 /* oniActorAppUtils.cpp in Sources */,
+				EDD95FB315CBC462008635A0 /* oniActorAppOpenNI.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -813,6 +817,7 @@
 				GCC_ENABLE_SUPPLEMENTAL_SSE3_INSTRUCTIONS = YES;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
+				"GCC_PREPROCESSOR_DEFINITIONS[arch=*]" = "DEBUG=1";
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
 				GCC_WARN_ABOUT_INVALID_OFFSETOF_MACRO = NO;

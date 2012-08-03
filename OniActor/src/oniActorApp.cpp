@@ -6,11 +6,38 @@
 void oniActorApp::setup()
 {
     
+#ifdef DEBUG		
+    cerr << endl << ".... ONIACTOR DEBUG MODE ...." << endl 
+    << "Entering setup-->" << endl;
+#endif
+    
+    isLive			= true;
+	isTracking		= false;
+	isTrackingHands	= true;
+	isFiltering		= false;
+	isRecording		= false;
+	isCloud			= false;
+	isCPBkgnd		= true;
+	isMasking		= true;
+    
+	nearThreshold = 500;
+	farThreshold  = 1000;
+    
+	filterFactor = 0.1f;
+    
+    setupRecording(); // oniActorAppOpenNI.cpp
+
+    setupBackgroud(); // oniActorAppGUI.cpp
+
+#ifdef DEBUG		
+    cerr << endl << "<--End setup" << endl;
+#endif
+
 }
 
 void oniActorApp::update()
 {
-    
+    openniUpdate();
 }
 
 void oniActorApp::draw()
@@ -65,4 +92,17 @@ void oniActorApp::dragEvent(ofDragInfo dragInfo)
 void oniActorApp::gotMessage(ofMessage msg)
 {
     
+}
+
+void oniActorApp::exit()
+{
+#ifdef DEBUG
+    std::cerr << "STARTING EXIT ROUTINE ...." << std::endl;
+#endif
+    
+    openniClose(); // oniActorAppOpenNI.cpp
+    
+#ifdef DEBUG
+    std::cerr << "END OF EXIT ROUTINE ...." << std::endl;
+#endif
 }
