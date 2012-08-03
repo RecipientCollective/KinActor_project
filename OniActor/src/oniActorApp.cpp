@@ -26,8 +26,24 @@ void oniActorApp::setup()
 	filterFactor = 0.1f;
     
     setupRecording(); // oniActorAppOpenNI.cpp
-
-    setupBackgroud(); // oniActorAppGUI.cpp
+    
+    // GUI SETUP
+    xInit = OFX_UI_GLOBAL_WIDGET_SPACING;
+    dim = 24;
+    guiPanelLength = GUIPANEL_BASE_LENGTH-xInit;
+    
+    isFullScreen = false;
+    toggleFullScreen = false;
+    toggleShowInterface = true;
+    setupGUI();
+    
+    currentFormat = oniactor;
+    mtrx = GUIPANEL_BASE_LENGTH + xInit;
+    mtry = xInit;
+    scaleFactor = 1.0;
+    
+    // OF stuffs, background ...
+    setupWindowOptions(); // oniActorAppGUI.cpp 
 
 #ifdef DEBUG		
     cerr << endl << "<--End setup" << endl;
@@ -38,16 +54,101 @@ void oniActorApp::setup()
 void oniActorApp::update()
 {
     openniUpdate();
+    updateGUI();
 }
 
 void oniActorApp::draw()
 {
+    setFullScreen();
     
+    switch (currentFormat) 
+    {
+        case oniactor:
+            oniactorDraw();            
+            break;
+        
+        case debug:
+            debugDraw();
+            break;
+            
+        case cloud:
+            cloudDraw();
+            break;
+            
+        default:
+            break;
+    }
+    
+    // show interface?
+    toggleShowInterface == true ? showInterface() : hideInterface();
 }
 
 void oniActorApp::keyPressed(int key)
 {
-    
+    switch (key) 
+    {
+        case 'f':
+			toggleFullScreen = true;
+			break;
+        case 'h':
+            toggleShowInterface = !toggleShowInterface;
+            break;
+        case '1':
+            currentFormat = oniactor;
+            toggleShowInterface = true;
+            break;
+        case '2':
+            currentFormat = debug;
+            toggleShowInterface = true;
+            break;
+        case '3':
+            currentFormat = cloud;
+            toggleShowInterface = false;
+            break;
+        case OF_KEY_UP:
+            mtry++;
+#ifdef DEBUG
+            std::cerr << "Translate y: " << mtry << std::endl;
+#endif
+			break;
+		case OF_KEY_DOWN:
+			mtry--;
+#ifdef DEBUG
+            std::cerr << "Translate y: " << mtry << std::endl;
+#endif            
+			break;
+		case OF_KEY_LEFT:
+			mtrx--;
+#ifdef DEBUG
+            std::cerr << "Translate x: " << mtrx << std::endl;
+#endif            
+			break;
+		case OF_KEY_RIGHT:
+			mtrx++;
+#ifdef DEBUG
+            std::cerr << "Translate x: " << mtrx << std::endl;
+#endif
+			break;
+        case '-':
+            scaleFactor-=0.01;
+            break;
+        case '+':
+        case '=':
+            scaleFactor+=0.01;
+            break;
+#ifdef TARGET_OSX // only working on Mac at the moment
+        case '>':
+        case '.':
+            hardware.setTiltAngle(hardware.tilt_angle++);
+			break;
+        case '<':
+        case ',':
+            hardware.setTiltAngle(hardware.tilt_angle--);
+			break;
+#endif
+        default:
+            break;
+    }
 }
 
 //--------------------------------------------------------------
@@ -101,8 +202,11 @@ void oniActorApp::exit()
 #endif
     
     openniClose(); // oniActorAppOpenNI.cpp
+    closeGUI(); // oniActorAppGUI.cpp
     
 #ifdef DEBUG
     std::cerr << "END OF EXIT ROUTINE ...." << std::endl;
 #endif
+    
+    OF_EXIT_APP(0);
 }

@@ -13,18 +13,35 @@
 
 #include "ofxOpenNI.h"
 #include "ofMain.h"
+#include "ofxUI.h"
 
 //#define USE_IR // Uncomment this to use infra red instead of RGB cam...
 
 // WINDOWS SIZES
-#define OUTPUT_HEIGHT 1040
-#define OUTPUT_WIDTH 1280
-#define TRANSLATE_GUIVIEW_X 410
-#define TRANSLATE_GUIVIEW_Y 10
+#define OUTPUT_HEIGHT 852
+#define OUTPUT_WIDTH 1480
+#define GUIPANEL_BASE_LENGTH 400
 
-// OPENI CUSTOM DEFINES
+// OPENNI CUSTOM DEFINES
 #define MAX_ACTORS 2
 #define MAX_HANDS 4
+
+// GUI DEFINES
+#define GUILEFT_FILE "GUI/guileftSettings.xml"
+#define TRANSLATE_PAD "TRANSLATE"
+#define SCALE_SLIDER  "SCALE"
+#define ACCEL_STRING_DEFAULT "TILT: 0/0 x - 0 y - 0 z - 0"
+#define RECORDING_FILENAME_STR "RECORDING FILENAME:"
+#define STATUS_PLAY_DEFAULT "STATUS STREAM: "
+#define STATUS_RECORD_DEFAULT "PLAYBACK/LIVE STREAM: "
+#define STATUS_SKELETON_DEFAULT "SKELETON TRACKING: "
+#define STATUS_SMOOTH_SKELETON_DEFAULT "SMOOTH SKELY (openni): "
+#define STATUS_HANDS_DEFAULT "HAND TRACKING: "
+#define STATUS_FILTER_HANDS_DEFAULT "HAND FILTER: "
+#define STATUS_SMOOTH_HANDS_DEFAULT "HAND SMOOTH: "
+#define STATUS_DRAW_MASKS_DEFAULT "DRAWING MASKS: "
+#define STATUS_CLOUD_DEFAULT "DRAWING CLOUD POINTS: "
+#define STATUS_CLOUD_DATA_DEFAULT "CLOUD USER DATA: "
 
 class oniActorApp : public ofBaseApp
 {
@@ -57,8 +74,45 @@ private:
     ofImage				allUserMasks, user1Mask, user2Mask, depthRangeMask;
     
     // GUI OBJECTS
+    ofxUICanvas *guileft;
+    ofPoint      trPad;
+    ofxUILabel  *accelerationLabel;
+    ofxUILabel  *filenameLabel;
+    ofxUILabel  *statusPlayLabel;
+    ofxUILabel  *statusRecordLabel;
+    ofxUILabel  *statusSkeletonLabel;
+    ofxUILabel  *statusSkeletonSmoothLabel;
+    ofxUILabel  *statusHandLabel;
+    ofxUILabel  *statusFilterLabel;
+    ofxUILabel  *statusSmoothHandsLabel;
+    ofxUILabel  *statusDrawMasksLabel;
+    ofxUILabel  *statusCloudLabel;
+    ofxUILabel  *statusCloudDataLabel;
+    
     
     // GUI PARAMETERS
+    float xInit;
+    float dim;
+    float guiPanelLength;
+    float inputWidth;
+    float inputHeight;
+    bool  isFullScreen;
+    bool  toggleFullScreen;
+    bool  toggleShowInterface;
+    
+    // DRAW FORMATS
+    enum DrawFormat 
+    {
+        oniactor = 1,
+        debug = 2,
+        cloud = 3
+    };
+    DrawFormat currentFormat;
+    
+    // DRAW PARAMETERS
+    float scaleFactor;
+    float mtrx;
+    float mtry;
     
 public:
     // OpenFrameworks METHODS
@@ -78,7 +132,15 @@ public:
 
 private:
     // oniActorAppGUI.cpp METHODS
-    void setupBackgroud();
+    void setupWindowOptions();
+    void setupGUI();
+    void setupGUIleft();
+    void closeGUI();
+    void guiEvent(ofxUIEventArgs &e);
+    void setFullScreen();
+    void showInterface();
+    void hideInterface();
+    void updateGUI();
     
     // oniActorAppOpenNI.cpp METHODS
     void setupRecording(string _filename = "");
@@ -86,6 +148,13 @@ private:
     void openniUpdate();
     void openniClose();
     
+    // oniActorAppDraw.cpp METHODS
+    void debugDraw();
+    void logDraw();
+    void drawMasks();
+    void drawPointCloud(ofxUserGenerator * user_generator, int userID);
+    void oniactorDraw();
+    void cloudDraw();
 };
 
 

@@ -48,6 +48,14 @@ void oniActorApp::setupRecording(string _filename)
 	oniRecorder.setup(&recordContext, ONI_STREAMING);
 	//oniRecorder.setup(&recordContext, ONI_CYCLIC, 60);
 	//read the warning in ofxOpenNIRecorder about memory usage with ONI_CYCLIC recording!!!
+    
+    // getting sizes from inputUser
+    inputWidth = recordUser.getWidth();
+    inputHeight = recordUser.getHeight();
+    
+#ifdef DEBUG		
+    std::cerr << "Input size: width =" << inputWidth << " height = " << inputHeight << endl;
+#endif
 }
 
 void oniActorApp::setupPlayback(string _filename)
