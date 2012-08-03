@@ -1,6 +1,14 @@
 #ifndef OniActor_oniActorApp_h
 #define OniActor_oniActorApp_h
 
+/*********************************************************
+ * ONIACTOR APP FILES:
+ * - oniActorApp.h 
+ * - oniActorApp.cpp MAIN
+ * - oniActorAppGUI.h GUI FUNCTIONS
+ * - oniActorAppDraw.h DRAW FUNCTIONS
+ * - oniActorAppUtils.h UTILITY FUNCTIONS
+ *********************************************************/
 
 #include "ofxOpenNI.h"
 #include "ofMain.h"
@@ -15,6 +23,7 @@
 
 class oniActorApp : public ofBaseApp
 {
+private:
     // INSTANCE VARIABLES
     
     
