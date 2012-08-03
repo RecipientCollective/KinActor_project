@@ -1,5 +1,6 @@
 #pragma once
 
+#include "ofxOpenNI.h"
 #include "ofMain.h"
 
 class testApp : public ofBaseApp{
