@@ -1,6 +1,8 @@
 # DONT Exclude the build directory (bin/data) contains data
 bin/*.app
 bin/data/*.oni
+bin/data/GUI/guileftSettings.xml
+bin/data/GUI/guirightSettings.xml
 
 # Exclude temp nibs and swap files
 *~.nib
