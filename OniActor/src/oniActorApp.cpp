@@ -45,7 +45,9 @@ void oniActorApp::setup()
 
     // OF stuffs, background ...
     setupWindowOptions(); // oniActorAppGUI.cpp 
-
+    
+    setupOsc();
+    
 #ifdef DEBUG		
     cerr << endl << "<--End setup" << endl;
 #endif
@@ -57,10 +59,14 @@ void oniActorApp::update()
     openniUpdate();
     updateGUI();
     
+
+    if (isTracking) 
+    {
 #ifdef DEBUG
-    if (isTracking)
         debugSkeletons();
 #endif
+
+    }
 }
 
 void oniActorApp::draw()

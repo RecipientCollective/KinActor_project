@@ -18,3 +18,9 @@ string oniActorApp::generateFileName()
 	string _filename = (_root + _timestamp + ".oni");    
 	return _filename;
 }
+
+void oniActorApp::setupOsc()
+{
+    sender.setup(HOST, PORT);
+}
+

@@ -133,7 +133,7 @@ void oniActorApp::debugSkeletons()
     for(int i = 1; i <= currentRecorder.getNumberOfTrackedUsers(); i++)
     {
         ofxTrackedUser * user = currentRecorder.getTrackedUser(i);
-        cerr << "USER: " << i << endl;
+        cerr << "USER: " << i << " CENTER x,y,z: " << user->center.X << ", " << user->center.Y << ", " << user->center.Z << endl;
         cerr << "\tNECK x,y,z: " << user->neck.position[0].X << ", " << user->neck.position[0].Y << "," << user->neck.position[0].Z << endl;
         cerr << "\tLEFT SHOULDER x,y,z: " << user->left_shoulder.position[0].X << ", " << user->left_shoulder.position[0].Y << "," << user->left_shoulder.position[0].Z << endl;
         cerr << "\tLEFT UPPER ARM x,y,z: " << user->left_upper_arm.position[0].X << ", " << user->left_upper_arm.position[0].Y << "," << user->left_upper_arm.position[0].Z << endl;

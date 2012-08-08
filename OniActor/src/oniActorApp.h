@@ -28,6 +28,10 @@
 #define MAX_ACTORS 2
 #define MAX_HANDS 4
 
+// OSC
+#define HOST "localhost"
+#define PORT 12345
+
 // GUI DEFINES
 #define GUILEFT_FILE "GUI/guileftSettings.xml"
 #define GUIRIGHT_FILE "GUI/guirightSettings.xml"
@@ -89,6 +93,9 @@ private:
     
     // OF IMAGES
     ofImage				allUserMasks, user1Mask, user2Mask, depthRangeMask;
+    
+    // OSC OBJECTS
+    ofxOscSender sender;
     
     // GUI OBJECTS
     ofxUICanvas *guileft;
@@ -185,6 +192,7 @@ private:
     
     // oniActorAppUtils.cpp METHODS
     string	generateFileName();
+    void    setupOsc();
 };
 
 
