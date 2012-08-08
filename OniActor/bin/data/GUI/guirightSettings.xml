@@ -58,13 +58,3 @@
     <Name>DRAW BOX</Name>
     <Value>1</Value>
 </Widget>
-<Widget>
-    <Kind>17</Kind>
-    <Name>DRAW CLOUD</Name>
-    <Value>0</Value>
-</Widget>
-<Widget>
-    <Kind>17</Kind>
-    <Name>TOGGLE DATA</Name>
-    <Value>0</Value>
-</Widget>

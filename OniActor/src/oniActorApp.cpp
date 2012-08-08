@@ -16,8 +16,6 @@ void oniActorApp::setup()
 	isTrackingHands	= false;
 	isFiltering		= false;
 	isRecording		= false;
-	isCloud			= false;
-	isCPBkgnd		= false;
 	isMasking		= false;
     
 	nearThreshold = 500;
@@ -66,7 +64,7 @@ void oniActorApp::draw()
     switch (currentFormat) 
     {
         case oniactor:
-            oniactorDraw();            
+            oniactorDraw();
             break;
         
         case debug:
@@ -80,7 +78,7 @@ void oniActorApp::draw()
         default:
             break;
     }
-    
+        
     // show interface?
     toggleShowInterface == true ? showInterface() : hideInterface();
 }
@@ -164,7 +162,7 @@ void oniActorApp::keyReleased(int key)
 
 void oniActorApp::mouseMoved(int x, int y)
 {
-    if (isCloud) pointCloudRotationY = x;
+    pointCloudRotationY = x;
 }
 
 void oniActorApp::mouseDragged(int x, int y, int button)

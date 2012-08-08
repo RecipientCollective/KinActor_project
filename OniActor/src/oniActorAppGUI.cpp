@@ -49,8 +49,6 @@ void oniActorApp::updateGUI()
     string statusFilter = STATUS_FILTER_HANDS_DEFAULT + (string)(isFiltering ? "FILTERING. Level: " + ofToString(filterFactor) : "NOT FILTERING");
     string statusHandSmooth = STATUS_SMOOTH_HANDS_DEFAULT + (string)(isLive ? ofToString(recordHandTracker.getSmoothing()) : ofToString(playHandTracker.getSmoothing()));
     string statusMasks = STATUS_DRAW_MASKS_DEFAULT + (string)(!isMasking ? "HIDE" : (isTracking ? "SHOW" : "YOU NEED TO TURN ON TRACKING!!"));
-    string statusCloud = STATUS_CLOUD_DEFAULT + (string)(isCloud ? "ON" : "OFF");
-    string statusCloudData = STATUS_CLOUD_DATA_DEFAULT + (string)(isCPBkgnd ? "SHOW BACKGROUND" : (isTracking ? "SHOW USER" : "YOU NEED TO TURN ON TRACKING!!"));
     
     filenameLabel             -> setLabel(statusFileName);
     statusPlayLabel           -> setLabel(statusPlay);
@@ -61,8 +59,6 @@ void oniActorApp::updateGUI()
     statusFilterLabel         -> setLabel(statusFilter);
     statusSmoothHandsLabel    -> setLabel(statusHandSmooth);
     statusDrawMasksLabel      -> setLabel(statusMasks);
-    statusCloudLabel          -> setLabel(statusCloud);
-    statusCloudDataLabel      -> setLabel(statusCloudData);
 }
 
 void oniActorApp::setupGUIleft()
@@ -108,10 +104,6 @@ void oniActorApp::setupGUIleft()
     guileft->addWidgetDown(statusSmoothHandsLabel);
     statusDrawMasksLabel = new ofxUILabel(STATUS_DRAW_MASKS_DEFAULT, OFX_UI_FONT_SMALL);
     guileft->addWidgetDown(statusDrawMasksLabel);
-    statusCloudLabel = new ofxUILabel(STATUS_CLOUD_DEFAULT, OFX_UI_FONT_SMALL);
-    guileft->addWidgetDown(statusCloudLabel);
-    statusCloudDataLabel = new ofxUILabel(STATUS_CLOUD_DATA_DEFAULT, OFX_UI_FONT_SMALL);
-    guileft->addWidgetDown(statusCloudDataLabel);
     guileft->addWidgetDown(new ofxUISpacer(guiPanelLength-xInit, 2));    
     
     
@@ -157,11 +149,6 @@ void oniActorApp::setupGUIright()
     guiright->addWidgetDown(new ofxUILabel("VIEW",OFX_UI_FONT_MEDIUM));
     guiright->addWidgetDown(new ofxUILabelToggle(guiPanelLength-xInit, isMasking, MASKING_TOGGLE, OFX_UI_FONT_MEDIUM));
     guiright->addWidgetDown(new ofxUILabelToggle(guiPanelLength-xInit, isMasking, DRAW_BOX_TOGGLE, OFX_UI_FONT_MEDIUM));
-    
-    // REMOVE THIS FIXME
-    guiright->addWidgetDown(new ofxUILabelToggle(half_panel, isFiltering, DRAWCLOUD_TOGGLE, OFX_UI_FONT_MEDIUM));
-    guiright->addWidgetEastOf(new ofxUILabelToggle(half_panel, isFiltering, DRAWCPB_TOGGLE, OFX_UI_FONT_MEDIUM), DRAWCLOUD_TOGGLE);
-    
         
     // LISTENER AND LOAD SETTINGS
     ofAddListener(guiright->newGUIEvent, this, &oniActorApp::guiEvent);
@@ -315,19 +302,6 @@ void oniActorApp::guiEvent(ofxUIEventArgs &e)
 #ifdef DEBUG		
         cerr << endl << "DRAWBOX TOGGLE CHANGE: " << toggle->getValue() << "," << toggleDrawBox << endl;
 #endif        
-    }
-    // FIXME REMOVE THIS
-    else if(e.widget->getName() == DRAWCLOUD_TOGGLE)
-    {
-        ofxUIToggle *toggle = (ofxUIToggle *) e.widget;
-        isCloud = toggle -> getValue();
-        recordUser.setUseCloudPoints(isCloud);
-        playUser.setUseCloudPoints(isCloud);
-    }
-    else if(e.widget->getName() == DRAWCPB_TOGGLE)
-    {
-        ofxUIToggle *toggle = (ofxUIToggle *) e.widget;
-        isCPBkgnd = toggle -> getValue();
     }
 }
 

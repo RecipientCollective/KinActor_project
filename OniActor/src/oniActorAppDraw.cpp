@@ -14,7 +14,6 @@ void oniActorApp::oniactorDraw()
         drawBox(0,0,inputWidth,inputHeight);
     
     
-    
     ofPopMatrix();
 }
 
@@ -56,45 +55,6 @@ void oniActorApp::debugDraw()
         isLive ? recordHandTracker.drawHands() : playHandTracker.drawHands();
     }
     
-//    if (isLive) {
-//        
-//        recordDepth.draw(0,0,640,480);
-//		recordImage.draw(640, 0, 640, 480);
-//        
-//        // can use this with openCV to make masks, 
-//        // find contours etc when not dealing 
-//        // with openNI 'User' like objects
-//        depthRangeMask.draw(0, 480, 320, 240);
-//
-//        if (isTracking) {
-//			recordUser.draw();
-//			if (isMasking) drawMasks();
-//            // 0 gives you all point clouds; 
-//            // use userID to see point clouds for specific users
-//			if (isCloud) drawPointCloud(&recordUser, 1);	            
-//		}
-//        
-//		if (isTrackingHands)
-//			recordHandTracker.drawHands();
-//        
-//        
-//    } else {
-//        
-//        playDepth.draw(0,0,640,480);
-//		playImage.draw(640, 0, 640, 480);        
-//		depthRangeMask.draw(0, 480, 320, 240);
-//        
-//		if (isTracking) {
-//			playUser.draw();            
-//			if (isMasking) drawMasks();
-//			if (isCloud) drawPointCloud(&playUser, 0);            
-//		}
-//        
-//		if (isTrackingHands)
-//			playHandTracker.drawHands();
-//        
-//    }
-    
     ofPopMatrix();
 }
 
@@ -108,50 +68,43 @@ void oniActorApp::drawMasks()
     glPushMatrix();
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ZERO);
-    drawBox(0, 0, inputWidth, inputHeight);
 	allUserMasks.draw(0, 0, inputWidth, inputHeight);
 	glDisable(GL_BLEND);
     glPopMatrix();
-    drawBox(inputWidth, 0, inputWidth / 2.0f, inputHeight / 2.0f);
-    drawBox(inputWidth, inputHeight / 2.0f, inputWidth / 2.0f, inputHeight / 2.0f);
 	user1Mask.draw(inputWidth, 0, inputWidth / 2.0f, inputHeight / 2.0f);
 	user2Mask.draw(inputWidth, inputHeight / 2.0f, inputWidth / 2.0f, inputHeight / 2.0f);
 }
 
-void oniActorApp::drawPointCloud(ofxUserGenerator *user_generator, int userID)
+void oniActorApp::cloudDraw()
 {
     glPushMatrix();
     
-	int w = user_generator->getWidth();
-	int h = user_generator->getHeight();
+    ofxUserGenerator currentUser = isLive ? recordUser : playUser;
+    int w = currentUser.getWidth();
+    int h = currentUser.getHeight();
+    glTranslatef(w, h, -400);
+    ofRotateY(pointCloudRotationY);
     
-	glTranslatef(w, h/2, -500);
-	ofRotateY(pointCloudRotationY);
+    glBegin(GL_POINTS);
     
-	glBegin(GL_POINTS);
-    
-	int step = 1;
+    int step = 1;
     
 	for(int y = 0; y < h; y += step) {
 		for(int x = 0; x < w; x += step) {
-			ofPoint pos = user_generator->getWorldCoordinateAt(x, y, userID);
-			if (pos.z == 0 && isCPBkgnd) continue;	// gets rid of background -> still a bit weird if userID > 0...
-			ofColor color = user_generator->getWorldColorAt(x,y, userID);
-			glColor4ub((unsigned char)color.r, (unsigned char)color.g, (unsigned char)color.b, (unsigned char)color.a);
-			glVertex3f(pos.x, pos.y, pos.z);
-		}
-	}
+            ofPoint pos = currentUser.getWorldCoordinateAt(x, y, 1);
+            ofColor color = currentUser.getWorldColorAt(x,y, 1);
+            if (pos.z == 0) continue;
+            glColor4ub((unsigned char)color.r,(unsigned char)color.g,(unsigned char)color.b, (unsigned char)color.a);
+            glVertex3f(pos.x, pos.y, pos.z);
+        }
+    }
     
-	glEnd();
+    glEnd();
     
 	glColor3f(1.0f, 1.0f, 1.0f);
     
 	glPopMatrix();
-}
 
-void oniActorApp::cloudDraw()
-{
-    
 }
 
 void oniActorApp::drawBox(int x, int y, int w, int h)

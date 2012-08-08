@@ -56,10 +56,6 @@
 #define MASKING_TOGGLE "DRAW MASK"
 #define DRAW_BOX_TOGGLE "DRAW BOX"
 
-// FIXME REMOVE THIS
-#define DRAWCLOUD_TOGGLE "DRAW CLOUD"
-#define DRAWCPB_TOGGLE "TOGGLE DATA"
-
 
 class oniActorApp : public ofBaseApp
 {
@@ -81,8 +77,7 @@ private:
 #endif
 
     // OPENNI PARAMETERS
-    bool				isLive, isTracking, isRecording;
-    bool                isCloud, isCPBkgnd, isMasking;
+    bool				isLive, isTracking, isRecording, isMasking;
 	bool				isTrackingHands, isFiltering;
     int					nearThreshold, farThreshold;
 	int					pointCloudRotationY;
@@ -105,8 +100,6 @@ private:
     ofxUILabel  *statusFilterLabel;
     ofxUILabel  *statusSmoothHandsLabel;
     ofxUILabel  *statusDrawMasksLabel;
-    ofxUILabel  *statusCloudLabel;
-    ofxUILabel  *statusCloudDataLabel;
     ofxUILabelToggle *recordToggle;
     ofxUILabelToggle *playbackToggle;
     

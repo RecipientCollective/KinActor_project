@@ -32,7 +32,7 @@ void oniActorApp::setupRecording(string _filename)
     // built in openni skeleton smoothing:
     recordUser.setSmoothing(filterFactor);
     recordUser.setUseMaskPixels(isMasking);
-	recordUser.setUseCloudPoints(isCloud);
+	recordUser.setUseCloudPoints(true);
     // use this to set dynamic max number of users 
     // (NB: that a hard upper limit is defined by MAX_NUMBER_USERS in ofxUserGenerator) 
     // MAX_NUMBER_USERS=8    
@@ -67,7 +67,7 @@ void oniActorApp::setupPlayback(string _filename)
     playUser.setup(&playContext);
 	playUser.setSmoothing(filterFactor);				
 	playUser.setUseMaskPixels(isMasking);
-	playUser.setUseCloudPoints(isCloud);    
+	playUser.setUseCloudPoints(true);    
 	playHandTracker.setup(&playContext, 4);
 	playHandTracker.setSmoothing(filterFactor);			
 	playHandTracker.setFilterFactors(filterFactor);
