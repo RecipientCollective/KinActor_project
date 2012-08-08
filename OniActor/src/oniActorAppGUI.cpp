@@ -21,6 +21,7 @@ void oniActorApp::setupGUI()
 {
     setupGUIleft();
     setupGUIright();
+    setupGUIlogger();
 }
 
 void oniActorApp::updateGUI()
@@ -111,7 +112,7 @@ void oniActorApp::setupGUIleft()
     stringstream _help_str1, _help_str2, _help_str3;
     _help_str1 << "[h]:hide/show interface" << " [f]:fullscreen" << endl;
     _help_str2 << "[ARROWS]:translate view" << " [+/-]:scale" << endl;
-    _help_str3 << "[</>]:tilt kinect" << endl;
+    _help_str3 << "[l]:hide/show OscLogger" << "[</>]:tilt kinect" << endl;
     guileft->addWidgetDown(new ofxUILabel("HELP",OFX_UI_FONT_LARGE));
     guileft->addWidgetDown(new ofxUILabel(_help_str1.str(), OFX_UI_FONT_SMALL));
     guileft->addWidgetDown(new ofxUILabel(_help_str2.str(), OFX_UI_FONT_SMALL));
@@ -119,6 +120,16 @@ void oniActorApp::setupGUIleft()
     // LISTENER AND LOAD SETTINGS
     ofAddListener(guileft->newGUIEvent, this, &oniActorApp::guiEvent);
     guileft->loadSettings(GUILEFT_FILE);
+}
+
+void oniActorApp::setupGUIlogger()
+{
+    guilogger = new ofxUICanvas(guiPanelLength + (xInit*2), ofGetWindowHeight() - LOGGER_PANEL_HEIGHT, ofGetWindowWidth() -((guiPanelLength + xInit*2)*2), LOGGER_PANEL_HEIGHT);
+    guilogger -> setDrawWidgetPadding(true);
+    guilogger ->addWidgetDown(new ofxUILabel("OSC LOGGER",OFX_UI_FONT_LARGE));
+    
+    // NO LISTENER AND NO LOAD SETTINGS
+
 }
 
 void oniActorApp::setupGUIright()
@@ -328,6 +339,16 @@ void oniActorApp::hideInterface()
 {
     guileft->setVisible(false);
     guiright->setVisible(false);
+}
+
+void oniActorApp::showLogger()
+{
+    guilogger->setVisible(true);
+}
+
+void oniActorApp::hideLogger()
+{
+    guilogger->setVisible(false);
 }
 
 void oniActorApp::setFullScreen()

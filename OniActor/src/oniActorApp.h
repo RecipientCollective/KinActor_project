@@ -21,6 +21,7 @@
 #define OUTPUT_HEIGHT 852
 #define OUTPUT_WIDTH 1480
 #define GUIPANEL_BASE_LENGTH 400
+#define LOGGER_PANEL_HEIGHT 300
 
 // OPENNI CUSTOM DEFINES
 #define MAX_ACTORS 2
@@ -91,6 +92,7 @@ private:
     // GUI OBJECTS
     ofxUICanvas *guileft;
     ofxUICanvas *guiright;
+    ofxUICanvas *guilogger;
     ofPoint      trPad;
     ofxUILabel  *accelerationLabel;
     ofxUILabel  *filenameLabel;
@@ -114,6 +116,7 @@ private:
     bool  isFullScreen;
     bool  toggleFullScreen;
     bool  toggleShowInterface;
+    bool  toggleShowLogger;
     
     // DRAW PARAMETERS
     enum DrawFormat 
@@ -152,12 +155,15 @@ private:
     void setupGUI();
     void setupGUIleft();
     void setupGUIright();
+    void setupGUIlogger();
     void closeGUI();
     void guiEvent(ofxUIEventArgs &e);
     void setFullScreen();
     void showInterface();
     void hideInterface();
     void updateGUI();
+    void showLogger();
+    void hideLogger();
     
     // oniActorAppOpenNI.cpp METHODS
     void setupRecording(string _filename = "");

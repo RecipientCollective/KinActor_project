@@ -40,6 +40,7 @@ void oniActorApp::setup()
     isFullScreen = false;
     toggleFullScreen = false;
     toggleShowInterface = true;
+    toggleShowLogger = true;
     setupGUI();
 
     // OF stuffs, background ...
@@ -80,18 +81,25 @@ void oniActorApp::draw()
     }
         
     // show interface?
-    toggleShowInterface == true ? showInterface() : hideInterface();
+    toggleShowInterface ? showInterface() : hideInterface();
+    toggleShowLogger ? showLogger() : hideLogger();
 }
 
 void oniActorApp::keyPressed(int key)
 {
     switch (key) 
     {
+        case 'F':
         case 'f':
 			toggleFullScreen = true;
 			break;
+        case 'H':
         case 'h':
             toggleShowInterface = !toggleShowInterface;
+            break;
+        case 'l':
+        case 'L':
+            toggleShowLogger = !toggleShowLogger;
             break;
         case '1':
             currentFormat = oniactor;
