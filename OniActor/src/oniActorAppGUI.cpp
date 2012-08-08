@@ -134,26 +134,34 @@ void oniActorApp::setupGUIright()
     guiright = new ofxUICanvas(ofGetWindowWidth()-(guiPanelLength+xInit), 0, guiPanelLength+xInit,ofGetHeight());
     guiright -> setDrawWidgetPadding(true);
     
-    guiright->addWidgetDown(new ofxUILabel("CONTROLS",OFX_UI_FONT_LARGE));
+    guiright->addWidgetDown(new ofxUILabel("OpenNI - CONTROLS",OFX_UI_FONT_LARGE));
     guiright->addWidgetDown(new ofxUISpacer(guiPanelLength-xInit, 2));
+    guiright->addWidgetDown(new ofxUILabel("SOURCE",OFX_UI_FONT_MEDIUM));
     float half_panel = ((guiPanelLength-xInit) / 2.0f) - xInit;
     recordToggle = new ofxUILabelToggle(half_panel, isRecording, RECORDING_TOGGLE, OFX_UI_FONT_MEDIUM);
     playbackToggle = new ofxUILabelToggle(half_panel, isRecording, PLAYBACK_TOGGLE, OFX_UI_FONT_MEDIUM);
     guiright->addWidgetDown(recordToggle);
-    guiright->addWidgetEastOf(playbackToggle, RECORDING_TOGGLE);    
+    guiright->addWidgetEastOf(playbackToggle, RECORDING_TOGGLE);
+    guiright->addWidgetDown(new ofxUISpacer(guiPanelLength-xInit, 2));
+    guiright->addWidgetDown(new ofxUILabel("TRACKING",OFX_UI_FONT_MEDIUM));
     guiright->addWidgetDown(new ofxUILabelToggle(guiPanelLength - xInit, isTracking, SKELETON_TRACKING_TOGGLE, OFX_UI_FONT_MEDIUM));
     guiright->addWidgetDown(new ofxUILabelToggle(half_panel, isTrackingHands, HANDS_TRACKING_TOGGLE, OFX_UI_FONT_MEDIUM));
     guiright->addWidgetEastOf(new ofxUILabelToggle(half_panel, isFiltering, HANDS_FILTER_TOGGLE, OFX_UI_FONT_MEDIUM), HANDS_TRACKING_TOGGLE);
-    guiright->addWidgetDown(new ofxUILabelToggle(guiPanelLength-xInit, isMasking, MASKING_TOGGLE, OFX_UI_FONT_MEDIUM));
-    guiright->addWidgetDown(new ofxUILabelToggle(half_panel, isFiltering, DRAWCLOUD_TOGGLE, OFX_UI_FONT_MEDIUM));
-    guiright->addWidgetEastOf(new ofxUILabelToggle(half_panel, isFiltering, DRAWCPB_TOGGLE, OFX_UI_FONT_MEDIUM), DRAWCLOUD_TOGGLE);
-    
     guiright->addWidgetDown(new ofxUISlider(guiPanelLength-xInit,dim, 0.0, recordDepth.getMaxDepth(), nearThreshold, NEAR_THRESHOLD_SLIDER)); 
     guiright->addWidgetDown(new ofxUISlider(guiPanelLength-xInit,dim, 0.0, recordDepth.getMaxDepth(), farThreshold, FAR_THRESHOLD_SLIDER));
     guiright->addWidgetDown(new ofxUISlider(guiPanelLength-xInit,dim, 0.0,1.0, recordUser.getSmoothing(), SMOOTH_SKELETON_SLIDER));
     guiright->addWidgetDown(new ofxUISlider(guiPanelLength-xInit,dim, 0.0,1.0, filterFactor, FILTER_HANDS_SLIDER));
     guiright->addWidgetDown(new ofxUISlider(guiPanelLength-xInit,dim, 0.0,1.0, recordHandTracker.getSmoothing(), SMOOTH_HANDS_SLIDER));
+
+    guiright->addWidgetDown(new ofxUISpacer(guiPanelLength-xInit, 2));
+    guiright->addWidgetDown(new ofxUILabel("VIEW",OFX_UI_FONT_MEDIUM));
+    guiright->addWidgetDown(new ofxUILabelToggle(guiPanelLength-xInit, isMasking, MASKING_TOGGLE, OFX_UI_FONT_MEDIUM));
     
+    // REMOVE THIS FIXME
+    guiright->addWidgetDown(new ofxUILabelToggle(half_panel, isFiltering, DRAWCLOUD_TOGGLE, OFX_UI_FONT_MEDIUM));
+    guiright->addWidgetEastOf(new ofxUILabelToggle(half_panel, isFiltering, DRAWCPB_TOGGLE, OFX_UI_FONT_MEDIUM), DRAWCLOUD_TOGGLE);
+    
+        
     // LISTENER AND LOAD SETTINGS
     ofAddListener(guiright->newGUIEvent, this, &oniActorApp::guiEvent);
     guiright->loadSettings(GUIRIGHT_FILE);

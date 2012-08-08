@@ -24,21 +24,6 @@
     <Value>0</Value>
 </Widget>
 <Widget>
-    <Kind>17</Kind>
-    <Name>DRAW MASK</Name>
-    <Value>0</Value>
-</Widget>
-<Widget>
-    <Kind>17</Kind>
-    <Name>DRAW CLOUD</Name>
-    <Value>1</Value>
-</Widget>
-<Widget>
-    <Kind>17</Kind>
-    <Name>TOGGLE DATA</Name>
-    <Value>0</Value>
-</Widget>
-<Widget>
     <Kind>4</Kind>
     <Name>NEAR THRESHOLD</Name>
     <Value>468.75</Value>
@@ -62,4 +47,19 @@
     <Kind>4</Kind>
     <Name>SMOOTH HANDS</Name>
     <Value>0.1</Value>
+</Widget>
+<Widget>
+    <Kind>17</Kind>
+    <Name>DRAW MASK</Name>
+    <Value>0</Value>
+</Widget>
+<Widget>
+    <Kind>17</Kind>
+    <Name>DRAW CLOUD</Name>
+    <Value>0</Value>
+</Widget>
+<Widget>
+    <Kind>17</Kind>
+    <Name>TOGGLE DATA</Name>
+    <Value>0</Value>
 </Widget>
