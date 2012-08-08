@@ -24,6 +24,9 @@ void oniActorApp::oniactorDraw()
         isLive ? recordHandTracker.drawHands() : playHandTracker.drawHands();
     }
     
+    if (isMasking)
+        drawAllUserMasks();
+    
     ofPopMatrix();
 }
 
@@ -57,7 +60,8 @@ void oniActorApp::debugDraw()
     if (isMasking) {
         ofPushMatrix();
         ofTranslate(inputWidth, inputHeight);
-        drawMasks();
+        drawAllUserMasks();
+        drawUserMasks();
         ofPopMatrix();
     }
     
@@ -73,15 +77,19 @@ void oniActorApp::logDraw()
     
 }
 
-void oniActorApp::drawMasks()
+void oniActorApp::drawAllUserMasks()
 {
     glPushMatrix();
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ZERO);
 	allUserMasks.draw(0, 0, inputWidth, inputHeight);
 	glDisable(GL_BLEND);
-    glPopMatrix();
-	user1Mask.draw(inputWidth, 0, inputWidth / 2.0f, inputHeight / 2.0f);
+    glPopMatrix();	
+}
+
+void oniActorApp::drawUserMasks()
+{
+    user1Mask.draw(inputWidth, 0, inputWidth / 2.0f, inputHeight / 2.0f);
 	user2Mask.draw(inputWidth, inputHeight / 2.0f, inputWidth / 2.0f, inputHeight / 2.0f);
 }
 

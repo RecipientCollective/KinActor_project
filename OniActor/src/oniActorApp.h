@@ -166,7 +166,8 @@ private:
     // oniActorAppDraw.cpp METHODS
     void debugDraw();
     void logDraw();
-    void drawMasks();
+    void drawAllUserMasks();
+    void drawUserMasks();
     void drawPointCloud(ofxUserGenerator * user_generator, int userID);
     void oniactorDraw();
     void cloudDraw();
