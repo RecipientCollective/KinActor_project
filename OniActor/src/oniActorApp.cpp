@@ -56,6 +56,11 @@ void oniActorApp::update()
 {
     openniUpdate();
     updateGUI();
+    
+#ifdef DEBUG
+    if (isTracking)
+        debugSkeletons();
+#endif
 }
 
 void oniActorApp::draw()

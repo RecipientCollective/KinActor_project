@@ -170,6 +170,7 @@ private:
     void setupPlayback(string _filename);
     void openniUpdate();
     void openniClose();
+    void debugSkeletons();
     
     // oniActorAppDraw.cpp METHODS
     void debugDraw();

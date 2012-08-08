@@ -127,6 +127,38 @@ void oniActorApp::openniUpdate()
     }
 }
 
+void oniActorApp::debugSkeletons()
+{
+    ofxUserGenerator currentRecorder = isLive ? recordUser : playUser;
+    for(int i = 1; i <= currentRecorder.getNumberOfTrackedUsers(); i++)
+    {
+        ofxTrackedUser * user = currentRecorder.getTrackedUser(i);
+        cerr << "USER: " << i << endl;
+        cerr << "\tNECK x,y,z: " << user->neck.position[0].X << ", " << user->neck.position[0].Y << "," << user->neck.position[0].Z << endl;
+        cerr << "\tLEFT SHOULDER x,y,z: " << user->left_shoulder.position[0].X << ", " << user->left_shoulder.position[0].Y << "," << user->left_shoulder.position[0].Z << endl;
+        cerr << "\tLEFT UPPER ARM x,y,z: " << user->left_upper_arm.position[0].X << ", " << user->left_upper_arm.position[0].Y << "," << user->left_upper_arm.position[0].Z << endl;
+        cerr << "\tLEFT LOWER ARM x,y,z: " << user->left_lower_arm.position[0].X << ", " << user->left_lower_arm.position[0].Y << "," << user->left_lower_arm.position[0].Z << endl;
+        
+        cerr << "\tRIGHT SHOULDER x,y,z: " << user->right_shoulder.position[0].X << ", " << user->right_shoulder.position[0].Y << "," << user->right_shoulder.position[0].Z << endl;
+        cerr << "\tRIGHT UPPER ARM x,y,z: " << user->right_upper_arm.position[0].X << ", " << user->right_upper_arm.position[0].Y << "," << user->right_upper_arm.position[0].Z << endl;
+        cerr << "\tRIGHT LOWER ARM x,y,z: " << user->right_lower_arm.position[0].X << ", " << user->right_lower_arm.position[0].Y << "," << user->right_lower_arm.position[0].Z << endl;
+
+        cerr << "\tLEFT UPPER TORSO x,y,z: " << user->left_upper_torso.position[0].X << ", " << user->left_upper_torso.position[0].Y << "," << user->left_upper_torso.position[0].Z << endl;
+        cerr << "\tRIGHT UPPER TORSO x,y,z: " << user->right_upper_torso.position[0].X << ", " << user->right_upper_torso.position[0].Y << "," << user->right_upper_torso.position[0].Z << endl;
+
+        cerr << "\tLEFT LOWER TORSO x,y,z: " << user->left_lower_torso.position[0].X << ", " << user->left_lower_torso.position[0].Y << "," << user->left_lower_torso.position[0].Z << endl;
+        cerr << "\tRIGHT LOWER TORSO x,y,z: " << user->right_lower_torso.position[0].X << ", " << user->right_lower_torso.position[0].Y << "," << user->right_lower_torso.position[0].Z << endl;
+        
+        cerr << "\tLEFT UPPER LEG x,y,z: " << user->left_upper_leg.position[0].X << ", " << user->left_upper_leg.position[0].Y << "," << user->left_upper_leg.position[0].Z << endl;
+        cerr << "\tLEFT LOWER LEG x,y,z: " << user->left_lower_leg.position[0].X << ", " << user->left_lower_leg.position[0].Y << "," << user->left_lower_leg.position[0].Z << endl;
+        
+        cerr << "\tRIGHT UPPER LEG x,y,z: " << user->right_upper_leg.position[0].X << ", " << user->right_upper_leg.position[0].Y << "," << user->right_upper_leg.position[0].Z << endl;
+        cerr << "\tRIGHT LOWER LEG x,y,z: " << user->right_lower_leg.position[0].X << ", " << user->right_lower_leg.position[0].Y << "," << user->right_lower_leg.position[0].Z << endl;
+        
+        
+    }
+}
+
 void oniActorApp::openniClose()
 {
     // no shutDown, is called on object delete (otherwise...malloc fredddddd!)
