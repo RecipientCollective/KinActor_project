@@ -51,7 +51,12 @@
 <Widget>
     <Kind>17</Kind>
     <Name>DRAW MASK</Name>
-    <Value>0</Value>
+    <Value>1</Value>
+</Widget>
+<Widget>
+    <Kind>17</Kind>
+    <Name>DRAW BOX</Name>
+    <Value>1</Value>
 </Widget>
 <Widget>
     <Kind>17</Kind>

@@ -27,6 +27,13 @@ void oniActorApp::setup()
     
     setupRecording(); // oniActorAppOpenNI.cpp
     
+    // DRAW SETUP
+    currentFormat = oniactor;
+    mtrx = GUIPANEL_BASE_LENGTH + xInit;
+    mtry = xInit;
+    scaleFactor = 1.0;
+    toggleDrawBox = true;
+    
     // GUI SETUP
     xInit = OFX_UI_GLOBAL_WIDGET_SPACING;
     dim = 24;
@@ -36,12 +43,7 @@ void oniActorApp::setup()
     toggleFullScreen = false;
     toggleShowInterface = true;
     setupGUI();
-    
-    currentFormat = oniactor;
-    mtrx = GUIPANEL_BASE_LENGTH + xInit;
-    mtry = xInit;
-    scaleFactor = 1.0;
-    
+
     // OF stuffs, background ...
     setupWindowOptions(); // oniActorAppGUI.cpp 
 

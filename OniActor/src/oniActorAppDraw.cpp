@@ -3,6 +3,20 @@
 //--------------------------------------------------------------
 // DRAW FUNCTIONS
 //--------------------------------------------------------------
+void oniActorApp::oniactorDraw()
+{
+    ofSetColor(255, 255, 255);
+    ofPushMatrix();
+    ofScale(scaleFactor, scaleFactor, 1.0);
+	ofTranslate(mtrx, mtry, 1.0);
+       
+    if (toggleDrawBox)
+        drawBox(0,0,inputWidth,inputHeight);
+    
+    
+    
+    ofPopMatrix();
+}
 
 void oniActorApp::debugDraw()
 {
@@ -10,44 +24,76 @@ void oniActorApp::debugDraw()
     ofPushMatrix();
     ofScale(0.75, 0.75);
     
-    if (isLive) {
-        
-        recordDepth.draw(0,0,640,480);
-		recordImage.draw(640, 0, 640, 480);
-        
-        // can use this with openCV to make masks, 
-        // find contours etc when not dealing 
-        // with openNI 'User' like objects
-        depthRangeMask.draw(0, 480, 320, 240);
-
-        if (isTracking) {
-			recordUser.draw();
-			if (isMasking) drawMasks();
-            // 0 gives you all point clouds; 
-            // use userID to see point clouds for specific users
-			if (isCloud) drawPointCloud(&recordUser, 1);	            
-		}
-        
-		if (isTrackingHands)
-			recordHandTracker.drawHands();
-        
-        
-    } else {
-        
-        playDepth.draw(0,0,640,480);
-		playImage.draw(640, 0, 640, 480);        
-		depthRangeMask.draw(0, 480, 320, 240);
-        
-		if (isTracking) {
-			playUser.draw();            
-			if (isMasking) drawMasks();
-			if (isCloud) drawPointCloud(&playUser, 0);            
-		}
-        
-		if (isTrackingHands)
-			playHandTracker.drawHands();
-        
+    // RECORD DEPTH DRAW
+    drawBox(0,0,inputWidth,inputHeight);
+    isLive ? recordDepth.draw(0,0,inputWidth,inputHeight) : playDepth.draw(0,0,inputWidth,inputHeight);
+    
+    // RECORD IMAGE DRAW
+    drawBox(inputWidth,0,inputWidth,inputHeight);
+    isLive ? recordImage.draw(inputWidth, 0, inputWidth,inputHeight) : playImage.draw(inputWidth, 0, inputWidth,inputHeight);
+    
+    // DETPTH RANGE MASK DRAW
+    drawBox(inputWidth*2,0,inputWidth,inputHeight);
+    depthRangeMask.draw(inputWidth*2, 0, inputWidth, inputHeight);
+    
+    ofPushMatrix();
+    ofTranslate(0, inputHeight);
+    drawBox(0,0,inputWidth,inputHeight);
+    if (isTracking) {        
+        isLive ? recordImage.draw(0, 0, inputWidth,inputHeight) : playImage.draw(0, 0, inputWidth,inputHeight);
+        isLive ? recordUser.draw() : playUser.draw();
     }
+    ofPopMatrix();
+    
+    if (isMasking) {
+        ofPushMatrix();
+        ofTranslate(inputWidth, inputHeight);
+        drawMasks();
+        ofPopMatrix();
+    }
+    
+    if (isTrackingHands) {
+        isLive ? recordHandTracker.drawHands() : playHandTracker.drawHands();
+    }
+    
+//    if (isLive) {
+//        
+//        recordDepth.draw(0,0,640,480);
+//		recordImage.draw(640, 0, 640, 480);
+//        
+//        // can use this with openCV to make masks, 
+//        // find contours etc when not dealing 
+//        // with openNI 'User' like objects
+//        depthRangeMask.draw(0, 480, 320, 240);
+//
+//        if (isTracking) {
+//			recordUser.draw();
+//			if (isMasking) drawMasks();
+//            // 0 gives you all point clouds; 
+//            // use userID to see point clouds for specific users
+//			if (isCloud) drawPointCloud(&recordUser, 1);	            
+//		}
+//        
+//		if (isTrackingHands)
+//			recordHandTracker.drawHands();
+//        
+//        
+//    } else {
+//        
+//        playDepth.draw(0,0,640,480);
+//		playImage.draw(640, 0, 640, 480);        
+//		depthRangeMask.draw(0, 480, 320, 240);
+//        
+//		if (isTracking) {
+//			playUser.draw();            
+//			if (isMasking) drawMasks();
+//			if (isCloud) drawPointCloud(&playUser, 0);            
+//		}
+//        
+//		if (isTrackingHands)
+//			playHandTracker.drawHands();
+//        
+//    }
     
     ofPopMatrix();
 }
@@ -62,11 +108,14 @@ void oniActorApp::drawMasks()
     glPushMatrix();
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ZERO);
-	allUserMasks.draw(640, 0, 640, 480);
+    drawBox(0, 0, inputWidth, inputHeight);
+	allUserMasks.draw(0, 0, inputWidth, inputHeight);
 	glDisable(GL_BLEND);
     glPopMatrix();
-	user1Mask.draw(320, 480, 320, 240);
-	user2Mask.draw(640, 480, 320, 240);
+    drawBox(inputWidth, 0, inputWidth / 2.0f, inputHeight / 2.0f);
+    drawBox(inputWidth, inputHeight / 2.0f, inputWidth / 2.0f, inputHeight / 2.0f);
+	user1Mask.draw(inputWidth, 0, inputWidth / 2.0f, inputHeight / 2.0f);
+	user2Mask.draw(inputWidth, inputHeight / 2.0f, inputWidth / 2.0f, inputHeight / 2.0f);
 }
 
 void oniActorApp::drawPointCloud(ofxUserGenerator *user_generator, int userID)
@@ -100,12 +149,16 @@ void oniActorApp::drawPointCloud(ofxUserGenerator *user_generator, int userID)
 	glPopMatrix();
 }
 
-void oniActorApp::oniactorDraw()
+void oniActorApp::cloudDraw()
 {
     
 }
 
-void oniActorApp::cloudDraw()
+void oniActorApp::drawBox(int x, int y, int w, int h)
 {
-    
+    ofPushStyle();
+    ofSetColor(255, 255, 255);
+    ofNoFill();
+    ofRect(x, y, w, h);
+    ofPopStyle();
 }

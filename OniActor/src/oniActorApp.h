@@ -54,8 +54,12 @@
 #define HANDS_TRACKING_TOGGLE  "HANDS TRACKING"
 #define HANDS_FILTER_TOGGLE  "HANDS FILTER"
 #define MASKING_TOGGLE "DRAW MASK"
+#define DRAW_BOX_TOGGLE "DRAW BOX"
+
+// FIXME REMOVE THIS
 #define DRAWCLOUD_TOGGLE "DRAW CLOUD"
 #define DRAWCPB_TOGGLE "TOGGLE DATA"
+
 
 class oniActorApp : public ofBaseApp
 {
@@ -116,7 +120,7 @@ private:
     bool  toggleFullScreen;
     bool  toggleShowInterface;
     
-    // DRAW FORMATS
+    // DRAW PARAMETERS
     enum DrawFormat 
     {
         oniactor = 1,
@@ -124,6 +128,7 @@ private:
         cloud = 3
     };
     DrawFormat currentFormat;
+    bool toggleDrawBox;
     
     // DRAW PARAMETERS
     float scaleFactor;
@@ -172,6 +177,7 @@ private:
     void drawPointCloud(ofxUserGenerator * user_generator, int userID);
     void oniactorDraw();
     void cloudDraw();
+    void drawBox(int x, int y, int w, int h);
     
     // oniActorAppUtils.cpp METHODS
     string	generateFileName();

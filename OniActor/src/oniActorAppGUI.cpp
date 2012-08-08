@@ -156,6 +156,7 @@ void oniActorApp::setupGUIright()
     guiright->addWidgetDown(new ofxUISpacer(guiPanelLength-xInit, 2));
     guiright->addWidgetDown(new ofxUILabel("VIEW",OFX_UI_FONT_MEDIUM));
     guiright->addWidgetDown(new ofxUILabelToggle(guiPanelLength-xInit, isMasking, MASKING_TOGGLE, OFX_UI_FONT_MEDIUM));
+    guiright->addWidgetDown(new ofxUILabelToggle(guiPanelLength-xInit, isMasking, DRAW_BOX_TOGGLE, OFX_UI_FONT_MEDIUM));
     
     // REMOVE THIS FIXME
     guiright->addWidgetDown(new ofxUILabelToggle(half_panel, isFiltering, DRAWCLOUD_TOGGLE, OFX_UI_FONT_MEDIUM));
@@ -307,6 +308,15 @@ void oniActorApp::guiEvent(ofxUIEventArgs &e)
         recordUser.setUseMaskPixels(isMasking);
         playUser.setUseMaskPixels(isMasking);
     }
+    else if(e.widget->getName() == DRAW_BOX_TOGGLE)
+    {
+        ofxUIToggle *toggle = (ofxUIToggle *) e.widget;
+        toggleDrawBox = toggle -> getValue();
+#ifdef DEBUG		
+        cerr << endl << "DRAWBOX TOGGLE CHANGE: " << toggle->getValue() << "," << toggleDrawBox << endl;
+#endif        
+    }
+    // FIXME REMOVE THIS
     else if(e.widget->getName() == DRAWCLOUD_TOGGLE)
     {
         ofxUIToggle *toggle = (ofxUIToggle *) e.widget;
