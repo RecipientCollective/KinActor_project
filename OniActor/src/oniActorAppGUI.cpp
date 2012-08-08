@@ -140,10 +140,13 @@ void oniActorApp::setupGUIright()
     recordToggle = new ofxUILabelToggle(half_panel, isRecording, RECORDING_TOGGLE, OFX_UI_FONT_MEDIUM);
     playbackToggle = new ofxUILabelToggle(half_panel, isRecording, PLAYBACK_TOGGLE, OFX_UI_FONT_MEDIUM);
     guiright->addWidgetDown(recordToggle);
-    guiright->addWidgetEastOf(playbackToggle, RECORDING_TOGGLE);
-    
-    guiright->addWidgetDown(new ofxUILabelToggle(half_panel, isTracking, SKELETON_TRACKING_TOGGLE, OFX_UI_FONT_MEDIUM));
-    
+    guiright->addWidgetEastOf(playbackToggle, RECORDING_TOGGLE);    
+    guiright->addWidgetDown(new ofxUILabelToggle(guiPanelLength - xInit, isTracking, SKELETON_TRACKING_TOGGLE, OFX_UI_FONT_MEDIUM));
+    guiright->addWidgetDown(new ofxUILabelToggle(half_panel, isTrackingHands, HANDS_TRACKING_TOGGLE, OFX_UI_FONT_MEDIUM));
+    guiright->addWidgetEastOf(new ofxUILabelToggle(half_panel, isFiltering, HANDS_FILTER_TOGGLE, OFX_UI_FONT_MEDIUM), HANDS_TRACKING_TOGGLE);
+    guiright->addWidgetDown(new ofxUILabelToggle(guiPanelLength-xInit, isMasking, MASKING_TOGGLE, OFX_UI_FONT_MEDIUM));
+    guiright->addWidgetDown(new ofxUILabelToggle(half_panel, isFiltering, DRAWCLOUD_TOGGLE, OFX_UI_FONT_MEDIUM));
+    guiright->addWidgetEastOf(new ofxUILabelToggle(half_panel, isFiltering, DRAWCPB_TOGGLE, OFX_UI_FONT_MEDIUM), DRAWCLOUD_TOGGLE);
     
     guiright->addWidgetDown(new ofxUISlider(guiPanelLength-xInit,dim, 0.0, recordDepth.getMaxDepth(), nearThreshold, NEAR_THRESHOLD_SLIDER)); 
     guiright->addWidgetDown(new ofxUISlider(guiPanelLength-xInit,dim, 0.0, recordDepth.getMaxDepth(), farThreshold, FAR_THRESHOLD_SLIDER));
@@ -256,7 +259,7 @@ void oniActorApp::guiEvent(ofxUIEventArgs &e)
 #endif
         
                 // FIXME CRASH HERE ON CLOSE PLAYBACK
-                // isLive = true;
+                isLive = true;
             }
         }
     }
@@ -264,6 +267,49 @@ void oniActorApp::guiEvent(ofxUIEventArgs &e)
     {
         ofxUIToggle *toggle = (ofxUIToggle *) e.widget;
         isTracking = toggle->getValue();
+    }
+    else if(e.widget->getName() == HANDS_TRACKING_TOGGLE)
+    {
+        ofxUIToggle *toggle = (ofxUIToggle *) e.widget;
+#ifdef DEBUG		
+        cerr << endl << "HANDS STATE CHANGE: " << toggle->getValue() << "," << isTrackingHands << endl;
+#endif  
+        isTrackingHands = toggle->getValue();
+        if (isTrackingHands) {
+            isLive ? recordHandTracker.startTrackHands() : playHandTracker.startTrackHands();
+        } else {
+            isLive ? recordHandTracker.stopTrackHands() : playHandTracker.stopTrackHands();            
+        }
+        
+    }
+    else if(e.widget->getName() == HANDS_FILTER_TOGGLE)
+    {
+        ofxUIToggle *toggle = (ofxUIToggle *) e.widget;
+#ifdef DEBUG		
+        cerr << endl << "HANDS FILTER TOGGLE CHANGE: " << toggle->getValue() << "," << isFiltering << endl;
+#endif
+        isFiltering = toggle -> getValue();
+        recordHandTracker.isFiltering = isFiltering;
+        playHandTracker.isFiltering = isFiltering;
+    }
+    else if(e.widget->getName() == MASKING_TOGGLE)
+    {
+        ofxUIToggle *toggle = (ofxUIToggle *) e.widget;
+        isMasking = toggle -> getValue();
+        recordUser.setUseMaskPixels(isMasking);
+        playUser.setUseMaskPixels(isMasking);
+    }
+    else if(e.widget->getName() == DRAWCLOUD_TOGGLE)
+    {
+        ofxUIToggle *toggle = (ofxUIToggle *) e.widget;
+        isCloud = toggle -> getValue();
+        recordUser.setUseCloudPoints(isCloud);
+        playUser.setUseCloudPoints(isCloud);
+    }
+    else if(e.widget->getName() == DRAWCPB_TOGGLE)
+    {
+        ofxUIToggle *toggle = (ofxUIToggle *) e.widget;
+        isCPBkgnd = toggle -> getValue();
     }
 }
 

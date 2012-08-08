@@ -13,12 +13,12 @@ void oniActorApp::setup()
     
     isLive			= true;
 	isTracking		= false;
-	isTrackingHands	= true;
+	isTrackingHands	= false;
 	isFiltering		= false;
 	isRecording		= false;
 	isCloud			= false;
-	isCPBkgnd		= true;
-	isMasking		= true;
+	isCPBkgnd		= false;
+	isMasking		= false;
     
 	nearThreshold = 500;
 	farThreshold  = 1000;
@@ -162,7 +162,7 @@ void oniActorApp::keyReleased(int key)
 
 void oniActorApp::mouseMoved(int x, int y)
 {
-    
+    if (isCloud) pointCloudRotationY = x;
 }
 
 void oniActorApp::mouseDragged(int x, int y, int button)

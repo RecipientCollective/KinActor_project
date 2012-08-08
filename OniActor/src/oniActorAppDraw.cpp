@@ -8,7 +8,6 @@ void oniActorApp::debugDraw()
 {
     ofSetColor(255, 255, 255);
     ofPushMatrix();
-    ofTranslate(mtrx,mtry);
     ofScale(0.75, 0.75);
     
     if (isLive) {
