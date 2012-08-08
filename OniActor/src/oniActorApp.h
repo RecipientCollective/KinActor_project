@@ -14,6 +14,7 @@
 #include "ofxOpenNI.h"
 #include "ofMain.h"
 #include "ofxUI.h"
+#include "ofxOsc.h"
 
 //#define USE_IR // Uncomment this to use infra red instead of RGB cam...
 
