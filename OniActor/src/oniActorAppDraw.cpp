@@ -13,6 +13,16 @@ void oniActorApp::oniactorDraw()
     if (toggleDrawBox)
         drawBox(0,0,inputWidth,inputHeight);
     
+    isLive ? recordDepth.draw(0,0,inputWidth,inputHeight) : playDepth.draw(0,0,inputWidth,inputHeight);
+    
+    if (isTracking) {        
+        isLive ? recordImage.draw(0, 0, inputWidth,inputHeight) : playImage.draw(0, 0, inputWidth,inputHeight);
+        isLive ? recordUser.draw() : playUser.draw();
+    }
+    
+    if (isTrackingHands) {
+        isLive ? recordHandTracker.drawHands() : playHandTracker.drawHands();
+    }
     
     ofPopMatrix();
 }

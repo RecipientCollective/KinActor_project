@@ -253,8 +253,6 @@ void oniActorApp::guiEvent(ofxUIEventArgs &e)
 #ifdef DEBUG		
                 cerr << endl << "PLAYBACK STATE CHANGE CRASH HERE? isLive: " << isLive << endl;
 #endif
-        
-                // FIXME CRASH HERE ON CLOSE PLAYBACK
                 isLive = true;
             }
         }
