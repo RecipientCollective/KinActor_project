@@ -149,7 +149,12 @@ void oniActorApp::setupGUIright()
     guiright->addWidgetDown(new ofxUILabel("VIEW",OFX_UI_FONT_MEDIUM));
     guiright->addWidgetDown(new ofxUILabelToggle(guiPanelLength-xInit, isMasking, MASKING_TOGGLE, OFX_UI_FONT_MEDIUM));
     guiright->addWidgetDown(new ofxUILabelToggle(guiPanelLength-xInit, isMasking, DRAW_BOX_TOGGLE, OFX_UI_FONT_MEDIUM));
-        
+    
+    guiright->addWidgetDown(new ofxUISpacer(guiPanelLength-xInit, 2));
+    guiright->addWidgetDown(new ofxUILabel("GUI",OFX_UI_FONT_MEDIUM));
+    
+    guiright->addWidgetDown(new ofxUILabelButton(guiPanelLength-xInit, false, DEFAULT_SETTINGS_BUTTON, OFX_UI_FONT_MEDIUM));
+    
     // LISTENER AND LOAD SETTINGS
     ofAddListener(guiright->newGUIEvent, this, &oniActorApp::guiEvent);
     guiright->loadSettings(GUIRIGHT_FILE);
@@ -267,14 +272,15 @@ void oniActorApp::guiEvent(ofxUIEventArgs &e)
         ofxUIToggle *toggle = (ofxUIToggle *) e.widget;
 #ifdef DEBUG		
         cerr << endl << "HANDS STATE CHANGE: " << toggle->getValue() << "," << isTrackingHands << endl;
-#endif  
-        isTrackingHands = toggle->getValue();
-        if (isTrackingHands) {
-            isLive ? recordHandTracker.startTrackHands() : playHandTracker.startTrackHands();
-        } else {
-            isLive ? recordHandTracker.stopTrackHands() : playHandTracker.stopTrackHands();            
-        }
-        
+#endif
+        if (isTrackingHands != toggle->getValue()) {
+            isTrackingHands = toggle->getValue();            
+            if (isTrackingHands) {
+                isLive ? recordHandTracker.startTrackHands() : playHandTracker.startTrackHands();
+            } else {
+                isLive ? recordHandTracker.stopTrackHands() : playHandTracker.stopTrackHands();            
+            }
+        }        
     }
     else if(e.widget->getName() == HANDS_FILTER_TOGGLE)
     {
@@ -300,6 +306,15 @@ void oniActorApp::guiEvent(ofxUIEventArgs &e)
 #ifdef DEBUG		
         cerr << endl << "DRAWBOX TOGGLE CHANGE: " << toggle->getValue() << "," << toggleDrawBox << endl;
 #endif        
+    }
+    else if(e.widget->getName() == DEFAULT_SETTINGS_BUTTON)
+    {
+        ofxUILabelButton *btn = (ofxUILabelButton *) e.widget;
+#ifdef DEBUG		
+        cerr << endl << "LOADING DEFAULT SETTINGS ... " << endl;
+#endif
+        guileft->loadSettings(GUIDEFAULT_LEFT_FILE);
+        guiright->loadSettings(GUIDEFAULT_RIGHT_FILE);
     }
 }
 

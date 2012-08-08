@@ -29,6 +29,8 @@
 // GUI DEFINES
 #define GUILEFT_FILE "GUI/guileftSettings.xml"
 #define GUIRIGHT_FILE "GUI/guirightSettings.xml"
+#define GUIDEFAULT_LEFT_FILE "GUI/guileftDefaultSettings.xml"
+#define GUIDEFAULT_RIGHT_FILE "GUI/guirightDefaultSettings.xml"
 #define TRANSLATE_PAD "TRANSLATE"
 #define SCALE_SLIDER  "SCALE"
 #define NEAR_THRESHOLD_SLIDER "NEAR THRESHOLD"
@@ -55,7 +57,7 @@
 #define HANDS_FILTER_TOGGLE  "HANDS FILTER"
 #define MASKING_TOGGLE "DRAW MASK"
 #define DRAW_BOX_TOGGLE "DRAW BOX"
-
+#define DEFAULT_SETTINGS_BUTTON "LOAD DEFAULTS"
 
 class oniActorApp : public ofBaseApp
 {
