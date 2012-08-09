@@ -41,6 +41,7 @@ void oniActorApp::setup()
     toggleFullScreen = false;
     toggleShowInterface = true;
     toggleShowLogger = true;
+    toggleDebugSkeletons = false;
     setupGUI();
 
     // OF stuffs, background ...
@@ -60,12 +61,10 @@ void oniActorApp::update()
     updateGUI();
     
 
-    if (isTracking) 
+    if (isTracking && toggleDebugSkeletons) 
     {
-#ifdef DEBUG
         debugSkeletons();
-#endif
-
+        oscSendSkeletons();
     }
 }
 
@@ -112,6 +111,10 @@ void oniActorApp::keyPressed(int key)
         case 'L':
             toggleShowLogger = !toggleShowLogger;
             break;
+        case 'D':
+        case 'd': 
+            toggleDebugSkeletons = !toggleDebugSkeletons;
+            break;
         case '1':
             currentFormat = oniactor;
             toggleShowInterface = true;
@@ -125,13 +128,13 @@ void oniActorApp::keyPressed(int key)
             toggleShowInterface = false;
             break;
         case OF_KEY_UP:
-            mtry++;
+            mtry--;
 #ifdef DEBUG
             std::cerr << "Translate y: " << mtry << std::endl;
 #endif
 			break;
 		case OF_KEY_DOWN:
-			mtry--;
+			mtry++;
 #ifdef DEBUG
             std::cerr << "Translate y: " << mtry << std::endl;
 #endif            

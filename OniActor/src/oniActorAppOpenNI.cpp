@@ -154,8 +154,6 @@ void oniActorApp::debugSkeletons()
         
         cerr << "\tRIGHT UPPER LEG x,y,z: " << user->right_upper_leg.position[0].X << ", " << user->right_upper_leg.position[0].Y << "," << user->right_upper_leg.position[0].Z << endl;
         cerr << "\tRIGHT LOWER LEG x,y,z: " << user->right_lower_leg.position[0].X << ", " << user->right_lower_leg.position[0].Y << "," << user->right_lower_leg.position[0].Z << endl;
-        
-        
     }
 }
 

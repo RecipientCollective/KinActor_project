@@ -125,6 +125,7 @@ private:
     bool  toggleFullScreen;
     bool  toggleShowInterface;
     bool  toggleShowLogger;
+    bool  toggleDebugSkeletons;
     
     // DRAW PARAMETERS
     enum DrawFormat 
@@ -193,6 +194,8 @@ private:
     // oniActorAppUtils.cpp METHODS
     string	generateFileName();
     void    setupOsc();
+    void    oscSendSkeletons();
+    void    sendSkeleton(ofxTrackedUser *us, int idUser);
 };
 
 
