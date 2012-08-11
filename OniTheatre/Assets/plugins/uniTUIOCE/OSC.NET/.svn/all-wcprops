@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 47
+/unituio/!svn/ver/2/trunk/src/uniTUIOCE/OSC.NET
+END
+BBOSCMessage.cs
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/unituio/!svn/ver/2/trunk/src/uniTUIOCE/OSC.NET/BBOSCMessage.cs
+END
+BBOSCReceiver.cs
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/unituio/!svn/ver/2/trunk/src/uniTUIOCE/OSC.NET/BBOSCReceiver.cs
+END
+BBOSCPacket.cs
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/unituio/!svn/ver/2/trunk/src/uniTUIOCE/OSC.NET/BBOSCPacket.cs
+END
+BBOSCBundle.cs
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/unituio/!svn/ver/2/trunk/src/uniTUIOCE/OSC.NET/BBOSCBundle.cs
+END
+BBOSCTransmitter.cs
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/unituio/!svn/ver/2/trunk/src/uniTUIOCE/OSC.NET/BBOSCTransmitter.cs
+END

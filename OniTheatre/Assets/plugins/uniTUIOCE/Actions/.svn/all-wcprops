@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 47
+/unituio/!svn/ver/2/trunk/src/uniTUIOCE/Actions
+END
+BBLoadSceneAction.cs
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/unituio/!svn/ver/2/trunk/src/uniTUIOCE/Actions/BBLoadSceneAction.cs
+END
+BBLoadPrefabAction.cs
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/unituio/!svn/ver/2/trunk/src/uniTUIOCE/Actions/BBLoadPrefabAction.cs
+END
+BBDestroyObjectAction.cs
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/unituio/!svn/ver/2/trunk/src/uniTUIOCE/Actions/BBDestroyObjectAction.cs
+END
+BBChangeColorAction.cs
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/unituio/!svn/ver/2/trunk/src/uniTUIOCE/Actions/BBChangeColorAction.cs
+END
+BBTurnOffTextureAction.cs
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/unituio/!svn/ver/2/trunk/src/uniTUIOCE/Actions/BBTurnOffTextureAction.cs
+END

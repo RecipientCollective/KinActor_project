@@ -1,0 +1,47 @@
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/unituio/!svn/ver/2/trunk/src/uniTUIOCE/CSHARP-TUIO
+END
+BBTuioObject.cs
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/unituio/!svn/ver/2/trunk/src/uniTUIOCE/CSHARP-TUIO/BBTuioObject.cs
+END
+BBTuioPoint.cs
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/unituio/!svn/ver/2/trunk/src/uniTUIOCE/CSHARP-TUIO/BBTuioPoint.cs
+END
+BBTuioCursor.cs
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/unituio/!svn/ver/2/trunk/src/uniTUIOCE/CSHARP-TUIO/BBTuioCursor.cs
+END
+BBTuioClient.cs
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/unituio/!svn/ver/2/trunk/src/uniTUIOCE/CSHARP-TUIO/BBTuioClient.cs
+END
+BBTuioTime.cs
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/unituio/!svn/ver/2/trunk/src/uniTUIOCE/CSHARP-TUIO/BBTuioTime.cs
+END
+BBTuioContainer.cs
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/unituio/!svn/ver/2/trunk/src/uniTUIOCE/CSHARP-TUIO/BBTuioContainer.cs
+END
+BBTuioListener.cs
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/unituio/!svn/ver/2/trunk/src/uniTUIOCE/CSHARP-TUIO/BBTuioListener.cs
+END
