@@ -5,7 +5,7 @@
       <File FileName="Assets/plugins/uniTUIOCE/OSC.NET/BBOSCBundle.cs" Line="1" Column="1" />
       <File FileName="Assets/plugins/uniTUIOCE/OSC.NET/BBOSCReceiver.cs" Line="1" Column="1" />
       <File FileName="Assets/plugins/uniTUIOCE/CSHARP-TUIO/BBTuioClient.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/TestOscReceiver.cs" Line="17" Column="3" />
+      <File FileName="Assets/Scripts/TestOscReceiver.cs" Line="16" Column="23" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
