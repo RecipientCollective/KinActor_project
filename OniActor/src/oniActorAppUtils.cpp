@@ -37,14 +37,25 @@ void oniActorApp::oscSendSkeletons()
 void oniActorApp::sendSkeleton(ofxTrackedUser *us, int idUser)
 {
     ofxOscMessage m;
+    
     string baseAddr = "/skeleton/" + ofToString(idUser);
+
+    // center
+    string addr = baseAddr + "/center";    
+    m.setAddress(addr);
+    m.addFloatArg(us->center.X);
+    m.addFloatArg(us->center.Y);
+    m.addFloatArg(us->center.Z);
+    
     // torso
-    string addr = baseAddr + "/left_upper_torso";
+    addr = baseAddr + "/left_upper_torso";
     m.setAddress(addr);
 	m.addFloatArg(us->left_upper_torso.position[0].X);
     m.addFloatArg(us->left_upper_torso.position[0].Y);
+    m.addFloatArg(us->left_upper_torso.position[0].Z);
     m.addFloatArg(us->left_upper_torso.position[1].X);
     m.addFloatArg(us->left_upper_torso.position[1].Y);
+    m.addFloatArg(us->left_upper_torso.position[1].Z);
     sender.sendMessage(m);
     m.clear();
     
@@ -52,8 +63,10 @@ void oniActorApp::sendSkeleton(ofxTrackedUser *us, int idUser)
     m.setAddress(addr);
 	m.addFloatArg(us->right_upper_torso.position[0].X);
     m.addFloatArg(us->right_upper_torso.position[0].Y);
+    m.addFloatArg(us->right_upper_torso.position[0].Z);
     m.addFloatArg(us->right_upper_torso.position[1].X);
     m.addFloatArg(us->right_upper_torso.position[1].Y);
+    m.addFloatArg(us->right_upper_torso.position[1].Z);
     sender.sendMessage(m);
     m.clear();
     
@@ -62,8 +75,10 @@ void oniActorApp::sendSkeleton(ofxTrackedUser *us, int idUser)
     m.setAddress(addr);
 	m.addFloatArg(us->left_lower_torso.position[0].X);
     m.addFloatArg(us->left_lower_torso.position[0].Y);
+    m.addFloatArg(us->left_lower_torso.position[0].Z);
     m.addFloatArg(us->left_lower_torso.position[1].X);
     m.addFloatArg(us->left_lower_torso.position[1].Y);
+    m.addFloatArg(us->left_lower_torso.position[1].Z);
     sender.sendMessage(m);
     m.clear();
     
@@ -71,8 +86,10 @@ void oniActorApp::sendSkeleton(ofxTrackedUser *us, int idUser)
     m.setAddress(addr);
 	m.addFloatArg(us->left_upper_leg.position[0].X);
     m.addFloatArg(us->left_upper_leg.position[0].Y);
+    m.addFloatArg(us->left_upper_leg.position[0].Z);
     m.addFloatArg(us->left_upper_leg.position[1].X);
     m.addFloatArg(us->left_upper_leg.position[1].Y);
+    m.addFloatArg(us->left_upper_leg.position[1].Z);
     sender.sendMessage(m);
     m.clear();
     
@@ -80,8 +97,10 @@ void oniActorApp::sendSkeleton(ofxTrackedUser *us, int idUser)
     m.setAddress(addr);
 	m.addFloatArg(us->left_lower_leg.position[0].X);
     m.addFloatArg(us->left_lower_leg.position[0].Y);
+    m.addFloatArg(us->left_lower_leg.position[0].Z);
     m.addFloatArg(us->left_lower_leg.position[1].X);
     m.addFloatArg(us->left_lower_leg.position[1].Y);
+    m.addFloatArg(us->left_lower_leg.position[1].Z);
     sender.sendMessage(m);
     m.clear();
     
@@ -90,8 +109,10 @@ void oniActorApp::sendSkeleton(ofxTrackedUser *us, int idUser)
     m.setAddress(addr);
 	m.addFloatArg(us->right_lower_torso.position[0].X);
     m.addFloatArg(us->right_lower_torso.position[0].Y);
+    m.addFloatArg(us->right_lower_torso.position[0].Z);
     m.addFloatArg(us->right_lower_torso.position[1].X);
     m.addFloatArg(us->right_lower_torso.position[1].Y);
+    m.addFloatArg(us->right_lower_torso.position[1].Z);
     sender.sendMessage(m);
     m.clear();
     
@@ -99,8 +120,10 @@ void oniActorApp::sendSkeleton(ofxTrackedUser *us, int idUser)
     m.setAddress(addr);
 	m.addFloatArg(us->right_upper_leg.position[0].X);
     m.addFloatArg(us->right_upper_leg.position[0].Y);
+    m.addFloatArg(us->right_upper_leg.position[0].Z);
     m.addFloatArg(us->right_upper_leg.position[1].X);
     m.addFloatArg(us->right_upper_leg.position[1].Y);
+    m.addFloatArg(us->right_upper_leg.position[1].Z);
     sender.sendMessage(m);
     m.clear();
     
@@ -108,8 +131,10 @@ void oniActorApp::sendSkeleton(ofxTrackedUser *us, int idUser)
     m.setAddress(addr);
 	m.addFloatArg(us->right_lower_leg.position[0].X);
     m.addFloatArg(us->right_lower_leg.position[0].Y);
+    m.addFloatArg(us->right_lower_leg.position[0].Z);
     m.addFloatArg(us->right_lower_leg.position[1].X);
     m.addFloatArg(us->right_lower_leg.position[1].Y);
+    m.addFloatArg(us->right_lower_leg.position[1].Z);
     sender.sendMessage(m);
     m.clear();
     
@@ -118,8 +143,10 @@ void oniActorApp::sendSkeleton(ofxTrackedUser *us, int idUser)
     m.setAddress(addr);
 	m.addFloatArg(us->hip.position[0].X);
     m.addFloatArg(us->hip.position[0].Y);
+    m.addFloatArg(us->hip.position[0].Z);
     m.addFloatArg(us->hip.position[1].X);
     m.addFloatArg(us->hip.position[1].Y);
+    m.addFloatArg(us->hip.position[1].Z);
     sender.sendMessage(m);
     m.clear();
     
@@ -128,8 +155,10 @@ void oniActorApp::sendSkeleton(ofxTrackedUser *us, int idUser)
     m.setAddress(addr);
 	m.addFloatArg(us->right_shoulder.position[0].X);
     m.addFloatArg(us->right_shoulder.position[0].Y);
+    m.addFloatArg(us->right_shoulder.position[0].Z);
     m.addFloatArg(us->right_shoulder.position[1].X);
     m.addFloatArg(us->right_shoulder.position[1].Y);
+    m.addFloatArg(us->right_shoulder.position[1].Z);
     sender.sendMessage(m);
     m.clear();
     
@@ -137,8 +166,10 @@ void oniActorApp::sendSkeleton(ofxTrackedUser *us, int idUser)
     m.setAddress(addr);
 	m.addFloatArg(us->right_upper_arm.position[0].X);
     m.addFloatArg(us->right_upper_arm.position[0].Y);
+    m.addFloatArg(us->right_upper_arm.position[0].Z);
     m.addFloatArg(us->right_upper_arm.position[1].X);
     m.addFloatArg(us->right_upper_arm.position[1].Y);
+    m.addFloatArg(us->right_upper_arm.position[1].Z);
     sender.sendMessage(m);
     m.clear();
     
@@ -146,8 +177,10 @@ void oniActorApp::sendSkeleton(ofxTrackedUser *us, int idUser)
     m.setAddress(addr);
 	m.addFloatArg(us->right_lower_arm.position[0].X);
     m.addFloatArg(us->right_lower_arm.position[0].Y);
+    m.addFloatArg(us->right_lower_arm.position[0].Z);
     m.addFloatArg(us->right_lower_arm.position[1].X);
     m.addFloatArg(us->right_lower_arm.position[1].Y);
+    m.addFloatArg(us->right_lower_arm.position[1].Z);
     sender.sendMessage(m);
     m.clear();
     
@@ -156,8 +189,10 @@ void oniActorApp::sendSkeleton(ofxTrackedUser *us, int idUser)
     m.setAddress(addr);
 	m.addFloatArg(us->left_shoulder.position[0].X);
     m.addFloatArg(us->left_shoulder.position[0].Y);
+    m.addFloatArg(us->left_shoulder.position[0].Z);
     m.addFloatArg(us->left_shoulder.position[1].X);
     m.addFloatArg(us->left_shoulder.position[1].Y);
+    m.addFloatArg(us->left_shoulder.position[1].Z);
     sender.sendMessage(m);
     m.clear();
     
@@ -165,8 +200,10 @@ void oniActorApp::sendSkeleton(ofxTrackedUser *us, int idUser)
     m.setAddress(addr);
 	m.addFloatArg(us->left_upper_arm.position[0].X);
     m.addFloatArg(us->left_upper_arm.position[0].Y);
+    m.addFloatArg(us->left_upper_arm.position[0].Z);
     m.addFloatArg(us->left_upper_arm.position[1].X);
     m.addFloatArg(us->left_upper_arm.position[1].Y);
+    m.addFloatArg(us->left_upper_arm.position[1].Z);
     sender.sendMessage(m);
     m.clear();
     
@@ -174,8 +211,10 @@ void oniActorApp::sendSkeleton(ofxTrackedUser *us, int idUser)
     m.setAddress(addr);
 	m.addFloatArg(us->left_lower_arm.position[0].X);
     m.addFloatArg(us->left_lower_arm.position[0].Y);
+    m.addFloatArg(us->left_lower_arm.position[0].Z);
     m.addFloatArg(us->left_lower_arm.position[1].X);
     m.addFloatArg(us->left_lower_arm.position[1].Y);
+    m.addFloatArg(us->left_lower_arm.position[1].Z);
     sender.sendMessage(m);
     m.clear();
     
@@ -184,8 +223,10 @@ void oniActorApp::sendSkeleton(ofxTrackedUser *us, int idUser)
     m.setAddress(addr);
 	m.addFloatArg(us->neck.position[0].X);
     m.addFloatArg(us->neck.position[0].Y);
+    m.addFloatArg(us->neck.position[0].Z);
     m.addFloatArg(us->neck.position[1].X);
     m.addFloatArg(us->neck.position[1].Y);
+    m.addFloatArg(us->neck.position[1].Z);
     sender.sendMessage(m);
     m.clear(); 
 }

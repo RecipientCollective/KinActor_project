@@ -8,7 +8,7 @@
  * - oniActorAppOpenNI.cpp OPENNI FUNCTIONS
  * - oniActorAppGUI.h GUI FUNCTIONS
  * - oniActorAppDraw.h DRAW FUNCTIONS
- * - oniActorAppUtils.h UTILITY FUNCTIONS
+ * - oniActorAppUtils.h UTILITY FUNCTIONS   
  *********************************************************/
 
 #include "ofxOpenNI.h"
@@ -25,8 +25,8 @@
 #define LOGGER_PANEL_HEIGHT 300
 
 // OPENNI CUSTOM DEFINES
-#define MAX_ACTORS 2
-#define MAX_HANDS 4
+#define MAX_ACTORS 1
+#define MAX_HANDS 2
 
 // OSC
 #define HOST "localhost"
@@ -35,8 +35,10 @@
 // GUI DEFINES
 #define GUILEFT_FILE "GUI/guileftSettings.xml"
 #define GUIRIGHT_FILE "GUI/guirightSettings.xml"
+#define GUILOGGER_FILE "GUI/guiloggerSettings.xml"
 #define GUIDEFAULT_LEFT_FILE "GUI/guileftDefaultSettings.xml"
 #define GUIDEFAULT_RIGHT_FILE "GUI/guirightDefaultSettings.xml"
+#define GUIDEFAULT_LOGGER_FILE "GUI/guiloggerDefaultSettings.xml"
 #define TRANSLATE_PAD "TRANSLATE"
 #define SCALE_SLIDER  "SCALE"
 #define NEAR_THRESHOLD_SLIDER "NEAR THRESHOLD"
@@ -64,6 +66,7 @@
 #define MASKING_TOGGLE "DRAW MASK"
 #define DRAW_BOX_TOGGLE "DRAW BOX"
 #define DEFAULT_SETTINGS_BUTTON "LOAD DEFAULTS"
+#define TOGGLE_OSC_SKELETON "SEND SKELETON WITH OSC"
 
 class oniActorApp : public ofBaseApp
 {
@@ -125,7 +128,10 @@ private:
     bool  toggleFullScreen;
     bool  toggleShowInterface;
     bool  toggleShowLogger;
+    
+    // OSC / ACTOR PARAMETERS
     bool  toggleDebugSkeletons;
+    bool  toggleOscSkeleton;
     
     // DRAW PARAMETERS
     enum DrawFormat 

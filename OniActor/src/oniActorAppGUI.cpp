@@ -109,14 +109,16 @@ void oniActorApp::setupGUIleft()
     
     
     // DRAW HELP AT END
-    stringstream _help_str1, _help_str2, _help_str3;
+    stringstream _help_str1, _help_str2, _help_str3, _help_str4;
     _help_str1 << "[h]:hide/show interface" << " [f]:fullscreen" << endl;
     _help_str2 << "[ARROWS]:translate view" << " [+/-]:scale" << endl;
-    _help_str3 << "[l]:hide/show OscLogger" << "[</>]:tilt kinect" << endl;
+    _help_str3 << "[l]:hide/show OscLogger" << " [</>]:tilt kinect" << endl;
+    _help_str4 << "[d]:Debug Actor (to console)" << endl;
     guileft->addWidgetDown(new ofxUILabel("HELP",OFX_UI_FONT_LARGE));
     guileft->addWidgetDown(new ofxUILabel(_help_str1.str(), OFX_UI_FONT_SMALL));
     guileft->addWidgetDown(new ofxUILabel(_help_str2.str(), OFX_UI_FONT_SMALL));
     guileft->addWidgetDown(new ofxUILabel(_help_str3.str(), OFX_UI_FONT_SMALL));
+    guileft->addWidgetDown(new ofxUILabel(_help_str4.str(), OFX_UI_FONT_SMALL));
     // LISTENER AND LOAD SETTINGS
     ofAddListener(guileft->newGUIEvent, this, &oniActorApp::guiEvent);
     guileft->loadSettings(GUILEFT_FILE);
@@ -126,10 +128,13 @@ void oniActorApp::setupGUIlogger()
 {
     guilogger = new ofxUICanvas(guiPanelLength + (xInit*2), ofGetWindowHeight() - LOGGER_PANEL_HEIGHT, ofGetWindowWidth() -((guiPanelLength + xInit*2)*2), LOGGER_PANEL_HEIGHT);
     guilogger -> setDrawWidgetPadding(true);
-    guilogger ->addWidgetDown(new ofxUILabel("OSC LOGGER",OFX_UI_FONT_LARGE));
     
-    // NO LISTENER AND NO LOAD SETTINGS
-
+    guilogger ->addWidgetDown(new ofxUILabel("OSC LOGGER",OFX_UI_FONT_LARGE));
+    guilogger ->addWidgetDown(new ofxUILabelToggle(guiPanelLength - xInit, toggleOscSkeleton, TOGGLE_OSC_SKELETON, OFX_UI_FONT_MEDIUM));
+    
+    // LISTENER AND LOAD SETTINGS
+    ofAddListener(guilogger->newGUIEvent, this, &oniActorApp::guiEvent);
+    guiright->loadSettings(GUILOGGER_FILE);
 }
 
 void oniActorApp::setupGUIright()
@@ -178,6 +183,8 @@ void oniActorApp::closeGUI()
     delete guileft;
     guiright->saveSettings(GUIRIGHT_FILE);
     delete guiright;
+    guilogger->saveSettings(GUILOGGER_FILE);
+    delete guilogger;
 }
 
 void oniActorApp::guiEvent(ofxUIEventArgs &e)
@@ -326,6 +333,7 @@ void oniActorApp::guiEvent(ofxUIEventArgs &e)
 #endif
         guileft->loadSettings(GUIDEFAULT_LEFT_FILE);
         guiright->loadSettings(GUIDEFAULT_RIGHT_FILE);
+        guilogger->loadSettings(GUIDEFAULT_LOGGER_FILE);
     }
 }
 

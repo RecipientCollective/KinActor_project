@@ -24,31 +24,31 @@ void oniActorApp::setupRecording(string _filename)
     // all nodes created by code -> NOT using the xml config file at all
     recordContext.setup();
     //recordContext.setupUsingXMLFile();
-    
+
     // RECORDERS SETUP
     recordDepth.setup(&recordContext);
-	recordImage.setup(&recordContext);
+    recordImage.setup(&recordContext);
     recordUser.setup(&recordContext);
     // built in openni skeleton smoothing:
     recordUser.setSmoothing(filterFactor);
     recordUser.setUseMaskPixels(isMasking);
-	recordUser.setUseCloudPoints(true);
+    recordUser.setUseCloudPoints(true);
     // use this to set dynamic max number of users 
     // (NB: that a hard upper limit is defined by MAX_NUMBER_USERS in ofxUserGenerator) 
     // MAX_NUMBER_USERS=8    
-	recordUser.setMaxNumberOfUsers(MAX_ACTORS);
+    recordUser.setMaxNumberOfUsers(MAX_ACTORS);
     recordHandTracker.setup(&recordContext, MAX_HANDS);
     // built in openni hand track smoothing...
-	recordHandTracker.setSmoothing(filterFactor);
+    recordHandTracker.setSmoothing(filterFactor);
     // custom smoothing/filtering (can also set per hand with
     // setFilterFactor)...set them all to 0.1f to begin with
-	recordHandTracker.setFilterFactors(filterFactor);
-	recordContext.toggleRegisterViewport();
-	recordContext.toggleMirror();
-	oniRecorder.setup(&recordContext, ONI_STREAMING);
-	//oniRecorder.setup(&recordContext, ONI_CYCLIC, 60);
-	//read the warning in ofxOpenNIRecorder about memory usage with ONI_CYCLIC recording!!!
-    
+    recordHandTracker.setFilterFactors(filterFactor);
+    recordContext.toggleRegisterViewport();
+    recordContext.toggleMirror();
+    oniRecorder.setup(&recordContext, ONI_STREAMING);
+    //oniRecorder.setup(&recordContext, ONI_CYCLIC, 60);
+    //read the warning in ofxOpenNIRecorder about memory usage with ONI_CYCLIC recording!!!
+
     // getting sizes from inputUser
     inputWidth = recordUser.getWidth();
     inputHeight = recordUser.getHeight();
@@ -61,18 +61,18 @@ void oniActorApp::setupRecording(string _filename)
 void oniActorApp::setupPlayback(string _filename)
 {
     playContext.shutdown();
-	playContext.setupUsingRecording(ofToDataPath(_filename));
-	playDepth.setup(&playContext);
-	playImage.setup(&playContext);
+    playContext.setupUsingRecording(ofToDataPath(_filename));
+    playDepth.setup(&playContext);
+    playImage.setup(&playContext);
     playUser.setup(&playContext);
-	playUser.setSmoothing(filterFactor);				
-	playUser.setUseMaskPixels(isMasking);
-	playUser.setUseCloudPoints(true);    
-	playHandTracker.setup(&playContext, 4);
-	playHandTracker.setSmoothing(filterFactor);			
-	playHandTracker.setFilterFactors(filterFactor);
-	playContext.toggleRegisterViewport();
-	playContext.toggleMirror();   
+    playUser.setSmoothing(filterFactor);				
+    playUser.setUseMaskPixels(isMasking);
+    playUser.setUseCloudPoints(true);    
+    playHandTracker.setup(&playContext, 4);
+    playHandTracker.setSmoothing(filterFactor);			
+    playHandTracker.setFilterFactors(filterFactor);
+    playContext.toggleRegisterViewport();
+    playContext.toggleMirror();   
 }
 
 void oniActorApp::openniUpdate()
@@ -156,6 +156,7 @@ void oniActorApp::debugSkeletons()
         cerr << "\tRIGHT LOWER LEG x,y,z: " << user->right_lower_leg.position[0].X << ", " << user->right_lower_leg.position[0].Y << "," << user->right_lower_leg.position[0].Z << endl;
     }
 }
+
 
 void oniActorApp::openniClose()
 {

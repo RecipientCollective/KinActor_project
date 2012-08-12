@@ -41,13 +41,18 @@ void oniActorApp::setup()
     toggleFullScreen = false;
     toggleShowInterface = true;
     toggleShowLogger = true;
+    
+    // OSC/ACTOR GUI SETUP
     toggleDebugSkeletons = false;
+    toggleOscSkeleton = false;
+    
     setupGUI();
 
     // OF stuffs, background ...
     setupWindowOptions(); // oniActorAppGUI.cpp 
     
-    setupOsc();
+    // OSC CLIENT SETUP
+    setupOsc(); // oniActorAppUtils.cpp
     
 #ifdef DEBUG		
     cerr << endl << "<--End setup" << endl;
@@ -60,12 +65,12 @@ void oniActorApp::update()
     openniUpdate();
     updateGUI();
     
-
-    if (isTracking && toggleDebugSkeletons) 
-    {
-        debugSkeletons();
-        oscSendSkeletons();
-    }
+    // ACTOR DEBUG VIA CONSOLE
+    if (isTracking && toggleDebugSkeletons) debugSkeletons();
+       
+    // ACTOR SEND VIA OSC
+    if (isTracking && toggleOscSkeleton) oscSendSkeletons();
+        
 }
 
 void oniActorApp::draw()
@@ -128,28 +133,16 @@ void oniActorApp::keyPressed(int key)
             toggleShowInterface = false;
             break;
         case OF_KEY_UP:
-            mtry--;
-#ifdef DEBUG
-            std::cerr << "Translate y: " << mtry << std::endl;
-#endif
+            mtry++;
 			break;
 		case OF_KEY_DOWN:
-			mtry++;
-#ifdef DEBUG
-            std::cerr << "Translate y: " << mtry << std::endl;
-#endif            
+			mtry--;       
 			break;
 		case OF_KEY_LEFT:
-			mtrx--;
-#ifdef DEBUG
-            std::cerr << "Translate x: " << mtrx << std::endl;
-#endif            
+			mtrx--;           
 			break;
 		case OF_KEY_RIGHT:
 			mtrx++;
-#ifdef DEBUG
-            std::cerr << "Translate x: " << mtrx << std::endl;
-#endif
 			break;
         case '-':
             scaleFactor-=0.01;
