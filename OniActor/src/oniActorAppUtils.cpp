@@ -46,6 +46,8 @@ void oniActorApp::sendSkeleton(ofxTrackedUser *us, int idUser)
     m.addFloatArg(us->center.X);
     m.addFloatArg(us->center.Y);
     m.addFloatArg(us->center.Z);
+    sender.sendMessage(m);
+    m.clear();
     
     // torso
     addr = baseAddr + "/left_upper_torso";

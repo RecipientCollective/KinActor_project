@@ -134,7 +134,7 @@ void oniActorApp::setupGUIlogger()
     
     // LISTENER AND LOAD SETTINGS
     ofAddListener(guilogger->newGUIEvent, this, &oniActorApp::guiEvent);
-    guiright->loadSettings(GUILOGGER_FILE);
+    guilogger->loadSettings(GUILOGGER_FILE);
 }
 
 void oniActorApp::setupGUIright()
