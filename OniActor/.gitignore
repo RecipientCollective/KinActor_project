@@ -3,6 +3,7 @@ bin/*.app
 bin/data/*.oni
 bin/data/GUI/guileftSettings.xml
 bin/data/GUI/guirightSettings.xml
+bin/data/GUI/guiloggerSettings.xml
 
 # Exclude temp nibs and swap files
 *~.nib

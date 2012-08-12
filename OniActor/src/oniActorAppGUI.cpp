@@ -325,6 +325,11 @@ void oniActorApp::guiEvent(ofxUIEventArgs &e)
         cerr << endl << "DRAWBOX TOGGLE CHANGE: " << toggle->getValue() << "," << toggleDrawBox << endl;
 #endif        
     }
+    else if(e.widget->getName() == TOGGLE_OSC_SKELETON)
+    {
+        ofxUIToggle *toggle = (ofxUIToggle *) e.widget;
+        toggleOscSkeleton = toggle->getValue();
+    }
     else if(e.widget->getName() == DEFAULT_SETTINGS_BUTTON)
     {
         ofxUILabelButton *btn = (ofxUILabelButton *) e.widget;
