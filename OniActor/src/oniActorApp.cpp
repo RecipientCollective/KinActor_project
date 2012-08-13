@@ -95,7 +95,7 @@ void oniActorApp::draw()
             break;
     }
         
-    // show interface?
+    // hide/show interface/logger
     toggleShowInterface ? showInterface() : hideInterface();
     toggleShowLogger ? showLogger() : hideLogger();
 }

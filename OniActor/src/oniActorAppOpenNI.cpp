@@ -12,13 +12,23 @@
 
 void oniActorApp::setupRecording(string _filename)
 {
+    
+
+    
 #if defined (TARGET_OSX) //|| defined(TARGET_LINUX) 
-	hardware.setup();
+
+#ifdef DEBUG
+    cerr << "STARTING DEVICE INITIALIZATION..." << endl;
+#endif
+    
+    hardware.setup();
+    
 #ifdef DEBUG
     hardware.setLedOption(LED_BLINK_GREEN);
 #else
 	hardware.setLedOption(LED_OFF); 
 #endif    
+
 #endif
 
     // all nodes created by code -> NOT using the xml config file at all
@@ -54,7 +64,9 @@ void oniActorApp::setupRecording(string _filename)
     inputHeight = recordUser.getHeight();
     
 #ifdef DEBUG		
-    std::cerr << "Input size: width =" << inputWidth << " height = " << inputHeight << endl;
+    cerr << "Input size: width =" << inputWidth << " height = " << inputHeight << endl;
+    cerr << "MAX DEPTH: " << recordDepth.getMaxDepth() << "DEPTH WIDTH: " << recordDepth.getWidth() << "DEPTH HEIGHT: " << recordDepth.getHeight() << endl;
+    cerr << "... END DEVICE INITIALIZATION" << endl;
 #endif
 }
 
@@ -127,35 +139,51 @@ void oniActorApp::openniUpdate()
     }
 }
 
+ofxLimb oniActorApp::getWorldLimb(ofxLimb &rLimb, int user_id, ofxUserGenerator &recorder)
+{
+    ofxLimb limb;
+    XnSkeletonJointPosition a,b;
+    recorder.getXnUserGenerator().GetSkeletonCap().GetSkeletonJointPosition(user_id, rLimb.start_joint, a);
+    recorder.getXnUserGenerator().GetSkeletonCap().GetSkeletonJointPosition(user_id, rLimb.end_joint, b);
+    limb.start_joint = rLimb.start_joint;
+    limb.end_joint = rLimb.end_joint;
+    limb.position[0] = a.position;
+    limb.position[1] = b.position;
+    return limb;
+}
+
+void oniActorApp::debugLimb(ofxLimb &limb, string name)
+{
+    cerr << name << ":" << endl;
+    cerr << "\tSTART x,y,z: " << limb.position[0].X << ", " << limb.position[0].Y << ", " <<  limb.position[0].Z << endl;
+    cerr << "\tEND x,y,z: " << limb.position[1].X << ", " << limb.position[1].Y << ", " <<  limb.position[1].Z << endl;
+}
+
 void oniActorApp::debugSkeletons()
 {
     ofxUserGenerator currentRecorder = isLive ? recordUser : playUser;
     for(int i = 1; i <= currentRecorder.getNumberOfTrackedUsers(); i++)
     {
-        ofxTrackedUser * user = currentRecorder.getTrackedUser(i);
+        
+        if(!currentRecorder.getXnUserGenerator().GetSkeletonCap().IsTracking(i)) 
+        {
+#ifdef DEBUG        
+            cerr << "Not tracking this user: " << i << endl;
+#endif
+            return;
+        }
+        
+        ofxTrackedUser * user = currentRecorder.getTrackedUser(i);                
         cerr << "USER: " << i << " CENTER x,y,z: " << user->center.X << ", " << user->center.Y << ", " << user->center.Z << endl;
-        cerr << "\tNECK x,y,z: " << user->neck.position[0].X << ", " << user->neck.position[0].Y << "," << user->neck.position[0].Z << endl;
-        cerr << "\tLEFT SHOULDER x,y,z: " << user->left_shoulder.position[0].X << ", " << user->left_shoulder.position[0].Y << "," << user->left_shoulder.position[0].Z << endl;
-        cerr << "\tLEFT UPPER ARM x,y,z: " << user->left_upper_arm.position[0].X << ", " << user->left_upper_arm.position[0].Y << "," << user->left_upper_arm.position[0].Z << endl;
-        cerr << "\tLEFT LOWER ARM x,y,z: " << user->left_lower_arm.position[0].X << ", " << user->left_lower_arm.position[0].Y << "," << user->left_lower_arm.position[0].Z << endl;
         
-        cerr << "\tRIGHT SHOULDER x,y,z: " << user->right_shoulder.position[0].X << ", " << user->right_shoulder.position[0].Y << "," << user->right_shoulder.position[0].Z << endl;
-        cerr << "\tRIGHT UPPER ARM x,y,z: " << user->right_upper_arm.position[0].X << ", " << user->right_upper_arm.position[0].Y << "," << user->right_upper_arm.position[0].Z << endl;
-        cerr << "\tRIGHT LOWER ARM x,y,z: " << user->right_lower_arm.position[0].X << ", " << user->right_lower_arm.position[0].Y << "," << user->right_lower_arm.position[0].Z << endl;
-
-        cerr << "\tLEFT UPPER TORSO x,y,z: " << user->left_upper_torso.position[0].X << ", " << user->left_upper_torso.position[0].Y << "," << user->left_upper_torso.position[0].Z << endl;
-        cerr << "\tRIGHT UPPER TORSO x,y,z: " << user->right_upper_torso.position[0].X << ", " << user->right_upper_torso.position[0].Y << "," << user->right_upper_torso.position[0].Z << endl;
-
-        cerr << "\tLEFT LOWER TORSO x,y,z: " << user->left_lower_torso.position[0].X << ", " << user->left_lower_torso.position[0].Y << "," << user->left_lower_torso.position[0].Z << endl;
-        cerr << "\tRIGHT LOWER TORSO x,y,z: " << user->right_lower_torso.position[0].X << ", " << user->right_lower_torso.position[0].Y << "," << user->right_lower_torso.position[0].Z << endl;
+        // neck test
+        ofxLimb rNeck = getWorldLimb(user->neck, i, currentRecorder);
+        debugLimb(user->neck, "NECK PROJECTED");
+        debugLimb(rNeck, "NECK REAL");
         
-        cerr << "\tLEFT UPPER LEG x,y,z: " << user->left_upper_leg.position[0].X << ", " << user->left_upper_leg.position[0].Y << "," << user->left_upper_leg.position[0].Z << endl;
-        cerr << "\tLEFT LOWER LEG x,y,z: " << user->left_lower_leg.position[0].X << ", " << user->left_lower_leg.position[0].Y << "," << user->left_lower_leg.position[0].Z << endl;
-        
-        cerr << "\tRIGHT UPPER LEG x,y,z: " << user->right_upper_leg.position[0].X << ", " << user->right_upper_leg.position[0].Y << "," << user->right_upper_leg.position[0].Z << endl;
-        cerr << "\tRIGHT LOWER LEG x,y,z: " << user->right_lower_leg.position[0].X << ", " << user->right_lower_leg.position[0].Y << "," << user->right_lower_leg.position[0].Z << endl;
     }
 }
+
 
 
 void oniActorApp::openniClose()

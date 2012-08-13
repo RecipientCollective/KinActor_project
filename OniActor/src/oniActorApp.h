@@ -68,6 +68,8 @@
 #define DEFAULT_SETTINGS_BUTTON "LOAD DEFAULTS"
 #define TOGGLE_OSC_SKELETON "SEND SKELETON WITH OSC"
 
+
+
 class oniActorApp : public ofBaseApp
 {
 private:
@@ -89,13 +91,13 @@ private:
 
     // OPENNI PARAMETERS
     bool				isLive, isTracking, isRecording, isMasking;
-	bool				isTrackingHands, isFiltering;
-    int					nearThreshold, farThreshold;
-	int					pointCloudRotationY;
+    bool				isTrackingHands, isFiltering;
+    int				nearThreshold, farThreshold;
+    int				pointCloudRotationY;
     float				filterFactor;
     
     // OF IMAGES
-    ofImage				allUserMasks, user1Mask, user2Mask, depthRangeMask;
+    ofImage			allUserMasks, user1Mask, user2Mask, depthRangeMask;
     
     // OSC OBJECTS
     ofxOscSender sender;
@@ -151,8 +153,8 @@ private:
 public:
     // OpenFrameworks METHODS
     void setup();
-	void update();
-	void draw();
+    void update();
+    void draw();
     void keyPressed(int key);
     void keyReleased(int key);
     void mouseMoved(int x, int y);
@@ -186,6 +188,8 @@ private:
     void openniUpdate();
     void openniClose();
     void debugSkeletons();
+    void debugLimb(ofxLimb &limb, string name);
+    ofxLimb getWorldLimb(ofxLimb &rLimb, int user_id, ofxUserGenerator &recorder);
     
     // oniActorAppDraw.cpp METHODS
     void debugDraw();
@@ -199,12 +203,11 @@ private:
     
     // oniActorAppUtils.cpp METHODS
     string	generateFileName();
-    void    setupOsc();
-    void    oscSendSkeletons();
-    void    sendSkeleton(ofxTrackedUser *us, int idUser);
+    void setupOsc();
+    void oscSendSkeletons();
+    void oscSendSkeleton(ofxTrackedUser *us, int idUser, ofxUserGenerator &recorder);
+    void oscSendCenter(XnPoint3D center, string addr, ofxOscMessage &m);
+    void oscSendLimb(ofxLimb &limb, string addr, ofxOscMessage &m);
 };
-
-
-
 
 #endif
