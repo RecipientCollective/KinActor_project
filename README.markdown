@@ -12,7 +12,8 @@ DIRS
 -----------------------
 
 * bin: put here external binaries/apps for testing
-* doc: documentation
+* doc: put here documentation
+* video: put here videos
 
 INSTALLATION OSX
 =======================
