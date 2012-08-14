@@ -22,15 +22,6 @@ INSTALLATION OSX
 
 - unzip openFrameworks somewhere
 
-- INSTALL REQUIRED ADDITIONAL ADDONS
-
-<pre>
-cd of_0071_osx_release/addons
-git clone https://github.com/ofTheo/ofxKinect
-git clone https://github.com/rezaali/ofxUI
-git clone https://github.com/gameoverhack/ofxOpenNI/
-</pre>
-
 - MAKE A DIRECTORY FOR YOUR PROJECTS AND CLONE THIS PROJECT THERE
 
 <pre>
@@ -38,6 +29,26 @@ cd of_0071_osx_release
 mkdir Code
 cd Code
 git clone https://github.com/RecipientCollective/KinActor_project.git
+</pre>
+
+- INSTALL REQUIRED ADDITIONAL ADDONS
+
+take the "stable" version:
+
+<pre>
+cd of_0071_osx_release/addons
+tar xzvf ../Code/KinActor_project/libs/addons.freezed/ofxKinect.tar.gz .
+tar xzvf ../Code/KinActor_project/libs/addons.freezed/ofxUI.tar.gz .
+tar xzvf ../Code/KinActor_project/libs/addons.freezed/ofxOpenNI.tar.gz .
+</pre>
+
+for unstable version:
+
+<pre>
+cd of_0071_osx_release/addons
+git clone https://github.com/ofTheo/ofxKinect
+git clone https://github.com/rezaali/ofxUI
+git clone https://github.com/gameoverhack/ofxOpenNI
 </pre>
 
 - BUILD IN XCODE 4
