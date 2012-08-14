@@ -37,9 +37,9 @@ take the "stable" version:
 
 <pre>
 cd of_0071_osx_release/addons
-tar xzvf ../Code/KinActor_project/libs/addons.freezed/ofxKinect.tar.gz .
-tar xzvf ../Code/KinActor_project/libs/addons.freezed/ofxUI.tar.gz .
-tar xzvf ../Code/KinActor_project/libs/addons.freezed/ofxOpenNI.tar.gz .
+cp ../Code/KinActor_project/libs/addons.freezed/ofxKinect .
+cp ../Code/KinActor_project/libs/addons.freezed/ofxUI .
+cp ../Code/KinActor_project/libs/addons.freezed/ofxOpenNI .
 </pre>
 
 for unstable version:
