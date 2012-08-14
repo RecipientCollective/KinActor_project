@@ -50,8 +50,6 @@ public:
     ofxUICanvas *guileft;
     ofxUICanvas *guiright;
     ofxUICanvas *guilogger;
-    ofxUIToggle *recordToggle;
-    ofxUIToggle *playbackToggle;
     ofPoint      trPad;
     float xInit;
     float dim;
@@ -68,7 +66,6 @@ public:
     void kinactorDraw();
     void setFullScreen();
     void loggerDraw();
-    void drawPlayIcons();
     void drawBox();
     void drawBlobs();
     
@@ -82,15 +79,6 @@ public:
     void dragEvent(ofDragInfo dragInfo);
     void gotMessage(ofMessage msg);
 
-    /// start/stop recording and playback,
-    /// make sure you don't record and playback simultaneously 
-    /// using the same file!!!
-    void startRecording();
-    void stopRecording();
-    void startPlayback();
-    void stopPlayback();
-    void toggleRecord();
-    void togglePlayback();
     
     /// KINECT FUNCTIONS
     void downKinectAngle();
@@ -101,9 +89,6 @@ public:
 private:
     // KINECT VARS
     ofxKinect 			kinect;
-    ofxKinectRecorder 	kinectRecorder;
-    ofxKinectPlayer 	kinectPlayer;
-    ofxBase3DVideo* 	kinectSource;       // used to switch between the live kinect and the recording player
     
     // Images
     ofxCvColorImage		colorImg;
@@ -135,8 +120,6 @@ public:
     int                 contour_min;
     int                 contour_max;
     int                 blobMax;
-    bool 				bRecord;
-    bool 				bPlayback;
     float               scaleFactor;
     float               mtrx;
     float               mtry;

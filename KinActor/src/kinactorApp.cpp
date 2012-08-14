@@ -21,22 +21,25 @@ void kinactorApp::setup()
 
     // GENERAL SETUP
     ofSetFrameRate(30);
-    bRecord = false;
-	bPlayback = false;
     bToogleFullScreen = false;
     bFullscreen = false;
     bShowInterface = true;
     bBox = false;
     
     // INIT KINECT
-    kinect.init();
-    //kinect.init(true);  // shows infrared instead of RGB video image
-	//kinect.init(false, false);  // disable infrared/rgb video iamge (faster fps)
-	kinect.setVerbose(true);
-	kinect.open();
+    ofSetLogLevel(OF_LOG_VERBOSE);
+	
+	// enable depth->video image calibration
+	kinect.setRegistration(true);
     
-    // start with the live kinect source
-	kinectSource = &kinect;
+	kinect.init();
+	//kinect.init(true); // shows infrared instead of RGB video image
+	//kinect.init(false, false); // disable video image (faster fps)
+	
+	kinect.open();		// opens first available kinect
+	//kinect.open(1);	// open a kinect by id, starting with 0 (sorted by serial # lexicographically))
+	//kinect.open("A00362A08602047A");	// open a kinect using it's unique serial #
+    
 
 #ifdef DEBUG		
     std::cerr << "Input size: width =" << kinect.width << " height = " << kinect.height << endl;
@@ -91,18 +94,13 @@ void kinactorApp::setup()
 void kinactorApp::update()
 {
     // update kinect source
-	kinectSource->update();
+	kinect.update();
     
     // there is a new frame and we are connected
-	if(kinectSource->isFrameNew()) {
-        
-        // record ?
-		if(bRecord && kinectRecorder.isOpened()) {
-			kinectRecorder.newFrame(kinect.getRawDepthPixels(), kinect.getPixels());
-		}
-        
+	if(kinect.isFrameNew()) 
+    {        
 		// load grayscale depth image from the kinect source
-		grayImage.setFromPixels(kinectSource->getDepthPixels(), kinect.width, kinect.height);
+		grayImage.setFromPixels(kinect.getDepthPixels(), kinect.width, kinect.height);
         
         // we do two thresholds - one for the far plane and one for the near plane
 		// we then do a cvAnd to get the pixels which are a union of the two thresholds
@@ -199,12 +197,6 @@ void kinactorApp::keyPressed(int key)
 		case 'c':
             kinectDisconnect();
 			break;
-		case 'r':
-            toggleRecord();
-			break;           
-		case 'p':
-            togglePlayback();
-			break;
 		case OF_KEY_UP:
             mtry++;
 #ifdef DEBUG
@@ -276,10 +268,6 @@ void kinactorApp::setupGUIleft()
     guileft->addWidgetDown(new ofxUIToggle( dim, dim, false, "DEPTH NEAR VALUE WHITE", OFX_UI_FONT_SMALL));
     guileft->addWidgetDown(new ofxUISpacer(guiPanelLength-xInit, 2));
     guileft->addWidgetDown(new ofxUILabel("PLAYBACK/RECORD", OFX_UI_FONT_MEDIUM));
-    playbackToggle = new ofxUIToggle( dim, dim, false, "PLAYBACK [p]", OFX_UI_FONT_SMALL);
-    guileft->addWidgetDown(playbackToggle);
-    recordToggle = new ofxUIToggle( dim, dim, false, "RECORD [r]", OFX_UI_FONT_SMALL);
-    guileft->addWidgetDown(recordToggle);
     guileft->addWidgetDown(new ofxUISpacer(guiPanelLength-xInit, 2));
     guileft->addWidgetDown(new ofxUILabel("WINDOW OPTIONS:", OFX_UI_FONT_MEDIUM));
     
@@ -364,24 +352,6 @@ void kinactorApp::guiEvent(ofxUIEventArgs &e)
         ofxUIButton *button = (ofxUIButton *) e.widget;
         kinectDisconnect();
     }
-    else if(e.widget->getName() == "RECORD [r]")
-    {
-        ofxUIToggle *toggle = (ofxUIToggle *) e.widget;
-        if (toggle->getValue()) {
-            startRecording();
-        } else {
-            stopRecording();
-        }
-    }
-    else if(e.widget->getName() == "PLAYBACK [p]")
-    {
-        ofxUIToggle *toggle = (ofxUIToggle *) e.widget;
-        if (toggle->getValue()) {
-            startPlayback();
-        } else {
-            stopPlayback();
-        }
-    }
     else if(e.widget->getName() == "TRANSLATE")
     {
         ofxUI2DPad *pad = (ofxUI2DPad *) e.widget;
@@ -419,78 +389,19 @@ void kinactorApp::exit()
 {
 	kinect.setCameraTiltAngle(0); // zero the tilt on exit
 	kinect.close();
-	kinectPlayer.close();
-	kinectRecorder.close();
-    
     // ON EXIT SAVE GUI and DELETE
-    guileft->saveSettings("GUI/guiSettings.xml"); 
+    guileft->saveSettings("GUI/guileftSettings.xml"); 
     delete guileft;
+    guiright->saveSettings("GUI/guirightSettings.xml"); 
+    delete guiright;
+    guilogger->saveSettings("GUI/guiloggerSettings.xml"); 
+    delete guilogger;
     
 #ifdef DEBUG
     std::cerr << "END OF EXIT ROUTINE ...." << std::endl;
 #endif
     
     OF_EXIT_APP(0);
-}
-
-void kinactorApp::startRecording()
-{
-    
-	// stop playback if running
-	stopPlayback();
-    recordToggle->setValue(true);
-    playbackToggle->setValue(false);
-	kinectRecorder.init(ofToDataPath("recording.dat"));
-	bRecord = true;
-}
-
-void kinactorApp::stopRecording()
-{
-	kinectRecorder.close();
-	bRecord = false;
-    recordToggle->setValue(false);
-}
-
-void kinactorApp::startPlayback() 
-{    
-	stopRecording();
-	kinect.close();
-    recordToggle->setValue(false);
-    playbackToggle->setValue(true);
-	// set record file and source
-	kinectPlayer.setup(ofToDataPath("recording.dat"), true);
-	kinectPlayer.loop();
-	kinectSource = &kinectPlayer;
-	bPlayback = true;
-}
-
-void kinactorApp::stopPlayback() 
-{
-    playbackToggle->setValue(false);
-	kinectPlayer.close();
-	kinect.open();
-	kinectSource = &kinect;
-	bPlayback = false;
-}
-
-void kinactorApp::toggleRecord()
-{
-    bRecord = !bRecord;
-    if(bRecord) {
-        startRecording();
-    } else {
-        stopRecording();
-    }
-}
-
-void kinactorApp::togglePlayback()
-{
-    bPlayback = !bPlayback;
-    if(bPlayback) {
-        startPlayback();
-    } else {
-        stopPlayback();
-    }    
 }
 
 void kinactorApp::setFullScreen()
@@ -732,8 +643,7 @@ void kinactorApp::loggerDraw()
     << "Contour Min: " << contour_min << ", Contour Max: " << contour_max << endl
     << "Fps: " << ofGetFrameRate() << endl
     << "Kinect connection is: " << kinect.isConnected() << endl
-    << "Tilt angle: " << kinectAngle << " degrees" << endl
-    << "Record is: " << bRecord << ", playback is: " << bPlayback << endl;
+    << "Tilt angle: " << kinectAngle << " degrees" << endl;
     ofDrawBitmapString(reportStream.str(),(loggerP.x + xInit),(loggerP.y + (xInit * 6)));
 }
 
@@ -749,8 +659,7 @@ void kinactorApp::kinactorDraw()
     if (bBox)
         drawBox();
     
-    drawBlobs();   
-    drawPlayIcons();    
+    drawBlobs();
     ofPopMatrix();
 }
 
@@ -773,23 +682,6 @@ void kinactorApp::drawBox()
     ofPopStyle();    
 }
 
-void kinactorApp::drawPlayIcons()
-{
-    // draw recording/playback indicators
-	ofPushMatrix();
-	ofTranslate(25, 25);
-	ofFill();
-	if(bRecord) {
-		ofSetColor(255, 0, 0);
-		ofCircle(0, 0, 10);
-	}
-	if(bPlayback) {
-		ofSetColor(0, 255, 0);
-		ofTriangle(-10, -10, -10, 10, 10, 0);
-	}
-	ofPopMatrix();
-}
-
 void kinactorApp::debugDraw()
 {
     /********************************* 
@@ -799,16 +691,9 @@ void kinactorApp::debugDraw()
     ofPushMatrix();
     ofSetColor(255, 255, 255);
     ofTranslate(TRANSLATE_GUIVIEW_X, TRANSLATE_GUIVIEW_Y);
-    
-    if(!bPlayback) {
-        // draw from the live kinect
-        kinect.drawDepth(10, 10, 400, 300);
-        kinect.draw(420, 10, 400, 300);
-    } else {
-        // draw from the player
-        kinectPlayer.drawDepth(10, 10, 400, 300);
-        kinectPlayer.draw(420, 10, 400, 300);
-    }    
+    // draw from the live kinect
+    kinect.drawDepth(10, 10, 400, 300);
+    kinect.draw(420, 10, 400, 300);
     grayImage.draw(10, 320, 400, 300);
     contourFinder.draw(10, 320, 400, 300);    
     contourFinder.draw(420, 320, 400, 300);
@@ -826,8 +711,8 @@ void kinactorApp::drawPointCloud()
 	int step = 2;
 	for(int y = 0; y < h; y += step) {
 		for(int x = 0; x < w; x += step) {
-			ofVec3f cur = kinect.getWorldCoordinateFor(x, y);
-			ofColor color = kinect.getCalibratedColorAt(x,y);
+			ofVec3f cur = kinect.getWorldCoordinateAt(x, y);
+			ofColor color = kinect.getColorAt(x, y);
 			glColor3ub((unsigned char)color.r,(unsigned char)color.g,(unsigned char)color.b);
 			glVertex3f(cur.x, cur.y, cur.z);
 		}
