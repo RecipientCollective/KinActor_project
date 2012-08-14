@@ -51,15 +51,21 @@ public class MainMenuScript : MonoBehaviour
 		GUI.Box(new Rect(10,10,panel_length,panel_height), "Loader Menu");
 		
 		// Make the first button. If it is pressed, Application.Loadlevel (1) will be executed
-		if(GUI.Button(new Rect(panel_padding,panel_padding,panel_height - panel_padding,30), "Step 1: test TUIO PLUGIN")) 
+		if(GUI.Button(new Rect(panel_padding,panel_padding,panel_height - panel_padding,30), "Step 1: uniTUIO PLUGIN")) 
 		{
 			Application.LoadLevel(1);
 		}
 
 		// Make the second button.
-		if(GUI.Button(new Rect(panel_padding,panel_padding + 30 ,panel_height - panel_padding,30), "Step 2: test OSC CUSTOM SERVER")) 
+		if(GUI.Button(new Rect(panel_padding,panel_padding + 30 ,panel_height - panel_padding,30), "Step 2: OSC CUSTOM SERVER")) 
 		{
 			Application.LoadLevel(2);
+		}
+		
+		// Make the second button.
+		if(GUI.Button(new Rect(panel_padding,panel_padding + 60 ,panel_height - panel_padding,30), "Step 3: SKELETON JOINTS")) 
+		{
+			Application.LoadLevel(3);
 		}
 	}
 }
