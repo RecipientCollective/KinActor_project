@@ -54,7 +54,6 @@ public class TestOscSkeleton : MonoBehaviour
 	private Vector3 leftShoulderEnd;
 	private Vector3 rightShoulderStart;
 	private Vector3 rightShoulderEnd;
-	
 	private Vector3 leftUpperArmStart;
 	private Vector3 leftUpperArmEnd;
 	private Vector3 leftLowerArmStart;
