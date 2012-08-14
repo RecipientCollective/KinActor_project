@@ -79,7 +79,8 @@ void oniActorApp::setupGUIleft()
     trPad = ofPoint((mtrx/ofGetScreenWidth())*(guiPanelLength-xInit),(mtry/ofGetScreenHeight())*padHeight);
     guileft->addWidgetDown(new ofxUI2DPad(guiPanelLength-xInit, padHeight, trPad, TRANSLATE_PAD));
     guileft->addWidgetDown(new ofxUISlider(guiPanelLength-xInit,dim, 0.0, 10.0, scaleFactor, SCALE_SLIDER));
-    guileft->addWidgetDown(new ofxUIFPSSlider(guiPanelLength-xInit, dim, 0, 400, 0, "CURRENT FPS"));
+    
+    guileft->addWidgetDown(new ofxUIFPSSlider("CURRENT FPS", guiPanelLength-xInit, dim));
     guileft->addWidgetDown(new ofxUISpacer(guiPanelLength-xInit, 2));
     
     // KINECT LOGS
