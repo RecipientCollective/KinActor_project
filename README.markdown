@@ -6,7 +6,7 @@ APPS
 
 * KinActor: get kinect signal with ofxKinect and ofxOpenCv
 * OniActor: get kinect Skeletons with ofxOpenNI and send with ofxOsc
-* OniTheatre: receive OSC Skeletons in Unity3D
+* OniTheatrePrototypes: receive OSC Skeletons in Unity3D and more ... (da qui facciamo un'app template per il workshop)
 
 DIRS
 -----------------------
