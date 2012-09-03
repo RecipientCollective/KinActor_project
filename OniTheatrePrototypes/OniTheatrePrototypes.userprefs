@@ -1,6 +1,6 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/OniTheatre/OniActor.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/TestOscSkeleton.cs">
     <Files>
       <File FileName="Assets/Scripts/OniTheatre/OniActor.cs" Line="25" Column="2" />
       <File FileName="Assets/Scripts/TestOscSkeleton.cs" Line="67" Column="32" />
