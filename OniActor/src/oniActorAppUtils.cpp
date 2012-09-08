@@ -97,8 +97,8 @@ void oniActorApp::oscSendSkeleton(ofxTrackedUser *us, int idUser, ofxUserGenerat
     oscSendLimb(rLimb, addr, m);
     
     addr = baseAddr + "/left_upper_leg/projection";
-    oscSendLimb(us->left_lower_torso, addr, m);
-    rLimb = getWorldLimb(us->left_lower_torso, idUser, recorder);
+    oscSendLimb(us->left_upper_leg, addr, m);
+    rLimb = getWorldLimb(us->left_upper_leg, idUser, recorder);
     addr = baseAddr + "/left_upper_leg/realWorld";
     oscSendLimb(rLimb, addr, m);
     
