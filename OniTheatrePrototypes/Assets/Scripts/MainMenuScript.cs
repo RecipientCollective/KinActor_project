@@ -56,16 +56,20 @@ public class MainMenuScript : MonoBehaviour
 			Application.LoadLevel(1);
 		}
 
-		// Make the second button.
 		if(GUI.Button(new Rect(panel_padding,panel_padding + 30 ,panel_height - panel_padding,30), "Step 2: OSC CUSTOM SERVER")) 
 		{
 			Application.LoadLevel(2);
 		}
 		
-		// Make the second button.
 		if(GUI.Button(new Rect(panel_padding,panel_padding + 60 ,panel_height - panel_padding,30), "Step 3: SKELETON JOINTS")) 
 		{
 			Application.LoadLevel(3);
 		}
+		
+		if(GUI.Button(new Rect(panel_padding,panel_padding + 90 ,panel_height - panel_padding,30), "Step 3: THEATRE")) 
+		{
+			Application.LoadLevel(4);
+		}
+		
 	}
 }
