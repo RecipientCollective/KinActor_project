@@ -18,6 +18,10 @@
 
 //#define USE_IR // Uncomment this to use infra red instead of RGB cam...
 
+
+//#define NOKINECT // TEST NOKINECT VERSION
+
+
 // WINDOWS SIZES
 #define OUTPUT_HEIGHT 852
 #define OUTPUT_WIDTH 1480

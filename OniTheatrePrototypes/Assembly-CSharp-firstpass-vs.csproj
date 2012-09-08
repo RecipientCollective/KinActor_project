@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+	<Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+	<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+	<ProductVersion>10.0.20506</ProductVersion>
+	<SchemaVersion>2.0</SchemaVersion>
+	<ProjectGuid>{AFE2792F-7C88-5E13-D5B0-D684CC2B4CD2}</ProjectGuid>
+	<OutputType>Library</OutputType>
+	<AppDesignerFolder>Properties</AppDesignerFolder>
+	<RootNamespace></RootNamespace>
+	<AssemblyName>Assembly-CSharp-firstpass</AssemblyName>
+	<TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+	<FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+	<DebugSymbols>true</DebugSymbols>
+	<DebugType>full</DebugType>
+	<Optimize>false</Optimize>
+	<OutputPath>Temp\bin\Debug\</OutputPath>
+	<DefineConstants>DEBUG;TRACE;UNITY_3_5_5;UNITY_3_5;UNITY_EDITOR;ENABLE_PROFILER;UNITY_STANDALONE_OSX;ENABLE_GENERICS;ENABLE_DUCK_TYPING;ENABLE_TERRAIN;ENABLE_MOVIES;ENABLE_WEBCAM;ENABLE_MICROPHONE;ENABLE_NETWORK;ENABLE_CLOTH;ENABLE_WWW;ENABLE_SUBSTANCE</DefineConstants>
+	<ErrorReport>prompt</ErrorReport>
+	<WarningLevel>4</WarningLevel>
+	<NoWarn>0169</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+	<DebugType>pdbonly</DebugType>
+	<Optimize>true</Optimize>
+	<OutputPath>Temp\bin\Release\</OutputPath>
+	<DefineConstants>TRACE</DefineConstants>
+	<ErrorReport>prompt</ErrorReport>
+	<WarningLevel>4</WarningLevel>
+	<NoWarn>0169</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+	<Reference Include="System" />
+    <Reference Include="System.XML" />
+	<Reference Include="System.Core" />
+	<Reference Include="UnityEngine">
+	  <HintPath>/Applications/Unity/Unity.app/Contents/Frameworks/Managed/UnityEngine.dll</HintPath>
+	</Reference>
+	<Reference Include="UnityEditor">
+	  <HintPath>/Applications/Unity/Unity.app/Contents/Frameworks/Managed/UnityEditor.dll</HintPath>
+	</Reference>
+  </ItemGroup>
+  <ItemGroup>
+     <Compile Include="Assets\Standard Assets\Scripts\General Scripts\ActivateTrigger.cs" />
+     <Compile Include="Assets\Standard Assets\Scripts\Utility Scripts\CombineChildren.cs" />
+     <Compile Include="Assets\Standard Assets\Scripts\Utility Scripts\MeshCombineUtility.cs" />
+     <Compile Include="Assets\plugins\uniTUIOCE\Actions\BBChangeColorAction.cs" />
+     <Compile Include="Assets\plugins\uniTUIOCE\Actions\BBDestroyObjectAction.cs" />
+     <Compile Include="Assets\plugins\uniTUIOCE\Actions\BBLoadPrefabAction.cs" />
+     <Compile Include="Assets\plugins\uniTUIOCE\Actions\BBLoadSceneAction.cs" />
+     <Compile Include="Assets\plugins\uniTUIOCE\Actions\BBTestButtonLabelAction.cs" />
+     <Compile Include="Assets\plugins\uniTUIOCE\Actions\BBTurnOffTextureAction.cs" />
+     <Compile Include="Assets\plugins\uniTUIOCE\CSHARP-TUIO\BBTuioClient.cs" />
+     <Compile Include="Assets\plugins\uniTUIOCE\CSHARP-TUIO\BBTuioContainer.cs" />
+     <Compile Include="Assets\plugins\uniTUIOCE\CSHARP-TUIO\BBTuioCursor.cs" />
+     <Compile Include="Assets\plugins\uniTUIOCE\CSHARP-TUIO\BBTuioListener.cs" />
+     <Compile Include="Assets\plugins\uniTUIOCE\CSHARP-TUIO\BBTuioObject.cs" />
+     <Compile Include="Assets\plugins\uniTUIOCE\CSHARP-TUIO\BBTuioPoint.cs" />
+     <Compile Include="Assets\plugins\uniTUIOCE\CSHARP-TUIO\BBTuioTime.cs" />
+     <Compile Include="Assets\plugins\uniTUIOCE\GUI stuff\BBCrosshairController.cs" />
+     <Compile Include="Assets\plugins\uniTUIOCE\GUI stuff\BBPressGUITextureAction.cs" />
+     <Compile Include="Assets\plugins\uniTUIOCE\GUI stuff\BBTouchableGUIObject.cs" />
+     <Compile Include="Assets\plugins\uniTUIOCE\OSC.NET\BBOSCBundle.cs" />
+     <Compile Include="Assets\plugins\uniTUIOCE\OSC.NET\BBOSCMessage.cs" />
+     <Compile Include="Assets\plugins\uniTUIOCE\OSC.NET\BBOSCPacket.cs" />
+     <Compile Include="Assets\plugins\uniTUIOCE\OSC.NET\BBOSCReceiver.cs" />
+     <Compile Include="Assets\plugins\uniTUIOCE\OSC.NET\BBOSCTransmitter.cs" />
+     <Compile Include="Assets\plugins\uniTUIOCE\Object Manipulation\BB3dCrosshairController.cs" />
+     <Compile Include="Assets\plugins\uniTUIOCE\Object Manipulation\BBBasicTouchManipulation.cs" />
+     <Compile Include="Assets\plugins\uniTUIOCE\Object Manipulation\BBSimpleTouchableObject.cs" />
+     <Compile Include="Assets\plugins\uniTUIOCE\Object Manipulation\BBTouchableButton.cs" />
+     <Compile Include="Assets\plugins\uniTUIOCE\iPhoneInput fakery\BBIPhoneInput.cs" />
+     <Compile Include="Assets\plugins\uniTUIOCE\iPhoneInput fakery\BBIPhoneTouchManager.cs" />
+     <Compile Include="Assets\plugins\uniTUIOCE\iPhoneInput fakery\BBInputController.cs" />
+     <Compile Include="Assets\plugins\uniTUIOCE\iPhoneInput fakery\BBInputDelegate.cs" />
+     <Compile Include="Assets\plugins\uniTUIOCE\iPhoneInput fakery\BBTouchEvent.cs" />
+     <Compile Include="Assets\plugins\uniTUIOCE\touch testing\BBStatusGUIText.cs" />
+     <Compile Include="Assets\plugins\uniTUIOCE\utilities\BBNotificationServer.cs" />
+     <Compile Include="Assets\plugins\uniTUIOCE\utilities\BBTouchManagerStarter.cs" />
+     <None Include="Assets\Standard Assets\Skyboxes\_skybox info.txt" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+	   Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  
+</Project>

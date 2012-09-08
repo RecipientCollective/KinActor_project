@@ -15,7 +15,7 @@ void oniActorApp::setupRecording(string _filename)
     
 
     
-#if defined (TARGET_OSX) //|| defined(TARGET_LINUX) 
+#if defined (TARGET_OSX) && !defined (NOKINECT)
 
 #ifdef DEBUG
     cerr << "STARTING DEVICE INITIALIZATION..." << endl;
@@ -89,12 +89,13 @@ void oniActorApp::setupPlayback(string _filename)
 
 void oniActorApp::openniUpdate()
 {
-#ifdef TARGET_OSX // only working on Mac at the moment
+#if defined (TARGET_OSX) && !defined(NOKINECT)
 	hardware.update();
 #endif
     
     if (isLive) {
         
+#if !defined(NOKINECT)
         // update all nodes
 		recordContext.update();
 		recordDepth.update();
@@ -114,6 +115,7 @@ void oniActorApp::openniUpdate()
 			user1Mask.setFromPixels(recordUser.getUserPixels(1), recordUser.getWidth(), recordUser.getHeight(), OF_IMAGE_GRAYSCALE);
 			user2Mask.setFromPixels(recordUser.getUserPixels(2), recordUser.getWidth(), recordUser.getHeight(), OF_IMAGE_GRAYSCALE);
 		}
+#endif
         
     } else {
         
