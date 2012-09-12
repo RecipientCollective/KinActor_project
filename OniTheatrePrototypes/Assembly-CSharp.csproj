@@ -49,6 +49,7 @@
      <Compile Include="Assets\Scripts\OniTheatre\OniActor.cs" />
      <Compile Include="Assets\Scripts\TestOscReceiver.cs" />
      <Compile Include="Assets\Scripts\TestOscSkeleton.cs" />
+     <Compile Include="Assets\Sources\LightningBolt.cs" />
      <None Include="Assets\Standard Assets\Skyboxes\_skybox info.txt" />
   </ItemGroup>
   <ItemGroup>
