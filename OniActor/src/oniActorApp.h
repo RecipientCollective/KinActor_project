@@ -71,7 +71,7 @@
 #define DRAW_BOX_TOGGLE "DRAW BOX"
 #define DEFAULT_SETTINGS_BUTTON "LOAD DEFAULTS"
 #define TOGGLE_OSC_SKELETON "SEND SKELETON WITH OSC"
-
+#define TOGGLE_OSC_HAND "SEND HANDS WITH OSC"
 
 
 class oniActorApp : public ofBaseApp
@@ -138,6 +138,7 @@ private:
     // OSC / ACTOR PARAMETERS
     bool  toggleDebugSkeletons;
     bool  toggleOscSkeleton;
+    bool  toggleOscHand;
     
     // DRAW PARAMETERS
     enum DrawFormat 
@@ -209,6 +210,7 @@ private:
     string	generateFileName();
     void setupOsc();
     void oscSendSkeletons();
+    void oscSendHands();
     void oscSendSkeleton(ofxTrackedUser *us, int idUser, ofxUserGenerator &recorder);
     void oscSendCenter(XnPoint3D center, string addr, ofxOscMessage &m);
     void oscSendLimb(ofxLimb &limb, string addr, ofxOscMessage &m);

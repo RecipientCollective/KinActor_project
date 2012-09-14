@@ -45,6 +45,7 @@ void oniActorApp::setup()
     // OSC/ACTOR GUI SETUP
     toggleDebugSkeletons = false;
     toggleOscSkeleton = false;
+    toggleOscHand = false;
     
     setupGUI();
 
@@ -70,7 +71,7 @@ void oniActorApp::update()
        
     // ACTOR SEND VIA OSC
     if (isTracking && toggleOscSkeleton) oscSendSkeletons();
-        
+    if (isTrackingHands && toggleOscHand) oscSendHands();
 }
 
 void oniActorApp::draw()

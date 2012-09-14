@@ -132,6 +132,7 @@ void oniActorApp::setupGUIlogger()
     
     guilogger ->addWidgetDown(new ofxUILabel("OSC LOGGER",OFX_UI_FONT_LARGE));
     guilogger ->addWidgetDown(new ofxUILabelToggle(guiPanelLength - xInit, toggleOscSkeleton, TOGGLE_OSC_SKELETON, OFX_UI_FONT_MEDIUM));
+    guilogger ->addWidgetDown(new ofxUILabelToggle(guiPanelLength - xInit, toggleOscHand, TOGGLE_OSC_HAND, OFX_UI_FONT_MEDIUM));
     
     // LISTENER AND LOAD SETTINGS
     ofAddListener(guilogger->newGUIEvent, this, &oniActorApp::guiEvent);
@@ -345,6 +346,11 @@ void oniActorApp::guiEvent(ofxUIEventArgs &e)
     {
         ofxUIToggle *toggle = (ofxUIToggle *) e.widget;
         toggleOscSkeleton = toggle->getValue();
+    }
+    else if(e.widget->getName() == TOGGLE_OSC_HAND)
+    {
+        ofxUIToggle *toggle = (ofxUIToggle *) e.widget;
+        toggleOscHand = toggle->getValue();
     }
     else if(e.widget->getName() == DEFAULT_SETTINGS_BUTTON)
     {

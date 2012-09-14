@@ -48,6 +48,7 @@ void oniActorApp::setupRecording(string _filename)
     // MAX_NUMBER_USERS=8    
     recordUser.setMaxNumberOfUsers(MAX_ACTORS);
     recordHandTracker.setup(&recordContext, MAX_HANDS);
+    recordHandTracker.setMaxNumHands(MAX_HANDS);
     // built in openni hand track smoothing...
     recordHandTracker.setSmoothing(filterFactor);
     // custom smoothing/filtering (can also set per hand with
@@ -79,8 +80,9 @@ void oniActorApp::setupPlayback(string _filename)
     playUser.setup(&playContext);
     playUser.setSmoothing(filterFactor);				
     playUser.setUseMaskPixels(isMasking);
-    playUser.setUseCloudPoints(true);    
+    playUser.setUseCloudPoints(true);
     playHandTracker.setup(&playContext, MAX_HANDS);
+    playHandTracker.setMaxNumHands(MAX_HANDS);
     playHandTracker.setSmoothing(filterFactor);			
     playHandTracker.setFilterFactors(filterFactor);
     playContext.toggleRegisterViewport();

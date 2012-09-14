@@ -200,3 +200,57 @@ void oniActorApp::oscSendSkeleton(ofxTrackedUser *us, int idUser, ofxUserGenerat
     oscSendLimb(rLimb, addr, m);
     
 }
+
+void oniActorApp::oscSendHands()
+{
+    ofxHandGenerator &currentRecorder = isLive ? recordHandTracker : playHandTracker;
+    vector<ofxTrackedHand *>::const_iterator cii;
+    vector<ofxTrackedHand *> SS = recordHandTracker.tracked_hands;
+    for(cii = SS.begin(); cii!=SS.end(); cii++)
+    {
+        ofxTrackedHand *hand = *cii;
+        
+        if (hand->isBeingTracked)
+        {
+            ofxOscMessage m;
+            string uid = ofToString(hand->nID);
+            
+            // hack max hands
+            if (MAX_HANDS == 1) uid = "1";
+            
+            string baseAddr = "/hand/" + uid;
+            string addr = baseAddr + "/raw";
+            m.setAddress(addr);
+            m.addFloatArg(hand->rawPos.X);
+            m.addFloatArg(hand->rawPos.Y);
+            m.addFloatArg(hand->rawPos.Z);
+            sender.sendMessage(m);
+            m.clear();
+            
+            addr = baseAddr + "/filtered";
+            m.setAddress(addr);
+            m.addFloatArg(hand->progPos.x);
+            m.addFloatArg(hand->progPos.y);
+            m.addFloatArg(hand->progPos.z);
+            sender.sendMessage(m);
+            m.clear();
+            
+            addr = baseAddr + "/projected";
+            m.setAddress(addr);
+            m.addFloatArg(hand->projectPos.x);
+            m.addFloatArg(hand->projectPos.y);
+            m.addFloatArg(hand->projectPos.z);
+            sender.sendMessage(m);
+            m.clear();
+            
+            
+#ifdef DEBUG
+            cerr << "SENDING HAND WITH ID " << hand->nID << endl;
+            cerr << "POSITION PROJECTED: " << hand->projectPos << endl;
+            cerr << "POSITION REAL FILTERED: " << hand->progPos << endl;
+            cerr << "POSITION RAW X,Y,Z:" << hand->rawPos.X << ", " << hand->rawPos.Y << ", " << hand->rawPos.Z << endl;
+#endif
+        }
+        
+    }
+}
