@@ -38,7 +38,12 @@ void oniActorApp::oscSendSkeletons()
         }
         
         ofxTrackedUser * user = currentRecorder.getTrackedUser(i);
-        oscSendSkeleton(user, i, currentRecorder);
+        
+        // quick fix for single user tracking:
+        // per ora se MAX_ACTORS e' 1 mando sempre e comunque come ID 1
+        int user_id = i;
+        if (MAX_ACTORS == 1) user_id = 1;
+        oscSendSkeleton(user, user_id, currentRecorder);
     }
 }
 

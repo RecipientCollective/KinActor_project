@@ -30,7 +30,7 @@
 
 // OPENNI CUSTOM DEFINES
 #define MAX_ACTORS 1
-#define MAX_HANDS 2
+#define MAX_HANDS 1
 
 // OSC
 #define HOST "localhost"
