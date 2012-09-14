@@ -267,18 +267,32 @@ void oniActorApp::guiEvent(ofxUIEventArgs &e)
             isPlayBack = toggle -> getValue();
             if (isPlayBack)
             {
-                if (oniRecorder.getCurrentFileName() != "" && !isRecording && isLive) {
-                    setupPlayback(oniRecorder.getCurrentFileName());
-                    isLive = false;
+                if (!isRecording && isLive) {
+                    
+                    //Open the Open File Dialog
+                    ofFileDialogResult openFileResult= ofSystemLoadDialog("Select a record file");
+                    //Check if the user opened a file
+                    if (openFileResult.bSuccess){
+                        
+                        ofLogVerbose("User selected a file");
+                        
+                        //We have a file, check it and process it
+                        processOpenFileSelection(openFileResult);
+                        
+                    }else {
+                        ofLogVerbose("User hit cancel");
+                        toggle->setValue(false);
+                    }
                 } else {
                     toggle->setValue(false);
                 }
             } else {
 #ifdef DEBUG		
                 cerr << endl << "PLAYBACK STATE CHANGE CRASH HERE? isLive: " << isLive << endl;
-#endif
-                // QUICK FIX I JUST EXIT APPLICATION :-)
-                std::exit(0);
+#endif                
+                // QUICK FIX 
+                toggle->setValue(false);
+                isLive = true;
             }
         }
     }

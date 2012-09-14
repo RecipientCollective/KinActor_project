@@ -212,6 +212,7 @@ private:
     void oscSendSkeleton(ofxTrackedUser *us, int idUser, ofxUserGenerator &recorder);
     void oscSendCenter(XnPoint3D center, string addr, ofxOscMessage &m);
     void oscSendLimb(ofxLimb &limb, string addr, ofxOscMessage &m);
+    void processOpenFileSelection(ofFileDialogResult openFileResult);
 };
 
 #endif

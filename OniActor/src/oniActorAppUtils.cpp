@@ -19,6 +19,21 @@ string oniActorApp::generateFileName()
 	return _filename;
 }
 
+void oniActorApp::processOpenFileSelection(ofFileDialogResult openFileResult)
+{
+	ofLogVerbose("getName(): "  + openFileResult.getName());
+	ofLogVerbose("getPath(): "  + openFileResult.getPath());
+	ofFile file (openFileResult.getPath());
+    if (file.exists())
+    {
+        setupPlayback(openFileResult.getPath());
+        isLive = false;
+    } else {
+        ofLogVerbose("Problem with openFileResult: " + openFileResult.getName());
+    }
+}
+
+
 void oniActorApp::setupOsc()
 {
     sender.setup(HOST, PORT);
