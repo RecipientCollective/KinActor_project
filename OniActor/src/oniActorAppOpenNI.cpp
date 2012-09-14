@@ -80,7 +80,7 @@ void oniActorApp::setupPlayback(string _filename)
     playUser.setSmoothing(filterFactor);				
     playUser.setUseMaskPixels(isMasking);
     playUser.setUseCloudPoints(true);    
-    playHandTracker.setup(&playContext, 4);
+    playHandTracker.setup(&playContext, MAX_HANDS);
     playHandTracker.setSmoothing(filterFactor);			
     playHandTracker.setFilterFactors(filterFactor);
     playContext.toggleRegisterViewport();

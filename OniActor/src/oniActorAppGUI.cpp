@@ -277,7 +277,8 @@ void oniActorApp::guiEvent(ofxUIEventArgs &e)
 #ifdef DEBUG		
                 cerr << endl << "PLAYBACK STATE CHANGE CRASH HERE? isLive: " << isLive << endl;
 #endif
-                isLive = true;
+                // QUICK FIX I JUST EXIT APPLICATION :-)
+                std::exit(0);
             }
         }
     }
