@@ -33,7 +33,7 @@
 #define MAX_HANDS 1
 
 // OSC
-#define HOST "localhost"
+#define HOST "10.0.0.255"
 #define PORT 12345
 
 // GUI DEFINES

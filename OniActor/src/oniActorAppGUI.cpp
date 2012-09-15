@@ -181,11 +181,11 @@ void oniActorApp::setupGUIright()
 void oniActorApp::closeGUI()
 {
     // ON EXIT SAVE GUI and DELETE
-    guileft->saveSettings(GUILEFT_FILE); 
+    //guileft->saveSettings(GUILEFT_FILE);
     delete guileft;
-    guiright->saveSettings(GUIRIGHT_FILE);
+    //guiright->saveSettings(GUIRIGHT_FILE);
     delete guiright;
-    guilogger->saveSettings(GUILOGGER_FILE);
+    //guilogger->saveSettings(GUILOGGER_FILE);
     delete guilogger;
 }
 
