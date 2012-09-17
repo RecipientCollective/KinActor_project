@@ -147,9 +147,9 @@ void oniActorApp::setupGUIright()
     guiright->addWidgetDown(new ofxUILabel("OpenNI - CONTROLS",OFX_UI_FONT_LARGE));
     guiright->addWidgetDown(new ofxUISpacer(guiPanelLength-xInit, 2));
     guiright->addWidgetDown(new ofxUILabel("SOURCE",OFX_UI_FONT_MEDIUM));
-    float half_panel = ((guiPanelLength-xInit) / 2.0f) - xInit;
+    float half_panel = ((guiPanelLength-xInit) / 2.0f) - xInit;    
     recordToggle = new ofxUILabelToggle(half_panel, isRecording, RECORDING_TOGGLE, OFX_UI_FONT_MEDIUM);
-    playbackToggle = new ofxUILabelToggle(half_panel, isRecording, PLAYBACK_TOGGLE, OFX_UI_FONT_MEDIUM);
+    playbackToggle = new ofxUILabelToggle(half_panel, !isLive, PLAYBACK_TOGGLE, OFX_UI_FONT_MEDIUM);
     guiright->addWidgetDown(recordToggle);
     guiright->addWidgetEastOf(playbackToggle, RECORDING_TOGGLE);
     guiright->addWidgetDown(new ofxUISpacer(guiPanelLength-xInit, 2));
@@ -181,11 +181,21 @@ void oniActorApp::setupGUIright()
 void oniActorApp::closeGUI()
 {
     // ON EXIT SAVE GUI and DELETE
-    //guileft->saveSettings(GUILEFT_FILE);
+    guileft->saveSettings(GUILEFT_FILE);
     delete guileft;
-    //guiright->saveSettings(GUIRIGHT_FILE);
+    
+    // Avoid saving RECORD and PLAYBACK STATE
+#ifdef DEBUG
+    cerr << "Disable record and playback before save!" << endl;
+#endif
+    
+    recordToggle->setValue(false);
+    playbackToggle->setValue(false);
+
+    guiright->saveSettings(GUIRIGHT_FILE);
+    
     delete guiright;
-    //guilogger->saveSettings(GUILOGGER_FILE);
+    guilogger->saveSettings(GUILOGGER_FILE);
     delete guilogger;
 }
 
