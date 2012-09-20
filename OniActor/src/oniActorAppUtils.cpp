@@ -42,23 +42,18 @@ void oniActorApp::setupOsc()
 void oniActorApp::oscSendSkeletons()
 {
     ofxUserGenerator currentRecorder = isLive ? recordUser : playUser;
-    for(int i = 1; i <= currentRecorder.getNumberOfTrackedUsers(); i++)
+    for(int i = 1; i <= MAX_ACTORS; i++)
     {
         if(!currentRecorder.getXnUserGenerator().GetSkeletonCap().IsTracking(i)) 
         {
 #ifdef DEBUG        
             cerr << "OSC_SEND_SKELETONS: Not tracking this user: " << i << endl;
+            cerr << "Number of Tracked users: " << currentRecorder.getNumberOfTrackedUsers() << endl;
 #endif
-            return;
-        }
-        
-        ofxTrackedUser * user = currentRecorder.getTrackedUser(i);
-        
-        // quick fix for single user tracking:
-        // per ora se MAX_ACTORS e' 1 mando sempre e comunque come ID 1
-        int user_id = i;
-        if (MAX_ACTORS == 1) user_id = 1;
-        oscSendSkeleton(user, user_id, currentRecorder);
+        } else {
+            ofxTrackedUser * user = currentRecorder.getTrackedUser(i);
+            oscSendSkeleton(user, i, currentRecorder);
+        }        
     }
 }
 
@@ -215,8 +210,8 @@ void oniActorApp::oscSendHands()
             ofxOscMessage m;
             string uid = ofToString(hand->nID);
             
-            // hack max hands
-            if (MAX_HANDS == 1) uid = "1";
+            // hack max hands ?
+            // if (MAX_HANDS == 1) uid = "1";
             
             string baseAddr = "/hand/" + uid;
             string addr = baseAddr + "/raw";

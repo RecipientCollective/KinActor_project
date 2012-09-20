@@ -220,7 +220,8 @@ public class OniActor : MonoBehaviour
 	{
 		string address = message.Address;
 		ArrayList args = message.Values;
-		
+		Debug.Log("ADDRESS: " + message.Address);
+		Debug.Log("VALUE: " + message.Values);
 		updateJointCoordinates(args, address);
 	}
 	
@@ -244,8 +245,6 @@ public class OniActor : MonoBehaviour
 			z = (float) args[2];
 			
 			center = getJointPosition(new Vector3(x,y,z));
-			
-			Debug.Log("Tracking Skeleton Center: " + center);
 		}
 		else if (address == "/skeleton/" + actor_id + "/neck/realWorld")
 		{

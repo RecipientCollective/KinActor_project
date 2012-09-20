@@ -29,8 +29,8 @@
 #define LOGGER_PANEL_HEIGHT 300
 
 // OPENNI CUSTOM DEFINES
-#define MAX_ACTORS 1
-#define MAX_HANDS 1
+#define MAX_ACTORS 4
+#define MAX_HANDS 4
 
 // OSC
 #define HOST "localhost"
