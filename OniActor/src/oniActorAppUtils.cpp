@@ -53,7 +53,7 @@ void oniActorApp::oscSendSkeletons()
         } else {
             ofxTrackedUser * user = currentRecorder.getTrackedUser(i);
             oscSendSkeleton(user, i, currentRecorder);
-        }        
+        }
     }
 }
 
