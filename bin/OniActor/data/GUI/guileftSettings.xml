@@ -1,16 +1,20 @@
 <Widget>
     <Kind>11</Kind>
     <Name>TRANSLATE</Name>
-    <XValue>111</XValue>
-    <YValue>4</YValue>
+    <XValue>91.4286</XValue>
+    <YValue>0</YValue>
 </Widget>
 <Widget>
     <Kind>4</Kind>
     <Name>SCALE</Name>
-    <Value>1.04167</Value>
+    <Value>1</Value>
 </Widget>
 <Widget>
     <Kind>4</Kind>
     <Name>CURRENT FPS</Name>
+<<<<<<< HEAD
     <Value>29.6893</Value>
+=======
+    <Value>28.6816</Value>
+>>>>>>> 9bbd30e50d6e2b02d62c1dac37bbfa7988779514
 </Widget>

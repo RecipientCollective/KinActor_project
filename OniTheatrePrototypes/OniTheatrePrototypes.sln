@@ -7,6 +7,8 @@ Project("{2ABEFAC0-EC75-6943-10DD-4563F92103D8}") = "OniTheatrePrototypes", "Ass
 EndProject
 Project("{2ABEFAC0-EC75-6943-10DD-4563F92103D8}") = "OniTheatrePrototypes", "Assembly-UnityScript-firstpass.unityproj", "{A4B1DCEF-8BEF-F370-F21D-7F7C5A0DA1C9}"
 EndProject
+Project("{2ABEFAC0-EC75-6943-10DD-4563F92103D8}") = "OniTheatrePrototypes", "Assembly-UnityScript.unityproj", "{2662E1CE-FD82-FE34-52FF-E314363E39CA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,11 +27,19 @@ Global
 		{A4B1DCEF-8BEF-F370-F21D-7F7C5A0DA1C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A4B1DCEF-8BEF-F370-F21D-7F7C5A0DA1C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A4B1DCEF-8BEF-F370-F21D-7F7C5A0DA1C9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2662E1CE-FD82-FE34-52FF-E314363E39CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2662E1CE-FD82-FE34-52FF-E314363E39CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2662E1CE-FD82-FE34-52FF-E314363E39CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2662E1CE-FD82-FE34-52FF-E314363E39CA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
+<<<<<<< HEAD
 												GlobalSection(MonoDevelopProperties) = preSolution
+=======
+														GlobalSection(MonoDevelopProperties) = preSolution
+>>>>>>> 9bbd30e50d6e2b02d62c1dac37bbfa7988779514
 		StartupItem = Assembly-CSharp.csproj
 		Policies = $0
 		$0.TextStylePolicy = $1
