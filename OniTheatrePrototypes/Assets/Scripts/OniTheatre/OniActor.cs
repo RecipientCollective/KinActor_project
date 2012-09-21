@@ -11,31 +11,19 @@ using OSC.NET;
 
 
 public class OniActor : MonoBehaviour 
-{
-	/// <summary>
-	/// The port.
-	/// </summary>
-	public int port = 12345;
-	
+{	
 	/// <summary>
 	/// The actor_id.
 	/// </summary>
 	public int actor_id = 1;
 	
 	/// <summary>
-	/// The kinect_height.
+	/// The kinect_height set in OniReceiver.
 	/// </summary>
-	public float kinect_height = 1.5f; // in meters
+	private float kinect_height; // in meters
+	private GameObject receiver;
 	
 	// PRIVATE =========================================
-	
-	// OSC 
-	private OSCReceiver receiver;
-	private Thread thread;
-	private int packetCount = 0;
-	private int packetErrorCount = 0;
-	private int bundleCount = 0;
-	private int messageCount = 0;	
 	
 	// SKELY
 	private bool showSkeleton = true;
@@ -79,22 +67,20 @@ public class OniActor : MonoBehaviour
 	Transform skeleton;
 	
 	/// <summary>
-	/// Gets a value indicating whether this <see cref="OniActor"/> is connected to OSC server.
-	/// </summary>
-	/// <value>
-	/// <c>true</c> if connected; otherwise, <c>false</c>.
-	/// </value>
-	public bool connected
-	{
-		get { return _connected; }
-	}
-	private bool _connected;
-	
-	/// <summary>
 	/// Start this instance. Use this for initialization
 	/// </summary>//
 	void Start () 
 	{
+		try
+		{
+			receiver = GameObject.Find("OscReceiver");
+			kinect_height = receiver.GetComponent<OniOscReceiver>().kinect_height;
+		}
+		catch (Exception ex)
+		{
+			Debug.LogError("Can't find OniReceiver" + ex.Message);
+		}
+		
 		try 
 		{
 			skeleton = gameObject.transform.FindChild("Skeleton");	
@@ -108,7 +94,6 @@ public class OniActor : MonoBehaviour
 		
 		initSkeletonPosition();
 		
-		connect();		
 	}
 	
 	/// <summary>
@@ -125,7 +110,6 @@ public class OniActor : MonoBehaviour
 	/// </summary>
 	void OnDestroy()
 	{
-		disconnect();
 	}
 	
 	/// <summary>
@@ -142,90 +126,6 @@ public class OniActor : MonoBehaviour
 	}
 	
 	/// <summary>
-	/// Connect this instance.
-	/// </summary>
-	private void connect()
-	{
-		Debug.Log("ONIACTOR: Starting OSC server on secondary Thread");
-		
-		try
-		{
-			receiver = new OSCReceiver(port);
-			_connected = true;
-			Debug.Log("OSC SERVER: connecting to port: " + port + ". Thread STARTED with listen() method");
-			thread = new Thread(new ThreadStart(listen));
-			thread.Start();			
-		} 
-		catch (Exception e) 
-		{
-			Debug.LogError("OSC SERVER: failed to connect to port " + port);
-			Debug.LogError(e.Message);
-		}
-		
-		Debug.Log("ONIACTOR: OSC server connection complete");
-	}
-	
-	/// <summary>
-	/// Disconnect this instance.
-	/// </summary>/
-	private void disconnect()
-	{
-		if (receiver!=null) receiver.Close();
-		receiver = null;
-		Debug.Log("OSC SERVER: Disconnected from OSC Server");	
-		_connected = false;
-	}
-		
-	/// <summary>
-	/// Listen OSC messages;
-	/// </summary>
-	private void listen()
-	{
-		while (connected)
-		{
-			try 
-			{
-				OSCPacket packet = receiver.Receive();
-				packetCount++;
-				if (packet!=null) {
-					if (packet.IsBundle()) {
-						bundleCount++;
-						ArrayList messages = packet.Values;
-						for (int i=0; i<messages.Count; i++) {
-							messageCount++;
-							processMessage((OSCMessage)messages[i]);
-						}
-					} else processMessage((OSCMessage)packet);
-				} else {
-					packetErrorCount++;
-					Debug.Log("OSC LISTEN: null packet");
-				}
-			}
-			catch (Exception e)
-			{
-				Debug.Log("OSC LISTEN: failed to receive packets at port " + port);
-				Debug.Log(e.Message);
-			}
-				
-		}
-	}
-	
-	/// <summary>
-	/// Processes the OSC message.
-	/// </summary>
-	/// <param name='message'>
-	/// The Message.
-	/// </param>
-	private void processMessage(OSCMessage message) 
-	{
-		string address = message.Address;
-		ArrayList args = message.Values;
-		Debug.Log("ADDRESS: " + message.Address);
-		Debug.Log("VALUE: " + message.Values);
-		updateJointCoordinates(args, address);
-	}
-	
-	/// <summary>
 	/// Updates the joint coordinates.
 	/// </summary>
 	/// <param name='args'>
@@ -234,7 +134,7 @@ public class OniActor : MonoBehaviour
 	/// <param name='address'>
 	/// Address.
 	/// </param>
-	private void updateJointCoordinates(ArrayList args, string address)
+	public void updateJointCoordinates(ArrayList args, string address)
 	{
 		float x,y,z;
 		
@@ -532,10 +432,6 @@ public class OniActor : MonoBehaviour
 	{
 		// IN MILLIMITERS: I DIVIDE BY 1000 Unity Scene 1 = 1m
 		pos = pos / 1000.0f;
-		// ADJUST Y WITH THE KINECT HEIGHT: if kinect is at 1.5m FLOOR ZERO IS -1.5m
-		pos.y = pos.y + kinect_height;
-		// REVERSE Z
-		pos.z = -pos.z;
 		return pos;
 	}
 	

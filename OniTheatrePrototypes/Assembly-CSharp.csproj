@@ -47,6 +47,7 @@
      <Compile Include="Assets\Scripts\MainMenuScript.cs" />
      <Compile Include="Assets\Scripts\OniTheatre\Limb.cs" />
      <Compile Include="Assets\Scripts\OniTheatre\OniActor.cs" />
+     <Compile Include="Assets\Scripts\OniTheatre\OniOscReceiver.cs" />
      <Compile Include="Assets\Scripts\TestOscReceiver.cs" />
      <Compile Include="Assets\Scripts\TestOscSkeleton.cs" />
      <Compile Include="Assets\Sources\LightningBolt.cs" />
