@@ -23,8 +23,8 @@
 
 
 // WINDOWS SIZES
-#define OUTPUT_HEIGHT 852
-#define OUTPUT_WIDTH 1480
+#define OUTPUT_HEIGHT 768
+#define OUTPUT_WIDTH 1024
 #define GUIPANEL_BASE_LENGTH 400
 #define LOGGER_PANEL_HEIGHT 300
 
@@ -33,9 +33,9 @@
 #define MAX_HANDS 4
 
 // OSC
-#define HOST "localhost"
-// #define HOST "10.0.0.255"  // FOR BROADCAST
-#define PORT 12345
+//#define HOST "localhost"
+#define HOST "10.0.1.255"  // FOR BROADCAST
+#define PORT 8000
 
 // GUI DEFINES
 #define GUILEFT_FILE "GUI/guileftSettings.xml"
